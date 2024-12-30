@@ -16,7 +16,7 @@ const SignInForm = () => {
   const submit = () => {
     signIn(password);
     setPassword("");
-    router.push("dashboard");
+    router.push("/Dashboard");
   };
 
   return (

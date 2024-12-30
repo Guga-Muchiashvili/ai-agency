@@ -1,4 +1,4 @@
-import LandingPage from "@/components/Landingpage/LandingPage";
+import LandingPage from "@/components/LandingComponent/LandingPage";
 import React from "react";
 
 const page = () => {
