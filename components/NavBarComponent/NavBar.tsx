@@ -15,7 +15,7 @@ const NavBar = () => {
   };
 
   return (
-    <div className="w-[15vw] p-2 bg-black h-full font-bebas rounded-lg">
+    <div className="w-[15vw] hidden lg:block p-2 bg-black h-full font-bebas rounded-lg">
       <h1 className="w-full text-center text-4xl pl-2 h-32 flex items-center text-white">
         AiAgency
       </h1>
