@@ -1,5 +1,6 @@
 "use client";
 import { timePeriods } from "@/common/constants/constants";
+import LeaderBoardElement from "@/common/elements/LeaderBoardElement/LeaderBoardElement";
 import OutputBoxElement from "@/common/elements/OutputBoxElement/OutputBoxElement";
 import React, { useState } from "react";
 import { IoFilterSharp } from "react-icons/io5";
@@ -43,7 +44,15 @@ const DashboardPage = () => {
           <OutputBoxElement title="katte" price="0$" />
         </div>
       </div>
-      <div className="w-1/4 h-full "></div>
+      <div className="w-1/4 h-full rounded-lg mt-auto flex flex-col p-3 gap-5 py-2">
+        <h1 className="text-4xl font-bebas mx-auto mt-1">Leaderboard</h1>
+        <LeaderBoardElement model="fionna" name="vano" money="30$" />
+        <LeaderBoardElement model="fionna" name="p3rsi" money="2,180$" />
+        <LeaderBoardElement model="elenka" name="sicho" money="680$" />
+        <LeaderBoardElement model="elenka" name="kakasha" money="280$" />
+        <LeaderBoardElement model="kattia" name="oto" money="0$" />
+        <LeaderBoardElement model="kattia" name="adesha" money="0$" />
+      </div>
     </div>
   );
 };
