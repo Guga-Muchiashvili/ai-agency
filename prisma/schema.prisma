@@ -10,17 +10,16 @@ datasource db {
 model Model {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String    @unique
-  workers       Worker[]  @relation("ModelWorkers")
+  workers       String[]
   earnings      Earning[] @relation("ModelEarnings")
 }
 
 model Worker {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String
-  model         Model     @relation("ModelWorkers", fields: [modelId], references: [id])
   modelId       String    @db.ObjectId
-  earnings      Earning[] @relation("WorkerEarnings")
-  profit        Float     @default(0) 
+  earnings      String[]
+  profit        String      
 }
 
 model Earning {
@@ -28,7 +27,6 @@ model Earning {
   amount        Float
   model         Model     @relation("ModelEarnings", fields: [modelId], references: [id])
   modelId       String    @db.ObjectId
-  worker        Worker    @relation("WorkerEarnings", fields: [workerId], references: [id])
   workerId      String    @db.ObjectId
   createdAt     DateTime  @default(now())
 }

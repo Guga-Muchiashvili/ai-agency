@@ -6,12 +6,20 @@ import React, { useEffect, useState } from "react";
 import { IoFilterSharp } from "react-icons/io5";
 import ChartTableElement from "./elements/ChartTableElement/ChartTableElement";
 import { motion } from "framer-motion";
+import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
+import { useGetModels } from "@/queries/useGetModelsQuery/useGetModelsQuery";
+import { transformLeaderboardData } from "./transformData/transformData";
 
 const DashboardPage = () => {
   const [showFilter, setShowFilter] = useState(true);
   const [filter, setfilter] = useState<"overall" | "last Month" | "last Week">(
     "overall"
   );
+
+  const { data } = useGetWorkers();
+  const { data: models } = useGetModels();
+
+  const workers = transformLeaderboardData(data, models);
 
   const [labels, setLabels] = useState([
     "Jan",
@@ -100,27 +108,15 @@ const DashboardPage = () => {
         >
           Leaderboard
         </motion.h1>
-        <LeaderBoardElement index={1} model="fionna" name="vano" money="30$" />
-        <LeaderBoardElement
-          index={2}
-          model="fionna"
-          name="p3rsi"
-          money="2,180$"
-        />
-        <LeaderBoardElement
-          index={3}
-          model="elenka"
-          name="sicho"
-          money="680$"
-        />
-        <LeaderBoardElement
-          index={4}
-          model="elenka"
-          name="kakasha"
-          money="280$"
-        />
-        <LeaderBoardElement index={5} model="kattia" name="oto" money="0$" />
-        <LeaderBoardElement index={6} model="kattia" name="adesha" money="0$" />
+        {workers?.map((item, i) => (
+          <LeaderBoardElement
+            key={i}
+            index={i}
+            model={item.model}
+            money={item.profit}
+            name={item.name}
+          />
+        ))}
       </div>
     </div>
   );
