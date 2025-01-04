@@ -42,22 +42,22 @@ const DashboardPage = () => {
   }
 
   useEffect(() => {
-    if (filter == "overall")
+    if (filter === "overall")
       return setLabels(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"]);
-    if (filter == "last Week")
+    if (filter === "last Week")
       return setLabels(["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]);
-    if (filter == "last Month") {
+    if (filter === "last Month") {
       const currentMonthDays = getCurrentMonthDays();
       return setLabels(currentMonthDays);
     }
   }, [filter]);
 
   return (
-    <div className="text-white w-full h-full flex flex-col items-center justify-center ">
-      <div className="w-full relative mt-5 flex flex-col">
+    <div className="text-white w-full h-full flex flex-col items-center justify-center">
+      <div className="w-full h-[30vh] relative mt-5 flex flex-col">
         <div className="ml-auto flex relative gap-2 items-center pr-2">
           <div
-            className={`w-fit px-2 flex items-center gap-2 ${
+            className={`w-fit px-2 flex items-center gap-2 flex-wrap ${
               !showFilter && "opacity-0 pointer-events-none"
             }`}
           >
@@ -71,7 +71,7 @@ const DashboardPage = () => {
                 }}
                 key={item}
                 className={`${
-                  filter == item
+                  filter === item
                     ? "bg-white text-black"
                     : "bg-gray-400 bg-opacity-30 text-gray-300"
                 } px-3 py-1 rounded-md cursor-pointer duration-500 font-bebas text-xl`}
@@ -101,11 +101,14 @@ const DashboardPage = () => {
           <OutputBoxElement index={4} title="katte" price="0$" />
         </div>
       </div>
-      <div className="w-full flex">
+      <div className="w-full flex h-[70vh]">
         <div className="w-[75%] h-full">
           <ChartTableElement labels={labels} />
         </div>
-        <div className="w-[26%] ml-4 flex flex-col  p-3 gap-5 py-2">
+        <div
+          className="w-[26%] hide-scrollbar ml-4 overflow-hidden flex flex-col p-3 gap-5 py-2 overflow-y-auto"
+          style={{ maxHeight: "calc(100vh - 40vh)" }}
+        >
           {workers?.map((item, i) => (
             <LeaderBoardElement
               img={item.img}

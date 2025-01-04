@@ -25,6 +25,7 @@ const LeaderBoardElement = ({
     >
       <div className="flex w-full justify-between">
         <div className="flex items-center gap-3 justify-center h-full">
+          <h1 className="text-2xl">{index + 1}</h1>
           <Image
             src={img}
             alt="pfp"
