@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
 
   if (authToken) {
     if (publicRoutes.includes(pathname)) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return NextResponse.redirect(new URL("/Dashboard", request.url));
     }
     return NextResponse.next();
   }
