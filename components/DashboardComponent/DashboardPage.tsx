@@ -2,13 +2,45 @@
 import { timePeriods } from "@/common/constants/constants";
 import LeaderBoardElement from "@/common/elements/LeaderBoardElement/LeaderBoardElement";
 import OutputBoxElement from "@/common/elements/OutputBoxElement/OutputBoxElement";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoFilterSharp } from "react-icons/io5";
 import ChartTableElement from "./elements/ChartTableElement/ChartTableElement";
 
 const DashboardPage = () => {
   const [showFilter, setShowFilter] = useState(true);
-  const [filter, setfilter] = useState("overall");
+  const [filter, setfilter] = useState<"overall" | "last Month" | "last Week">(
+    "overall"
+  );
+  const [labels, setLabels] = useState([
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+  ]);
+
+  function getCurrentMonthDays() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    return Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`);
+  }
+
+  useEffect(() => {
+    if (filter == "overall")
+      return setLabels(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"]);
+    if (filter == "last Week")
+      return setLabels(["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]);
+    if (filter == "last Month") {
+      const currentMonthDays = getCurrentMonthDays();
+      return setLabels(currentMonthDays);
+    }
+  }, [filter]);
 
   return (
     <div className="text-white w-full h-full flex ">
@@ -27,7 +59,9 @@ const DashboardPage = () => {
                     ? "bg-white text-black"
                     : "bg-gray-400 bg-opacity-30 text-gray-300"
                 } px-3 py-1 rounded-md cursor-pointer duration-500 font-bebas text-xl`}
-                onClick={() => setfilter(item)}
+                onClick={() =>
+                  setfilter(item as "overall" | "last Month" | "last Week")
+                }
               >
                 {item}
               </h1>
@@ -45,7 +79,7 @@ const DashboardPage = () => {
           <OutputBoxElement title="katte" price="0$" />
         </div>
         <div className="w-full h-full">
-          <ChartTableElement />
+          <ChartTableElement labels={labels} />
         </div>
       </div>
       <div className="w-[25%] h-full rounded-lg mt-auto flex flex-col p-3 gap-5 py-2">
