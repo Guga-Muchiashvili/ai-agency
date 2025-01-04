@@ -34,7 +34,7 @@ const LeaderBoardElement = ({
           ></Image>
           <div className="mt-2">
             <h1 className="">model : {model}</h1>
-            <h1 className="text-2xl">{name}</h1>
+            <h1 className="text-xl">{name}</h1>
           </div>
         </div>
       </div>
