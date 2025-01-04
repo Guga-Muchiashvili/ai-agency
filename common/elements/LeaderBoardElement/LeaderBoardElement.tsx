@@ -1,20 +1,21 @@
 import Image from "next/image";
 import React from "react";
-import pfp from "../../../public/sicho.jpg";
 import { motion } from "framer-motion";
+import { StaticImageData } from "next/image";
 
 const LeaderBoardElement = ({
   name,
   model,
   money,
   index,
+  img,
 }: {
   name: string;
   model?: string;
-  money: number;
+  money: string;
   index: number;
+  img: StaticImageData;
 }) => {
-  console.log("here");
   return (
     <motion.div
       initial={{ opacity: 0, translateY: -20 }}
@@ -25,7 +26,7 @@ const LeaderBoardElement = ({
       <div className="flex w-full justify-between">
         <div className="flex items-center gap-3 justify-center h-full">
           <Image
-            src={pfp.src}
+            src={img}
             alt="pfp"
             height={50}
             width={50}

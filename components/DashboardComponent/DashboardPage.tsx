@@ -53,8 +53,8 @@ const DashboardPage = () => {
   }, [filter]);
 
   return (
-    <div className="text-white w-full h-full flex ">
-      <div className="w-[75%] relative h-full flex flex-col">
+    <div className="text-white w-full h-full flex flex-col items-center justify-center ">
+      <div className="w-full relative mt-5 flex flex-col">
         <div className="ml-auto flex relative gap-2 items-center pr-2">
           <div
             className={`w-fit px-2 flex items-center gap-2 ${
@@ -67,7 +67,6 @@ const DashboardPage = () => {
                 animate={{ opacity: 1, translateX: 0 }}
                 transition={{
                   duration: 1,
-                  ease: "easeInOut",
                   delay: i * 0.2,
                 }}
                 key={item}
@@ -84,39 +83,40 @@ const DashboardPage = () => {
               </motion.h1>
             ))}
           </div>
-          <IoFilterSharp
-            className="text-2xl cursor-pointer mb-1"
-            onClick={() => setShowFilter((prev) => !prev)}
-          />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.6 }}
+          >
+            <IoFilterSharp
+              className="text-2xl cursor-pointer mb-1"
+              onClick={() => setShowFilter((prev) => !prev)}
+            />
+          </motion.div>
         </div>
-        <div className="w-full h-64 px-3 items-center gap-6 mt-6 flex">
+        <div className="w-full h-64 px-3 items-center gap-6 mt-1 flex">
           <OutputBoxElement index={1} title={`${filter}`} price="3,197$" />
           <OutputBoxElement index={2} title="elenka" price="980$" />
           <OutputBoxElement index={3} title="fionna" price="2,217$" />
           <OutputBoxElement index={4} title="katte" price="0$" />
         </div>
-        <div className="w-full h-full">
+      </div>
+      <div className="w-full flex">
+        <div className="w-[75%] h-full">
           <ChartTableElement labels={labels} />
         </div>
-      </div>
-      <div className="w-[25%] h-full rounded-lg mt-auto flex flex-col p-3 gap-5 py-2">
-        <motion.h1
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 1 }}
-          className="text-4xl font-bebas mx-auto mt-1"
-        >
-          Leaderboard
-        </motion.h1>
-        {workers?.map((item, i) => (
-          <LeaderBoardElement
-            key={i}
-            index={i}
-            model={item.model}
-            money={item.profit}
-            name={item.name}
-          />
-        ))}
+        <div className="w-[30%] ml-4 border-l-[1px] border-white flex flex-col  p-3 gap-5 py-2">
+          {workers?.map((item, i) => (
+            <LeaderBoardElement
+              img={item.img}
+              key={i}
+              index={i}
+              model={item.model}
+              money={item.profit}
+              name={item.name}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
