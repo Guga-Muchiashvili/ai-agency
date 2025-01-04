@@ -12,7 +12,7 @@ const LeaderBoardElement = ({
   money: string;
 }) => {
   return (
-    <div className="w-full relative font-bebas h-20 p-2 shadow-sm cursor-pointer duration-700 hover:shadow-none hover:scale-105 shadow-white rounded-lg">
+    <div className="w-full relative font-bebas h-20 p-2 shadow-sm cursor-pointer duration-700 hover:shadow-none hover:scale-105  rounded-lg">
       <div className="flex w-full justify-between">
         <div className="flex items-center gap-2 justify-center h-full">
           <Image
