@@ -105,7 +105,7 @@ const DashboardPage = () => {
         <div className="w-[75%] h-full">
           <ChartTableElement labels={labels} />
         </div>
-        <div className="w-[30%] ml-4 border-l-[1px] border-white flex flex-col  p-3 gap-5 py-2">
+        <div className="w-[26%] ml-4 flex flex-col  p-3 gap-5 py-2">
           {workers?.map((item, i) => (
             <LeaderBoardElement
               img={item.img}
