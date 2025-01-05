@@ -9,7 +9,7 @@ export default function DashboardLayout({
   return (
     <div style={{ display: "flex", height: "100vh", padding: "20px" }}>
       <NavBar />
-      <main style={{ flex: 1, padding: "1rem" }}>{children}</main>
+      <main style={{ padding: "1px", flex: "1" }}>{children}</main>
     </div>
   );
 }

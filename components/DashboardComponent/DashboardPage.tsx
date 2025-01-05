@@ -53,11 +53,11 @@ const DashboardPage = () => {
   }, [filter]);
 
   return (
-    <div className="text-white w-full h-full flex flex-col items-center justify-center">
-      <div className="w-full h-[30vh] relative mt-5 flex flex-col">
-        <div className="ml-auto flex relative gap-2 items-center pr-2">
+    <div className="text-white w-full min-h-screen flex flex-col items-center justify-center">
+      <div className="w-full h-[20vh] lg:h-[35vh] relative flex flex-col">
+        <div className="ml-auto flex relative gap-2 pr-2">
           <div
-            className={`w-fit px-2 flex items-center gap-2 flex-wrap ${
+            className={`w-fit flex items-center gap-2 flex-wrap ${
               !showFilter && "opacity-0 pointer-events-none"
             }`}
           >
@@ -74,7 +74,7 @@ const DashboardPage = () => {
                   filter === item
                     ? "bg-white text-black"
                     : "bg-gray-400 bg-opacity-30 text-gray-300"
-                } px-3 py-1 rounded-md cursor-pointer duration-500 font-bebas text-xl`}
+                } px-1 lg:px-3 py-1 rounded-md cursor-pointer duration-500 font-bebas text-lg lg:text-xl`}
                 onClick={() =>
                   setfilter(item as "overall" | "last Month" | "last Week")
                 }
@@ -89,24 +89,24 @@ const DashboardPage = () => {
             transition={{ duration: 1, delay: 0.6 }}
           >
             <IoFilterSharp
-              className="text-2xl cursor-pointer mb-1"
+              className="text-2xl cursor-pointer mt-1"
               onClick={() => setShowFilter((prev) => !prev)}
             />
           </motion.div>
         </div>
-        <div className="w-full h-64 px-3 items-center gap-6 mt-1 flex">
+        <div className="w-full h-24 lg:h-64 xl:px-3 items-center gap-2 xl:gap-6 mt-1 flex">
           <OutputBoxElement index={1} title={`${filter}`} price="3,197$" />
           <OutputBoxElement index={2} title="elenka" price="980$" />
           <OutputBoxElement index={3} title="fionna" price="2,217$" />
           <OutputBoxElement index={4} title="katte" price="0$" />
         </div>
       </div>
-      <div className="w-full flex h-[70vh]">
-        <div className="w-[75%] h-full">
+      <div className="w-full flex h-full flex-col xl:flex-row">
+        <div className="w-full h-full xl:w-[75%]">
           <ChartTableElement labels={labels} />
         </div>
         <div
-          className="w-[26%] hide-scrollbar ml-4 overflow-hidden flex flex-col p-3 gap-5 py-2 overflow-y-auto"
+          className="xl:w-[26%] w-full mt-5 xl:mt-0 hide-scrollbar xl:ml-4 overflow-hidden flex flex-col gap-5 p-2 overflow-y-auto"
           style={{ maxHeight: "calc(100vh - 40vh)" }}
         >
           {workers?.map((item, i) => (

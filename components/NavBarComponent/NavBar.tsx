@@ -15,7 +15,7 @@ const NavBar = () => {
   };
 
   return (
-    <div className="w-[15vw] hidden lg:block p-2 bg-black h-full font-bebas rounded-lg">
+    <div className="w-[15vw] hidden xl:block p-2 bg-black h-full font-bebas rounded-lg">
       <h1 className="w-full text-center text-4xl pl-2 h-32 flex items-center text-white">
         AiAgency
       </h1>
@@ -30,7 +30,7 @@ const NavBar = () => {
                 : currentPath === `/Dashboard/${item}`
                 ? "bg-slate-100 text-black"
                 : ""
-            } hover:bg-slate-200 hover:text-black duration-700 ease-out rounded-lg px-3 text-2xl`}
+            } hover:bg-slate-200 hover:text-black duration-700 ease-out rounded-lg px-3 text-sm md:text-2xl`}
           >
             {item}
           </li>
