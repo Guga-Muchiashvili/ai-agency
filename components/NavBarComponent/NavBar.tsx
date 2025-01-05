@@ -1,11 +1,13 @@
 "use client";
 import { routerLinks } from "@/common/constants/constants";
 import { usePathname, useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import { IoClose, IoMenu } from "react-icons/io5";
 
 const NavBar = () => {
   const currentPath = usePathname();
   const router = useRouter();
+  const [navBar, setNavBar] = useState(false);
 
   const handleClick = (item: string) => {
     if (item.toLowerCase() === "dashboard") {
@@ -15,28 +17,63 @@ const NavBar = () => {
   };
 
   return (
-    <div className="w-[15vw] hidden xl:block p-2 bg-black h-full font-bebas rounded-lg">
-      <h1 className="w-full text-center text-4xl pl-2 h-32 flex items-center text-white">
-        AiAgency
-      </h1>
-      <ul className="w-full text-white flex flex-col gap-7">
-        {routerLinks.map((item) => (
-          <li
-            key={item}
-            onClick={() => handleClick(item)}
-            className={`w-full py-2 cursor-pointer ${
-              currentPath === `/Dashboard` && item.toLowerCase() === "dashboard"
-                ? "bg-slate-100 text-black"
-                : currentPath === `/Dashboard/${item}`
-                ? "bg-slate-100 text-black"
-                : ""
-            } hover:bg-slate-200 hover:text-black duration-700 ease-out rounded-lg px-3 text-sm md:text-2xl`}
-          >
-            {item}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      {navBar && (
+        <div className="absolute w-3/5 bg-opacity-95 bg-black top-0 z-20 h-full left-0">
+          <IoClose
+            className="text-xl text-red-700  absolute top-4 left-3"
+            onClick={() => setNavBar(false)}
+          />
+          <ul className="w-full mt-12 text-white flex flex-col p-2 font-bebas gap-7">
+            {routerLinks.map((item) => (
+              <li
+                key={item}
+                onClick={() => handleClick(item)}
+                className={`w-full py-2 cursor-pointer ${
+                  currentPath === `/Dashboard` &&
+                  item.toLowerCase() === "dashboard"
+                    ? "bg-slate-100 text-black"
+                    : currentPath === `/Dashboard/${item}`
+                    ? "bg-slate-100 text-black"
+                    : ""
+                } hover:bg-slate-200 hover:text-black duration-700 ease-out rounded-lg px-3 text-xl`}
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <div className="xl:hidden block">
+        <IoMenu
+          onClick={() => setNavBar(true)}
+          className="absolute text-white z-10 top-4 text-xl left-3 cursor-pointer"
+        />
+      </div>
+      <div className="w-[15vw] hidden xl:block p-2 bg-black h-full font-bebas rounded-lg">
+        <h1 className="w-full text-center text-4xl pl-2 h-32 flex items-center text-white">
+          AiAgency
+        </h1>
+        <ul className="w-full text-white flex flex-col gap-7">
+          {routerLinks.map((item) => (
+            <li
+              key={item}
+              onClick={() => handleClick(item)}
+              className={`w-full py-2 cursor-pointer ${
+                currentPath === `/Dashboard` &&
+                item.toLowerCase() === "dashboard"
+                  ? "bg-slate-100 text-black"
+                  : currentPath === `/Dashboard/${item}`
+                  ? "bg-slate-100 text-black"
+                  : ""
+              } hover:bg-slate-200 hover:text-black duration-700 ease-out rounded-lg px-3 text-sm md:text-2xl`}
+            >
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
   );
 };
 

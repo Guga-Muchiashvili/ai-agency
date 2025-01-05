@@ -74,7 +74,7 @@ const DashboardPage = () => {
                   filter === item
                     ? "bg-white text-black"
                     : "bg-gray-400 bg-opacity-30 text-gray-300"
-                } px-1 lg:px-3 py-1 rounded-md cursor-pointer duration-500 font-bebas text-lg lg:text-xl`}
+                } px-1 lg:px-3 py-1 rounded-md cursor-pointer duration-500 font-bebas text-sm lg:text-xl`}
                 onClick={() =>
                   setfilter(item as "overall" | "last Month" | "last Week")
                 }
@@ -89,7 +89,7 @@ const DashboardPage = () => {
             transition={{ duration: 1, delay: 0.6 }}
           >
             <IoFilterSharp
-              className="text-2xl cursor-pointer mt-1"
+              className="text-xl lg:text-2xl cursor-pointer mt-1"
               onClick={() => setShowFilter((prev) => !prev)}
             />
           </motion.div>
