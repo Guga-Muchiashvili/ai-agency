@@ -2,13 +2,14 @@
 import { timePeriods } from "@/common/constants/constants";
 import LeaderBoardElement from "@/common/elements/LeaderBoardElement/LeaderBoardElement";
 import OutputBoxElement from "@/common/elements/OutputBoxElement/OutputBoxElement";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IoFilterSharp } from "react-icons/io5";
 import ChartTableElement from "./elements/ChartTableElement/ChartTableElement";
 import { motion } from "framer-motion";
 import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
 import { useGetModels } from "@/queries/useGetModelsQuery/useGetModelsQuery";
 import { transformLeaderboardData } from "./transformData/transformData";
+import useChartLabels from "@/common/hooks/useChartLabel";
 
 const DashboardPage = () => {
   const [showFilter, setShowFilter] = useState(true);
@@ -21,36 +22,7 @@ const DashboardPage = () => {
 
   const workers = transformLeaderboardData(data, models);
 
-  const [labels, setLabels] = useState([
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-  ]);
-
-  function getCurrentMonthDays() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth();
-
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-    return Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`);
-  }
-
-  useEffect(() => {
-    if (filter === "overall")
-      return setLabels(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"]);
-    if (filter === "last Week")
-      return setLabels(["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]);
-    if (filter === "last Month") {
-      const currentMonthDays = getCurrentMonthDays();
-      return setLabels(currentMonthDays);
-    }
-  }, [filter]);
+  const labels = useChartLabels(filter);
 
   return (
     <div className="text-white w-full min-h-screen flex flex-col items-center justify-center">
@@ -103,7 +75,29 @@ const DashboardPage = () => {
       </div>
       <div className="w-full flex h-full flex-col xl:flex-row">
         <div className="w-full h-full xl:w-[75%]">
-          <ChartTableElement labels={labels} />
+          <ChartTableElement
+            dataset={[
+              {
+                label: "Fionna",
+                data: [0, 200, 500, 254, 560, 120, 970],
+                borderColor: "white",
+                backgroundColor: "white",
+              },
+              {
+                label: "Katte",
+                data: [0, 100, 361, 694, 260, 420, 270],
+                borderColor: "#9F2B68",
+                backgroundColor: "#9F2B68",
+              },
+              {
+                label: "Elenka",
+                data: [0, 500, 550, 24, 20, 310, 170],
+                borderColor: "#DAA520",
+                backgroundColor: "#DAA520",
+              },
+            ]}
+            labels={labels}
+          />
         </div>
         <div
           className="xl:w-[26%] w-full mt-5 xl:mt-0 hide-scrollbar xl:ml-4 overflow-hidden flex flex-col gap-5 p-2 overflow-y-auto"
