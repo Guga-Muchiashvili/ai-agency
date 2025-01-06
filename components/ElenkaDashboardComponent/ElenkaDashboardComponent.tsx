@@ -60,10 +60,10 @@ const ElenkaDashboardComponent = () => {
             />
           </motion.div>
         </div>
-        <div className="w-full h-24 lg:h-64 xl:px-3 items-center gap-2 xl:gap-6 mt-1 flex">
+        <div className="w-full h-24 lg:h-64 xl:px-3 items-center gap-2 mb-4 mt-2 xl:gap-6  flex">
           <OutputBoxElement index={1} title={`${filter}`} price="980$" />
-          <OutputBoxElement index={2} title="Sichinava" price="542$" />
-          <OutputBoxElement index={3} title="Kakasha" price="344$" />
+          <OutputBoxElement index={2} title="Balance" price="542$" />
+          <OutputBoxElement index={3} title="Hold" price="344$" />
         </div>
         <ChartTableElement
           labels={labels}

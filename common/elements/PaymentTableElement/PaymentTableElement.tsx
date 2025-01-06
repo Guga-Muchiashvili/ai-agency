@@ -1,4 +1,5 @@
 import React from "react";
+import { HiDotsVertical } from "react-icons/hi";
 
 const PaymentTableElement = ({
   name,
@@ -18,7 +19,7 @@ const PaymentTableElement = ({
   total: string;
 }) => {
   return (
-    <div className="w-full h-16  rounded-lg text-xl text-white flex justify-between items-center ">
+    <div className="w-full h-16 rounded-lg text-xl text-white flex justify-between items-center relative">
       <h1 className="w-[14%] text-center">{name}</h1>
       <div className="w-[14%] flex justify-center">
         <button
@@ -38,6 +39,12 @@ const PaymentTableElement = ({
       <h1 className="w-[14%] text-center">{amount}$</h1>
       <h1 className="w-[14%] text-center">{perc}%</h1>
       <h1 className="w-[14%] text-center text-2xl text-green-400">{total}$</h1>
+      <div className="relative group">
+        <HiDotsVertical className="text-white cursor-pointer" />
+        <span className="absolute left-6 top-1/2 transform -translate-y-1/2 scale-0 group-hover:scale-100 group-hover:opacity-100 bg-gray-700 text-white text-sm px-2 py-1 rounded-md transition-all duration-300 opacity-0">
+          Edit
+        </span>
+      </div>
     </div>
   );
 };
