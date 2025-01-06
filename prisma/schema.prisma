@@ -12,6 +12,15 @@ model Model {
   name          String    @unique
   workers       String[]
   earnings      Earning[] @relation("ModelEarnings")
+  description   String
+  age           String
+  country       String
+  date          String
+  telegram      String
+  drive         String
+  email         String
+  password      String  
+  image         String   
 }
 
 model Worker {
