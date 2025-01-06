@@ -25,15 +25,15 @@ const ModelInfoBoxElement = ({
         height={800}
         className="rounded-[100%] w-28 h-28 mx-auto mt-1"
       />
-      <div className="w-full flex flex-col gap-3 text-left text-2xl mt-5">
+      <div className="w-full flex flex-col gap-3 text-left text-xl mt-5">
         <h1>name : {name}</h1>
         <h1>age : {age}</h1>
         <h1>country : {country}</h1>
         <h1>date : {date}</h1>
-        <h1 className="text-gray-200 text-lg">desc : {description}</h1>
+        <h1 className="text-gray-300 text-sm">desc : {description}</h1>
       </div>
       <h1 className="text-3xl mt-6">Soc Media</h1>
-      <div className="w-full flex flex-col gap-2 text-left text-2xl mt-5">
+      <div className="w-full flex flex-col gap-2 text-left text-xl mt-5">
         <h1>telegram : {telegram}</h1>
         <h1>
           drive :{" "}
@@ -44,7 +44,7 @@ const ModelInfoBoxElement = ({
             Link
           </a>
         </h1>
-        <h1 className="text-2xl">
+        <h1 className="text-xl">
           instagram :{" "}
           <p className="text-lg text-gray-300 mt-2">
             {" "}
@@ -64,7 +64,7 @@ const ModelInfoBoxElement = ({
             img={sicho}
             money="180"
             key={item}
-            model="Elenka"
+            model={name}
           />
         ))}
       </div>

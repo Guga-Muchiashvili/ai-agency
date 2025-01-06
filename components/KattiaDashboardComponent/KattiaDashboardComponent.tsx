@@ -9,7 +9,7 @@ import useChartLabels from "@/common/hooks/useChartLabel";
 import OutputBoxElement from "@/common/elements/OutputBoxElement/OutputBoxElement";
 import PaymentTableElement from "@/common/elements/PaymentTableElement/PaymentTableElement";
 
-const FionaaDashboardComponent = () => {
+const KattiaDashboardComponent = () => {
   const [showFilter, setShowFilter] = useState(true);
   const [filter, setfilter] = useState<"overall" | "last Month" | "last Week">(
     "overall"
@@ -61,22 +61,22 @@ const FionaaDashboardComponent = () => {
           </motion.div>
         </div>
         <div className="w-full h-24 lg:h-64 xl:px-3 items-center gap-2 mb-4 mt-2 xl:gap-6  flex">
-          <OutputBoxElement index={1} title={`${filter}`} price="2,190$" />
-          <OutputBoxElement index={2} title="Balance" price="1,542$" />
-          <OutputBoxElement index={3} title="Hold" price="294$" />
+          <OutputBoxElement index={1} title={`${filter}`} price="176$" />
+          <OutputBoxElement index={2} title="Balance" price="62$" />
+          <OutputBoxElement index={3} title="Hold" price="104$" />
         </div>
         <ChartTableElement
           labels={labels}
           dataset={[
             {
-              label: "gega",
-              data: [20, 150, 190, 264, 641],
+              label: "otari",
+              data: [720, 170, 460, 264, 141],
               borderColor: "white",
               backgroundColor: "white",
             },
             {
-              label: "vano",
-              data: [105, 641, 150, 364, 61],
+              label: "adesha",
+              data: [5, 441, 750, 64, 561, 548],
               borderColor: "#DAA520",
               backgroundColor: "#DAA520",
             },
@@ -95,31 +95,13 @@ const FionaaDashboardComponent = () => {
           </div>
           <div className="w-full flex flex-col gap-3 mt-6">
             <PaymentTableElement
-              amount="1540"
-              date="05/01/2025"
-              name="chris"
+              amount="40"
+              date="03/01/2025"
+              name="pastanka"
               perc="60"
-              status="hold"
-              total="1524"
-              worker="gega"
-            />
-            <PaymentTableElement
-              amount="358"
-              date="04/01/2025"
-              name="chris"
-              perc="60"
-              status="hold"
-              total="119"
-              worker="gega"
-            />
-            <PaymentTableElement
-              amount="394"
-              date="05/01/2025"
-              name="Sydney"
-              perc="60"
-              status="balance"
-              total="376"
-              worker="vano"
+              status="completed"
+              total="37"
+              worker="otari"
             />
           </div>
         </div>
@@ -127,19 +109,22 @@ const FionaaDashboardComponent = () => {
       <div className="w-1/4 ">
         <ModelInfoBoxElement
           age="18"
-          country="ukraine"
+          country="albania"
           description="sald wa;sdh wailu ds;ad hwopaiu dhs;adwah oigdd dsiaudd dush dd ausid usdihaiowud g hs;adwah oigdd dsiaudd dush dd ausid usdihaiowud g sdad wa;ui gha;iudg slady gwfaoudyfodidsgal dw"
-          drive="https://drive.google.com/drive/folders/1S13m3Va9G85wHttFWWEv5LLGtf4ldbet?dmr=1&ec=wgc-drive-hero-goto"
-          instagram={{ email: "fionaaxo1@gmail.com", password: "Unamusofuli1" }}
-          name="Fiona"
+          drive="https://drive.google.com/drive/folders/1CL6Y2FZJ3JKtW23Uneu7FHkJBvXSl7JY?dmr=1&ec=wgc-drive-hero-goto"
+          instagram={{
+            email: "kattiaaxo1@gmail.com",
+            password: "Unamusofuli1",
+          }}
+          name="kattia"
           telegram="+995555002646"
           date="01/16/2006"
-          workers={["gega", "vano"]}
-          img="https://media.discordapp.net/attachments/1168089250995126363/1325896711251693588/image.png?ex=677d7509&is=677c2389&hm=7e1ca5d97ca4f36004251da73ec52b86d2fa638b7f612df255c149ea07eeb1cc&=&format=webp&quality=lossless&width=334&height=350"
+          workers={["otari", "adesha"]}
+          img="https://media.discordapp.net/attachments/1168089250995126363/1325899189288308868/image.png?ex=677d7758&is=677c25d8&hm=46044b5a9c2fb79bbcd42d9505370555fe78f59161e6dab2ee9bc35b1d8b1037&=&format=webp&quality=lossless&width=280&height=350"
         />
       </div>
     </div>
   );
 };
 
-export default FionaaDashboardComponent;
+export default KattiaDashboardComponent;

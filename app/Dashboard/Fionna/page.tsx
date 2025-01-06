@@ -1,7 +1,8 @@
+import FionaaDashboardComponent from "@/components/FionaDashboardComponent/FionaDashboardComponent";
 import React from "react";
 
 const page = () => {
-  return <div>page</div>;
+  return <FionaaDashboardComponent />;
 };
 
 export default page;
