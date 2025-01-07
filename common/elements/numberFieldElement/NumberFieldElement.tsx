@@ -9,7 +9,7 @@ interface TextFieldElementProps extends FormElementProps {
   startAdornment?: React.ReactNode;
 }
 
-const TextFieldElementComponent: React.FC<TextFieldElementProps> = ({
+const NumberFieldElement: React.FC<TextFieldElementProps> = ({
   label,
   name,
 }) => {
@@ -23,7 +23,7 @@ const TextFieldElementComponent: React.FC<TextFieldElementProps> = ({
         <TextField
           {...field}
           label={label}
-          type="text"
+          type="number"
           fullWidth
           variant="outlined"
           margin="normal"
@@ -33,4 +33,4 @@ const TextFieldElementComponent: React.FC<TextFieldElementProps> = ({
   );
 };
 
-export default TextFieldElementComponent;
+export default NumberFieldElement;

@@ -14,7 +14,6 @@ export async function fetchModels() {
 export async function fetchUsers() {
   try {
     const users = await db.worker.findMany();
-    console.log("worker", users);
     return users;
   } catch (error) {
     console.error("Error fetching users:", error);

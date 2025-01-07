@@ -21,3 +21,13 @@ export interface IModelDashboardProps {
     profit: string;
   }[];
 }
+
+export interface FormValues {
+  name: string;
+  status: "completed" | "hold" | "balance";
+  worker: string;
+  date: string;
+  amount: number;
+  percentage: number;
+  total: number;
+}

@@ -1,16 +1,17 @@
 "use client";
-import ModelInfoBoxElement from "@/common/elements/ModelInfoBoxElement/ModelInfoBoxElement";
+import ModelInfoBoxElement from "@/app/Dashboard/Components/ModelInfoBoxElement/ModelInfoBoxElement";
 import React, { useEffect, useState } from "react";
-import ChartTableElement from "../DashboardComponent/elements/ChartTableElement/ChartTableElement";
+import ChartTableElement from "../../app/Dashboard/Components/ChartTableElement/ChartTableElement";
 import { timePeriods } from "@/common/constants/constants";
 import { motion } from "framer-motion";
 import { IoFilterSharp } from "react-icons/io5";
 import useChartLabels from "@/common/hooks/useChartLabel";
-import OutputBoxElement from "@/common/elements/OutputBoxElement/OutputBoxElement";
-import PaymentTableElement from "@/common/elements/PaymentTableElement/PaymentTableElement";
-import { transformLeaderboardData } from "../DashboardComponent/transformData/transformData";
-import { IoIosCloseCircle } from "react-icons/io";
+import OutputBoxElement from "@/app/Dashboard/Components/OutputBoxElement/OutputBoxElement";
+import PaymentTableElement from "@/app/Dashboard/Components/PaymentTableElement/PaymentTableElement";
+import { transformLeaderboardData } from "../../common/actions/transformData/transformData";
+
 import { IModelDashboardProps } from "./types";
+import PaymentModalElement from "@/app/Dashboard/Components/PaymentModalElement/PaymentModalElement";
 
 const ModelDashboardElement = ({ data, workers }: IModelDashboardProps) => {
   const [showFilter, setShowFilter] = useState(true);
@@ -23,7 +24,13 @@ const ModelDashboardElement = ({ data, workers }: IModelDashboardProps) => {
     { id: data?.id, name: data?.name },
   ])?.filter((item) => item.model == data?.name);
 
+  const workersFormData = workerList?.map((item) => item.name);
+
   const labels = useChartLabels(filter);
+
+  const CloseModal = () => {
+    setShowModal(false);
+  };
 
   useEffect(() => {
     if (showModal) {
@@ -41,13 +48,10 @@ const ModelDashboardElement = ({ data, workers }: IModelDashboardProps) => {
     <div className="w-full h-full flex ">
       {showModal && (
         <div className="fixed flex items-center justify-center w-full h-full top-0 left-0 bg-black bg-opacity-55 z-40">
-          <div className="w-[35vw] h-[70vh] relative rounded-xl bg-white">
-            <h1 className="text-black">Form</h1>
-            <IoIosCloseCircle
-              className="text-3xl text-black  absolute top-2 right-2 cursor-pointer"
-              onClick={() => setShowModal(false)}
-            />
-          </div>
+          <PaymentModalElement
+            workers={workersFormData}
+            changeModal={CloseModal}
+          />
         </div>
       )}
       <div className="w-full lg:w-3/4 flex hide-scrollbar h-fit gap-4 p-2 flex-col">

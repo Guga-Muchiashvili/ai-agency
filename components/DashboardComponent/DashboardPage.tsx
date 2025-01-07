@@ -1,14 +1,14 @@
 "use client";
 import { timePeriods } from "@/common/constants/constants";
-import LeaderBoardElement from "@/common/elements/LeaderBoardElement/LeaderBoardElement";
-import OutputBoxElement from "@/common/elements/OutputBoxElement/OutputBoxElement";
+import LeaderBoardElement from "@/app/Dashboard/Components/LeaderBoardElement/LeaderBoardElement";
+import OutputBoxElement from "@/app/Dashboard/Components/OutputBoxElement/OutputBoxElement";
 import React, { useState } from "react";
 import { IoFilterSharp } from "react-icons/io5";
-import ChartTableElement from "./elements/ChartTableElement/ChartTableElement";
+import ChartTableElement from "../../app/Dashboard/Components/ChartTableElement/ChartTableElement";
 import { motion } from "framer-motion";
 import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
 import { useGetModels } from "@/queries/useGetModelsQuery/useGetModelsQuery";
-import { transformLeaderboardData } from "./transformData/transformData";
+import { transformLeaderboardData } from "../../common/actions/transformData/transformData";
 import useChartLabels from "@/common/hooks/useChartLabel";
 
 const DashboardPage = () => {
@@ -19,8 +19,6 @@ const DashboardPage = () => {
 
   const { data } = useGetWorkers();
   const { data: models } = useGetModels();
-
-  console.log(models);
 
   const workers = transformLeaderboardData(data, models);
 

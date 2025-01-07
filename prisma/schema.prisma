@@ -37,5 +37,9 @@ model Earning {
   model         Model     @relation("ModelEarnings", fields: [modelId], references: [id])
   modelId       String    @db.ObjectId
   workerId      String    @db.ObjectId
-  createdAt     DateTime  @default(now())
+  createdAt     String
+  status        String
+  percentage    String
+  total         String
+  lead          String
 }
