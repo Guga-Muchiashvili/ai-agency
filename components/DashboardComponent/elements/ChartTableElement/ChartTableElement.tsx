@@ -23,13 +23,14 @@ ChartJS.register(
 
 export const options = {
   responsive: true,
+  maintainAspectRatio: false, // Disable the aspect ratio to allow custom height
   plugins: {
     legend: {
       position: "top" as const,
     },
     title: {
       display: true,
-      text: "AiAgency(models) chart",
+      text: "",
     },
   },
 };
@@ -39,18 +40,24 @@ const ChartTableElement = ({
   dataset,
 }: {
   labels: string[];
-  dataset: {
-    label: string;
-    data: number[];
-    borderColor: string;
-    backgroundColor: string;
-  }[];
+  dataset:
+    | {
+        label: string;
+        data: number[];
+        borderColor: string;
+        backgroundColor: string;
+      }[];
 }) => {
   const data = {
     labels,
     datasets: dataset,
   };
-  return <Line options={options} data={data} />;
+
+  return (
+    <div className="w-full h-full">
+      <Line options={options} data={data} />
+    </div>
+  );
 };
 
 export default ChartTableElement;

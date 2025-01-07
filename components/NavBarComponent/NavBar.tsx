@@ -2,7 +2,8 @@
 import { routerLinks } from "@/common/constants/constants";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { IoClose, IoMenu } from "react-icons/io5";
+import { IoMenu } from "react-icons/io5";
+import { IoIosCloseCircle } from "react-icons/io";
 
 const NavBar = () => {
   const currentPath = usePathname();
@@ -20,7 +21,7 @@ const NavBar = () => {
     <>
       {navBar && (
         <div className="absolute w-3/5 bg-opacity-95 bg-black top-0 z-20 h-full left-0">
-          <IoClose
+          <IoIosCloseCircle
             className="text-xl text-red-700  absolute top-4 left-3"
             onClick={() => setNavBar(false)}
           />

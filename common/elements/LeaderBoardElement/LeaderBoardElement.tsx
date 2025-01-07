@@ -27,7 +27,7 @@ const LeaderBoardElement = ({
         <div className="flex items-center gap-3 justify-center h-full">
           <h1 className="text-xl lg:text-2xl">{index + 1}</h1>
           <Image
-            src={img}
+            src={img || null}
             alt="pfp"
             height={50}
             width={50}

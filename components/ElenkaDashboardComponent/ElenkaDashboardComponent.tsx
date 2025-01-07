@@ -8,18 +8,30 @@ import { IoFilterSharp } from "react-icons/io5";
 import useChartLabels from "@/common/hooks/useChartLabel";
 import OutputBoxElement from "@/common/elements/OutputBoxElement/OutputBoxElement";
 import PaymentTableElement from "@/common/elements/PaymentTableElement/PaymentTableElement";
+import { useGetModel } from "@/queries/useGetModelQuery/useGetModelQuery";
+import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
+import { transformLeaderboardData } from "../DashboardComponent/transformData/transformData";
 
 const ElenkaDashboardComponent = () => {
   const [showFilter, setShowFilter] = useState(true);
   const [filter, setfilter] = useState<"overall" | "last Month" | "last Week">(
     "overall"
   );
+  const { data } = useGetModel({ name: "Elenka" });
+
+  const { data: workers } = useGetWorkers();
+
+  const workerList = transformLeaderboardData(workers, [
+    { id: data?.id, name: data?.name },
+  ])?.filter((item) => item.model == "Elenka");
+
+  console.log(workerList);
 
   const labels = useChartLabels(filter);
 
   return (
     <div className="w-full h-full flex ">
-      <div className="w-3/4 flex hide-scrollbar gap-4 p-2 flex-col">
+      <div className="w-3/4 flex hide-scrollbar h-fit gap-4 p-2 flex-col">
         <div className="ml-auto flex relative gap-2 pr-2">
           <div
             className={`w-fit flex items-center gap-2 flex-wrap ${
@@ -60,29 +72,35 @@ const ElenkaDashboardComponent = () => {
             />
           </motion.div>
         </div>
-        <div className="w-full h-24 lg:h-64 xl:px-3 items-center gap-2 mb-4 mt-2 xl:gap-6  flex">
+        <div className="w-full h-24 lg:h-fit xl:px-3 items-center gap-2 mb-4 mt-2 xl:gap-6  flex">
           <OutputBoxElement index={1} title={`${filter}`} price="980$" />
           <OutputBoxElement index={2} title="Balance" price="542$" />
           <OutputBoxElement index={3} title="Hold" price="344$" />
         </div>
-        <ChartTableElement
-          labels={labels}
-          dataset={[
-            {
-              label: "Sichinava",
-              data: [120, 50, 190, 264, 241],
-              borderColor: "white",
-              backgroundColor: "white",
-            },
-            {
-              label: "kakasha",
-              data: [10, 150, 120, 564, 21],
-              borderColor: "#DAA520",
-              backgroundColor: "#DAA520",
-            },
-          ]}
-        />
-        <div className="w-full h-[90vh] font-bebas p-4">
+        <div className="w-full h-[50vh]">
+          <ChartTableElement
+            labels={labels}
+            dataset={
+              (workerList &&
+                workerList.map((item, i) => ({
+                  label: item.name,
+                  data: [
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                  ],
+                  borderColor: i == 0 ? "white" : "#DAA520",
+                  backgroundColor: i == 0 ? "white" : "#DAA520",
+                }))) ||
+              []
+            }
+          />
+        </div>
+        <div className="w-full h-fit font-bebas p-4">
           <h1 className="text-4xl text-white">Transactions</h1>
           <div className="w-full text-white flex mt-5 items-center justify-between text-xl h-12 border-b-[1px] border-white ">
             <h1 className="w-[14%] text-center">name</h1>
@@ -126,16 +144,16 @@ const ElenkaDashboardComponent = () => {
       </div>
       <div className="w-1/4 ">
         <ModelInfoBoxElement
-          age="18"
-          country="ukraine"
-          description="sald wa;sdh wailu ds;ad hwopaiu dhs;adwah oigdd dsiaudd dush dd ausid usdihaiowud g hs;adwah oigdd dsiaudd dush dd ausid usdihaiowud g sdad wa;ui gha;iudg slady gwfaoudyfodidsgal dw"
-          drive="https://drive.google.com/drive/folders/1L6-yfZQnEUmwjoEI5n-GvKzVpxzZaJAG?dmr=1&ec=wgc-drive-hero-goto"
-          instagram={{ email: "elenkaxo1@gmail.com", password: "Unamusofuli1" }}
-          name="Elenka"
-          telegram="+995555002646"
-          date="11/11/2006"
-          workers={["sichinava", "Kakasha"]}
-          img="https://media.discordapp.net/attachments/1168089250995126363/1325762719718182922/image.png?ex=677cf83f&is=677ba6bf&hm=f3bd498a247d792c315c6867f57fdc863f370a560cf5bfc43318b10cba1e4d70&=&format=webp&quality=lossless"
+          age={data?.age}
+          country={data?.country}
+          description={data?.description}
+          drive={data?.drive}
+          instagram={{ email: data?.email, password: data?.password }}
+          name={data?.name}
+          telegram={data?.telegram}
+          date={data?.telegram}
+          workers={workerList}
+          img={data?.image}
         />
       </div>
     </div>

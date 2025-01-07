@@ -20,8 +20,8 @@ export const transformLeaderboardData = (
     | undefined,
   models:
     | {
-        name: string;
-        id: string;
+        name?: string;
+        id?: string;
       }[]
     | undefined
 ) => {

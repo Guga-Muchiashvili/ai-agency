@@ -8,6 +8,9 @@ import { IoFilterSharp } from "react-icons/io5";
 import useChartLabels from "@/common/hooks/useChartLabel";
 import OutputBoxElement from "@/common/elements/OutputBoxElement/OutputBoxElement";
 import PaymentTableElement from "@/common/elements/PaymentTableElement/PaymentTableElement";
+import { useGetModel } from "@/queries/useGetModelQuery/useGetModelQuery";
+import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
+import { transformLeaderboardData } from "../DashboardComponent/transformData/transformData";
 
 const KattiaDashboardComponent = () => {
   const [showFilter, setShowFilter] = useState(true);
@@ -15,10 +18,18 @@ const KattiaDashboardComponent = () => {
     "overall"
   );
 
+  const { data } = useGetModel({ name: "Katte" });
+
+  const { data: workers } = useGetWorkers();
+
+  const workerList = transformLeaderboardData(workers, [
+    { id: data?.id, name: data?.name },
+  ])?.filter((item) => item.model == "Katte");
+
   const labels = useChartLabels(filter);
 
   return (
-    <div className="w-full h-full flex ">
+    <div className="w-full h-fit flex ">
       <div className="w-3/4 flex hide-scrollbar gap-4 p-2 flex-col">
         <div className="ml-auto flex relative gap-2 pr-2">
           <div
@@ -60,29 +71,35 @@ const KattiaDashboardComponent = () => {
             />
           </motion.div>
         </div>
-        <div className="w-full h-24 lg:h-64 xl:px-3 items-center gap-2 mb-4 mt-2 xl:gap-6  flex">
+        <div className="w-full h-24 lg:h-fit xl:px-3 items-center gap-2 mb-4 mt-2 xl:gap-6  flex">
           <OutputBoxElement index={1} title={`${filter}`} price="176$" />
           <OutputBoxElement index={2} title="Balance" price="62$" />
           <OutputBoxElement index={3} title="Hold" price="104$" />
         </div>
-        <ChartTableElement
-          labels={labels}
-          dataset={[
-            {
-              label: "otari",
-              data: [720, 170, 460, 264, 141],
-              borderColor: "white",
-              backgroundColor: "white",
-            },
-            {
-              label: "adesha",
-              data: [5, 441, 750, 64, 561, 548],
-              borderColor: "#DAA520",
-              backgroundColor: "#DAA520",
-            },
-          ]}
-        />
-        <div className="w-full h-[90vh] font-bebas p-4">
+        <div className="w-full h-[50vh]">
+          <ChartTableElement
+            labels={labels}
+            dataset={
+              (workerList &&
+                workerList.map((item, i) => ({
+                  label: item.name,
+                  data: [
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                  ],
+                  borderColor: i == 0 ? "white" : "#DAA520",
+                  backgroundColor: i == 0 ? "white" : "#DAA520",
+                }))) ||
+              []
+            }
+          />
+        </div>
+        <div className="w-full h-fit font-bebas p-4">
           <h1 className="text-4xl text-white">Transactions</h1>
           <div className="w-full text-white flex mt-5 items-center justify-between text-xl h-12 border-b-[1px] border-white ">
             <h1 className="w-[14%] text-center">name</h1>
@@ -119,7 +136,7 @@ const KattiaDashboardComponent = () => {
           name="kattia"
           telegram="+995555002646"
           date="01/16/2006"
-          workers={["otari", "adesha"]}
+          workers={workerList}
           img="https://media.discordapp.net/attachments/1168089250995126363/1325899189288308868/image.png?ex=677d7758&is=677c25d8&hm=46044b5a9c2fb79bbcd42d9505370555fe78f59161e6dab2ee9bc35b1d8b1037&=&format=webp&quality=lossless&width=280&height=350"
         />
       </div>

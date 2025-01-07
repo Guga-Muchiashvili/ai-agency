@@ -8,6 +8,9 @@ import { IoFilterSharp } from "react-icons/io5";
 import useChartLabels from "@/common/hooks/useChartLabel";
 import OutputBoxElement from "@/common/elements/OutputBoxElement/OutputBoxElement";
 import PaymentTableElement from "@/common/elements/PaymentTableElement/PaymentTableElement";
+import { useGetModel } from "@/queries/useGetModelQuery/useGetModelQuery";
+import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
+import { transformLeaderboardData } from "../DashboardComponent/transformData/transformData";
 
 const FionaaDashboardComponent = () => {
   const [showFilter, setShowFilter] = useState(true);
@@ -15,10 +18,18 @@ const FionaaDashboardComponent = () => {
     "overall"
   );
 
+  const { data } = useGetModel({ name: "Fionna" });
+
+  const { data: workers } = useGetWorkers();
+
+  const workerList = transformLeaderboardData(workers, [
+    { id: data?.id, name: data?.name },
+  ])?.filter((item) => item.model == "Fionna");
+
   const labels = useChartLabels(filter);
 
   return (
-    <div className="w-full h-full flex ">
+    <div className="w-full h-fit flex ">
       <div className="w-3/4 flex hide-scrollbar gap-4 p-2 flex-col">
         <div className="ml-auto flex relative gap-2 pr-2">
           <div
@@ -60,29 +71,35 @@ const FionaaDashboardComponent = () => {
             />
           </motion.div>
         </div>
-        <div className="w-full h-24 lg:h-64 xl:px-3 items-center gap-2 mb-4 mt-2 xl:gap-6  flex">
+        <div className="w-full h-24 lg:h-fit xl:px-3 items-center gap-2 mb-4 mt-2 xl:gap-6  flex">
           <OutputBoxElement index={1} title={`${filter}`} price="2,190$" />
           <OutputBoxElement index={2} title="Balance" price="1,542$" />
           <OutputBoxElement index={3} title="Hold" price="294$" />
         </div>
-        <ChartTableElement
-          labels={labels}
-          dataset={[
-            {
-              label: "gega",
-              data: [20, 150, 190, 264, 641],
-              borderColor: "white",
-              backgroundColor: "white",
-            },
-            {
-              label: "vano",
-              data: [105, 641, 150, 364, 61],
-              borderColor: "#DAA520",
-              backgroundColor: "#DAA520",
-            },
-          ]}
-        />
-        <div className="w-full h-[90vh] font-bebas p-4">
+        <div className="w-full h-[50vh]">
+          <ChartTableElement
+            labels={labels}
+            dataset={
+              (workerList &&
+                workerList.map((item, i) => ({
+                  label: item.name,
+                  data: [
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                    Math.floor(Math.random() * 2000),
+                  ],
+                  borderColor: i == 0 ? "white" : "#DAA520",
+                  backgroundColor: i == 0 ? "white" : "#DAA520",
+                }))) ||
+              []
+            }
+          />
+        </div>
+        <div className="w-full h-fit font-bebas p-4">
           <h1 className="text-4xl text-white">Transactions</h1>
           <div className="w-full text-white flex mt-5 items-center justify-between text-xl h-12 border-b-[1px] border-white ">
             <h1 className="w-[14%] text-center">name</h1>
@@ -134,7 +151,7 @@ const FionaaDashboardComponent = () => {
           name="Fiona"
           telegram="+995555002646"
           date="01/16/2006"
-          workers={["gega", "vano"]}
+          workers={workerList}
           img="https://media.discordapp.net/attachments/1168089250995126363/1325896711251693588/image.png?ex=677d7509&is=677c2389&hm=7e1ca5d97ca4f36004251da73ec52b86d2fa638b7f612df255c149ea07eeb1cc&=&format=webp&quality=lossless&width=334&height=350"
         />
       </div>

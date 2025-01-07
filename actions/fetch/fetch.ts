@@ -3,8 +3,8 @@ import { db } from "@/common/utils/db";
 
 export async function fetchModels() {
   try {
-    const users = await db.model.findMany();
-    return users;
+    const models = await db.model.findMany();
+    return models;
   } catch (error) {
     console.error("Error fetching users:", error);
     throw error;
@@ -14,6 +14,7 @@ export async function fetchModels() {
 export async function fetchUsers() {
   try {
     const users = await db.worker.findMany();
+    console.log("worker", users);
     return users;
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -23,11 +24,13 @@ export async function fetchUsers() {
 
 export async function fetchModel({ name }: { name: string }) {
   try {
+    console.log(name);
     const users = await db.model.findUnique({
       where: {
-        name: name,
+        name,
       },
     });
+
     return users;
   } catch (error) {
     console.error("Error fetching users:", error);

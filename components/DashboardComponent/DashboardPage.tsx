@@ -20,13 +20,15 @@ const DashboardPage = () => {
   const { data } = useGetWorkers();
   const { data: models } = useGetModels();
 
+  console.log(models);
+
   const workers = transformLeaderboardData(data, models);
 
   const labels = useChartLabels(filter);
 
   return (
     <div className="text-white w-full min-h-screen flex flex-col items-center justify-center">
-      <div className="w-full h-[20vh] lg:h-[35vh] relative flex flex-col">
+      <div className="w-full h-[20vh] lg:h-[30vh] relative flex flex-col">
         <div className="ml-auto flex relative gap-2 pr-2">
           <div
             className={`w-fit flex items-center gap-2 flex-wrap ${
@@ -66,7 +68,7 @@ const DashboardPage = () => {
             />
           </motion.div>
         </div>
-        <div className="w-full h-24 lg:h-64 xl:px-3 items-center gap-2 xl:gap-6 mt-1 flex">
+        <div className="w-full flex-wrap lg:flex-nowrap justify-center h-full lg:fit xl:px-3 items-center gap-2 xl:gap-6 mt-5 lg:mt-2 flex">
           <OutputBoxElement index={1} title={`${filter}`} price="3,197$" />
           <OutputBoxElement index={2} title="elenka" price="980$" />
           <OutputBoxElement index={3} title="fionna" price="2,217$" />
@@ -74,7 +76,7 @@ const DashboardPage = () => {
         </div>
       </div>
       <div className="w-full flex h-full flex-col xl:flex-row">
-        <div className="w-full h-full xl:w-[75%]">
+        <div className="w-full mt-12 xl:mt-0 xl:h-[58vh] h-[50vh] xl:w-[75%]">
           <ChartTableElement
             dataset={[
               {

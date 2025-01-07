@@ -2,7 +2,6 @@ import React from "react";
 import { IModelInfoBoxElementProps } from "./types";
 import Image from "next/image";
 import LeaderBoardElement from "../LeaderBoardElement/LeaderBoardElement";
-import sicho from "../../../public/sicho.jpg";
 
 const ModelInfoBoxElement = ({
   img,
@@ -19,7 +18,10 @@ const ModelInfoBoxElement = ({
   return (
     <div className="w-full text-center text-white h-full p-2 font-bebas">
       <Image
-        src={img}
+        src={
+          img ||
+          "https://www.google.com/search?q=default+image+pfp&oq=default+image+pfp&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQLhhA0gEIMzMxOWowajGoAgCwAgA&sourceid=chrome&ie=UTF-8#vhid=JNzXO3Fe39JcaM&vssid=_Oyt9Z8qDMPqGkdUPldr0iQo_40"
+        }
         alt="image"
         width={800}
         height={800}
@@ -48,22 +50,22 @@ const ModelInfoBoxElement = ({
           instagram :{" "}
           <p className="text-lg text-gray-300 mt-2">
             {" "}
-            email : {instagram.email}
+            email : {instagram?.email}
           </p>
         </h1>
         <h1 className="text-lg text-gray-300 flex gap-1">
-          password : <p className="">{instagram.password}</p>
+          password : <p className="">{instagram?.password}</p>
         </h1>{" "}
       </div>
       <h1 className="text-3xl mt-6">Workers</h1>
       <div className="w-full flex flex-col gap-2 text-left text-2xl mt-5">
-        {workers.map((item) => (
+        {workers?.map((item) => (
           <LeaderBoardElement
             index={1}
-            name={item}
-            img={sicho}
-            money="180"
-            key={item}
+            name={item.name}
+            img={item.img}
+            money={item.profit}
+            key={item.id}
             model={name}
           />
         ))}
