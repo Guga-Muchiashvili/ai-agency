@@ -24,7 +24,6 @@ export async function fetchUsers() {
 
 export async function fetchModel({ name }: { name: string }) {
   try {
-    console.log(name);
     const users = await db.model.findUnique({
       where: {
         name,

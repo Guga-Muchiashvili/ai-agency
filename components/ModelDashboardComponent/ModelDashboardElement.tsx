@@ -8,26 +8,20 @@ import { IoFilterSharp } from "react-icons/io5";
 import useChartLabels from "@/common/hooks/useChartLabel";
 import OutputBoxElement from "@/common/elements/OutputBoxElement/OutputBoxElement";
 import PaymentTableElement from "@/common/elements/PaymentTableElement/PaymentTableElement";
-import { useGetModel } from "@/queries/useGetModelQuery/useGetModelQuery";
-import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
 import { transformLeaderboardData } from "../DashboardComponent/transformData/transformData";
 import { IoIosCloseCircle } from "react-icons/io";
+import { IModelDashboardProps } from "./types";
 
-const ElenkaDashboardComponent = () => {
+const ModelDashboardElement = ({ data, workers }: IModelDashboardProps) => {
   const [showFilter, setShowFilter] = useState(true);
   const [filter, setfilter] = useState<"overall" | "last Month" | "last Week">(
     "overall"
   );
   const [showModal, setShowModal] = useState(false);
-  const { data } = useGetModel({ name: "Elenka" });
-
-  const { data: workers } = useGetWorkers();
 
   const workerList = transformLeaderboardData(workers, [
     { id: data?.id, name: data?.name },
-  ])?.filter((item) => item.model == "Elenka");
-
-  console.log(workerList);
+  ])?.filter((item) => item.model == data?.name);
 
   const labels = useChartLabels(filter);
 
@@ -193,4 +187,4 @@ const ElenkaDashboardComponent = () => {
   );
 };
 
-export default ElenkaDashboardComponent;
+export default ModelDashboardElement;

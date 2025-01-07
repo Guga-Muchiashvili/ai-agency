@@ -1,8 +1,10 @@
-import FionaaDashboardComponent from "@/components/FionaDashboardComponent/FionaDashboardComponent";
-import React from "react";
+import ModelDashboardElement from "@/components/ModelDashboardComponent/ModelDashboardElement";
+import { fetchModel, fetchUsers } from "@/actions/fetch/fetch";
+const Page = async () => {
+  const modelData = await fetchModel({ name: "Fionna" });
+  const workersData = await fetchUsers();
 
-const page = () => {
-  return <FionaaDashboardComponent />;
+  return <ModelDashboardElement data={modelData} workers={workersData} />;
 };
 
-export default page;
+export default Page;

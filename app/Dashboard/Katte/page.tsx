@@ -1,8 +1,10 @@
-import KattiaDashboardComponent from "@/components/KattiaDashboardComponent/KattiaDashboardComponent";
-import React from "react";
+import ModelDashboardElement from "@/components/ModelDashboardComponent/ModelDashboardElement";
+import { fetchModel, fetchUsers } from "@/actions/fetch/fetch";
+const Page = async () => {
+  const modelData = await fetchModel({ name: "Katte" });
+  const workersData = await fetchUsers();
 
-const page = () => {
-  return <KattiaDashboardComponent />;
+  return <ModelDashboardElement data={modelData} workers={workersData} />;
 };
 
-export default page;
+export default Page;
