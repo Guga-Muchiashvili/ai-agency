@@ -20,7 +20,7 @@ const SignInForm = () => {
   };
 
   return (
-    <div className="w-1/4 h-[230px] bg-black bg-opacity-0 rounded-xl flex flex-col items-center justify-between py-4">
+    <div className="w-4/5 md:w-1/2 lg:w-1/4 h-[230px] bg-black bg-opacity-0 rounded-xl flex flex-col items-center justify-between py-4">
       <h1 className="text-4xl font-bebas text-white">Enter Password</h1>
       <div className="relative w-3/4 mt-2">
         <input
