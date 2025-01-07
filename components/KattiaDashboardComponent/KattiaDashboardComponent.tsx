@@ -11,12 +11,14 @@ import PaymentTableElement from "@/common/elements/PaymentTableElement/PaymentTa
 import { useGetModel } from "@/queries/useGetModelQuery/useGetModelQuery";
 import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
 import { transformLeaderboardData } from "../DashboardComponent/transformData/transformData";
+import { IoIosCloseCircle } from "react-icons/io";
 
 const KattiaDashboardComponent = () => {
   const [showFilter, setShowFilter] = useState(true);
   const [filter, setfilter] = useState<"overall" | "last Month" | "last Week">(
     "overall"
   );
+  const [showModal, setShowModal] = useState(false);
 
   const { data } = useGetModel({ name: "Katte" });
 
@@ -30,7 +32,18 @@ const KattiaDashboardComponent = () => {
 
   return (
     <div className="w-full h-fit flex ">
-      <div className="w-3/4 flex hide-scrollbar gap-4 p-2 flex-col">
+      {showModal && (
+        <div className="fixed flex items-center justify-center w-full h-full top-0 left-0 bg-black bg-opacity-55 z-40">
+          <div className="w-[35vw] h-[70vh] relative rounded-xl bg-white">
+            <h1 className="text-black">Form</h1>
+            <IoIosCloseCircle
+              className="text-3xl text-black  absolute top-2 right-2 cursor-pointer"
+              onClick={() => setShowModal(false)}
+            />
+          </div>
+        </div>
+      )}
+      <div className="w-full lg:w-3/4 flex hide-scrollbar h-fit gap-4 p-2 flex-col">
         <div className="ml-auto flex relative gap-2 pr-2">
           <div
             className={`w-fit flex items-center gap-2 flex-wrap ${
@@ -71,7 +84,7 @@ const KattiaDashboardComponent = () => {
             />
           </motion.div>
         </div>
-        <div className="w-full h-24 lg:h-fit xl:px-3 items-center gap-2 mb-4 mt-2 xl:gap-6  flex">
+        <div className="w-full h-24 lg:h-fit xl:px-3 items-center gap-2 mt-2 xl:gap-6  flex">
           <OutputBoxElement index={1} title={`${filter}`} price="176$" />
           <OutputBoxElement index={2} title="Balance" price="62$" />
           <OutputBoxElement index={3} title="Hold" price="104$" />
@@ -99,16 +112,24 @@ const KattiaDashboardComponent = () => {
             }
           />
         </div>
-        <div className="w-full h-fit font-bebas p-4">
-          <h1 className="text-4xl text-white">Transactions</h1>
+        <div className="w-full h-fit font-bebas py-2 md:p-4">
+          <div className="w-full flex justify-between items-center">
+            <h1 className="text-4xl text-white">Transactions</h1>
+            <button
+              className="px-3 py-1 bg-slate-100 text-ბლაცკ rounded-lg text-xl"
+              onClick={() => setShowModal(true)}
+            >
+              Add Transaction
+            </button>
+          </div>
           <div className="w-full text-white flex mt-5 items-center justify-between text-xl h-12 border-b-[1px] border-white ">
-            <h1 className="w-[14%] text-center">name</h1>
-            <h1 className="w-[14%] text-center">status</h1>
-            <h1 className="w-[14%] text-center">worker</h1>
-            <h1 className="w-[14%] text-center">date</h1>
-            <h1 className="w-[14%] text-center">Amount</h1>
-            <h1 className="w-[14%] text-center">percentage</h1>
-            <h1 className="w-[14%] text-center">Total</h1>
+            <h1 className="hidden md:block w-[14%] text-center">name</h1>
+            <h1 className="w-[25%] m:w-[14%] text-center">status</h1>
+            <h1 className="w-[25%] m:w-[14%] text-center">worker</h1>
+            <h1 className="w-[25%] m:w-[14%] text-center">date</h1>
+            <h1 className="hidden md:block w-[14%] text-center">Amount</h1>
+            <h1 className="hidden md:block w-[14%] text-center">percentage</h1>
+            <h1 className="w-[25%] m:w-[14%] text-center">Total</h1>
           </div>
           <div className="w-full flex flex-col gap-3 mt-6">
             <PaymentTableElement
@@ -123,7 +144,7 @@ const KattiaDashboardComponent = () => {
           </div>
         </div>
       </div>
-      <div className="w-1/4 ">
+      <div className="hidden lg:w-1/4 lg:block ">
         <ModelInfoBoxElement
           age="18"
           country="albania"

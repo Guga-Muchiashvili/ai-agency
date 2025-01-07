@@ -4,7 +4,6 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["i.pinimg.com", "media.discordapp.net", "www.google.com"], // Add the required domain here
   },
-  /* config options here */
 };
 
 export default nextConfig;

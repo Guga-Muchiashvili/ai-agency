@@ -1,7 +1,7 @@
 "use client";
 import { routerLinks } from "@/common/constants/constants";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMenu } from "react-icons/io5";
 import { IoIosCloseCircle } from "react-icons/io";
 
@@ -17,15 +17,19 @@ const NavBar = () => {
     router.push(`/Dashboard/${item}`);
   };
 
+  useEffect(() => {
+    setNavBar(false);
+  }, [currentPath]);
+
   return (
     <>
       {navBar && (
-        <div className="absolute w-3/5 bg-opacity-95 bg-black top-0 z-20 h-full left-0">
+        <div className="fixed w-4/6 bg-opacity-95 bg-black top-0 z-20 h-screen left-0">
           <IoIosCloseCircle
-            className="text-xl text-red-700  absolute top-4 left-3"
+            className="text-3xl text-white absolute top-4 left-3"
             onClick={() => setNavBar(false)}
           />
-          <ul className="w-full mt-12 text-white flex flex-col p-2 font-bebas gap-7">
+          <ul className="w-full mt-16 text-white flex flex-col p-2 font-bebas gap-7">
             {routerLinks.map((item) => (
               <li
                 key={item}
@@ -48,10 +52,10 @@ const NavBar = () => {
       <div className="xl:hidden block">
         <IoMenu
           onClick={() => setNavBar(true)}
-          className="absolute text-white z-10 top-4 text-xl left-3 cursor-pointer"
+          className="absolute text-white z-10 top-4 text-3xl left-3 cursor-pointer"
         />
       </div>
-      <div className="w-[15vw] hidden xl:block p-2 bg-black h-full font-bebas rounded-lg">
+      <div className="w-[17vw] hidden xl:block p-2 bg-black h-full font-bebas rounded-lg">
         <h1 className="w-full text-center text-4xl pl-2 h-32 flex items-center text-white">
           AiAgency
         </h1>
