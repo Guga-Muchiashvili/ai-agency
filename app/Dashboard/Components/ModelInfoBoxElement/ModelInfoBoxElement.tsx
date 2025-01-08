@@ -3,6 +3,8 @@ import { IModelInfoBoxElementProps } from "./types";
 import Image from "next/image";
 import LeaderBoardElement from "../LeaderBoardElement/LeaderBoardElement";
 import { motion } from "framer-motion";
+import fionna from "../../../../public/fionna.png";
+import kattia from "../../../../public/kattia.png";
 
 const ModelInfoBoxElement = ({
   img,
@@ -29,8 +31,12 @@ const ModelInfoBoxElement = ({
       >
         <Image
           src={
-            img ||
-            "https://www.google.com/search?q=default+image+pfp&oq=default+image+pfp&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQLhhA0gEIMzMxOWowajGoAgCwAgA&sourceid=chrome&ie=UTF-8#vhid=JNzXO3Fe39JcaM&vssid=_Oyt9Z8qDMPqGkdUPldr0iQo_40"
+            name == "Katte"
+              ? kattia.src
+              : name == "Fionna"
+              ? fionna.src
+              : img ||
+                "https://www.google.com/search?q=default+image+pfp&oq=default+image+pfp&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQLhhA0gEIMzMxOWowajGoAgCwAgA&sourceid=chrome&ie=UTF-8#vhid=JNzXO3Fe39JcaM&vssid=_Oyt9Z8qDMPqGkdUPldr0iQo_40"
           }
           alt="image"
           width={800}

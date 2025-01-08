@@ -1,3 +1,4 @@
+import React, { useRef, useEffect } from "react";
 import { createEarning } from "@/api/api";
 import { TransformEarningFormData } from "@/common/actions/transformData/transformData";
 import FormComponent from "@/common/context/FormProvider";
@@ -8,9 +9,8 @@ import { PaymentSchema } from "@/common/schema";
 import { FormValues } from "@/components/ModelDashboardComponent/types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { StaticImageData } from "next/image";
-import React from "react";
-import { useForm, UseFormReturn } from "react-hook-form";
 import { IoIosCloseCircle } from "react-icons/io";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { InferType } from "yup";
 
 const PaymentModalElement = ({
@@ -31,6 +31,7 @@ const PaymentModalElement = ({
   changeModal: () => void;
   id?: string;
 }) => {
+  const modalRef = useRef<HTMLDivElement>(null);
   const methods: UseFormReturn<FormValues> = useForm({
     resolver: yupResolver(PaymentSchema()),
     defaultValues: {
@@ -66,15 +67,31 @@ const PaymentModalElement = ({
     if (res) changeModal();
   };
 
-  console.log(workers);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        changeModal();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [changeModal]);
 
   const optionWorkers = workers?.map((item) => item.name);
 
-  console.log(optionWorkers);
-
   return (
     <FormComponent methods={methods} submit={handleSubmit(submit)}>
-      <div className="w-fit lg:w-[40vw] h-fit font-bebas p-5 py-8 text-center relative rounded-xl bg-white">
+      <div
+        ref={modalRef}
+        className="w-fit lg:w-[40vw] h-fit font-bebas p-5 py-8 text-center relative rounded-xl bg-white"
+      >
         <h1 className="text-black text-4xl">Form</h1>
         <IoIosCloseCircle
           className="text-3xl text-black absolute top-2 right-2 cursor-pointer"

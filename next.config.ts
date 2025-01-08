@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
       "media.discordapp.net",
       "www.google.com",
       "via.placeholder.com",
+      "",
     ],
   },
 };

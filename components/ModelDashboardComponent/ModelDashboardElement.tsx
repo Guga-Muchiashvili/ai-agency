@@ -24,6 +24,18 @@ const ModelDashboardElement = ({
   );
   const [showModal, setShowModal] = useState(false);
 
+  const overall = earningData.reduce(
+    (total, item) => total + Number(item.total),
+    0
+  );
+
+  const Balance = earningData
+    .filter((item) => item.status == "balance")
+    .reduce((total, item) => total + Number(item.total), 0);
+  const Hold = earningData
+    .filter((item) => item.status == "hold")
+    .reduce((total, item) => total + Number(item.total), 0);
+
   const workerList = transformLeaderboardData(workers, [
     { id: data?.id, name: data?.name },
   ])?.filter((item) => item.model == data?.name);
@@ -99,9 +111,13 @@ const ModelDashboardElement = ({
           </motion.div>
         </div>
         <div className="w-full h-24 lg:h-fit xl:px-3 items-center gap-2 mt-2 xl:gap-6  flex">
-          <OutputBoxElement index={1} title={`${filter}`} price="980$" />
-          <OutputBoxElement index={2} title="Balance" price="542$" />
-          <OutputBoxElement index={3} title="Hold" price="344$" />
+          <OutputBoxElement
+            index={1}
+            title={`${filter}`}
+            price={`${overall}$`}
+          />
+          <OutputBoxElement index={2} title="Balance" price={`${Balance}$`} />
+          <OutputBoxElement index={3} title="Hold" price={`${Hold}$`} />
         </div>
         <div className="w-full h-[50vh]">
           <ChartTableElement
@@ -145,7 +161,7 @@ const ModelDashboardElement = ({
             <h1 className="hidden md:block w-[14%] text-center">percentage</h1>
             <h1 className="w-[25%] md:w-[14%] text-center">Total</h1>
           </div>
-          <div className="w-full flex flex-col gap-3 mt-6">
+          <div className="w-full flex flex-col gap-12 mt-6 overflow-scroll hide-scrollbar h-[30vh]">
             {earningData?.map((item) => (
               <PaymentTableElement
                 key={item.id}
