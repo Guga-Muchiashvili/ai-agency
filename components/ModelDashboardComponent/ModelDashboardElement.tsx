@@ -25,7 +25,9 @@ const ModelDashboardElement = ({
   );
   const [showModal, setShowModal] = useState(false);
 
-  const { data: DashboardData } = useGetModelDashboard({ name: data?.name });
+  const { data: DashboardData, refetch } = useGetModelDashboard({
+    name: data?.name,
+  });
 
   const workerList = transformLeaderboardData(workers, [
     { id: data?.id, name: data?.name },
@@ -163,6 +165,9 @@ const ModelDashboardElement = ({
           <div className="w-full flex flex-col gap-12 mt-6 overflow-scroll hide-scrollbar h-[30vh]">
             {earningData?.map((item) => (
               <PaymentTableElement
+                refetchEarnings={refetch}
+                model={data?.name}
+                id={item.id}
                 key={item.id}
                 amount={item.amount}
                 date={item.createdAt}

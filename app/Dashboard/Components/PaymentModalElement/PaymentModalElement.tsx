@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from "react";
-import { createEarning } from "@/api/api";
 import { TransformEarningFormData } from "@/common/actions/transformData/transformData";
 import FormComponent from "@/common/context/FormProvider";
 import DropdownFieldElement from "@/common/elements/dropDownElement/DropDownElement";
@@ -12,6 +11,7 @@ import { StaticImageData } from "next/image";
 import { IoIosCloseCircle } from "react-icons/io";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { InferType } from "yup";
+import { createEarning } from "@/api/api";
 
 const PaymentModalElement = ({
   workers,
@@ -91,7 +91,7 @@ const PaymentModalElement = ({
     <FormComponent methods={methods} submit={handleSubmit(submit)}>
       <div
         ref={modalRef}
-        className="w-fit lg:w-[40vw] h-fit font-bebas p-5 py-8 text-center relative rounded-xl bg-white"
+        className="w-[90vw] lg:w-[40vw] h-fit font-bebas p-5 py-8 text-center relative rounded-xl bg-white"
       >
         <h1 className="text-black text-4xl">Form</h1>
         <IoIosCloseCircle

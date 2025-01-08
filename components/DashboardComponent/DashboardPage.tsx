@@ -80,7 +80,7 @@ const DashboardPage = ({}) => {
           ))}
         </div>
       </div>
-      <div className="w-full flex h-fit flex-col xl:flex-row">
+      <div className="w-full flex h-full flex-col xl:flex-row">
         <div className="w-full mt-12 xl:mt-0 h-[60vh] xl:w-[75%]">
           <ChartTableElement
             dataset={[

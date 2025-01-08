@@ -76,3 +76,75 @@ export const createEarning = async ({
     throw error;
   }
 };
+
+export const deleteEarningByNames = async ({
+  earningId,
+  workerId,
+  modelName,
+}: {
+  earningId: string;
+  workerId: string | undefined;
+  modelName: string | undefined;
+}) => {
+  try {
+    const model = await db.model.findUnique({
+      where: { name: modelName },
+      select: { id: true, earnings: true },
+    });
+
+    if (!model) {
+      throw new Error("Model not found");
+    }
+    const worker = await db.worker.findFirst({
+      where: { id: workerId },
+      select: { id: true, earnings: true, profit: true },
+    });
+
+    if (!worker) {
+      throw new Error("Worker not found");
+    }
+
+    const earning = await db.earning.findUnique({
+      where: { id: earningId },
+      select: { total: true, percentage: true },
+    });
+
+    if (!earning) {
+      throw new Error("Earning not found");
+    }
+
+    const { total, percentage } = earning;
+
+    const updatedModelEarnings = model.earnings.filter(
+      (id) => id !== earningId
+    );
+    await db.model.update({
+      where: { id: model.id },
+      data: { earnings: updatedModelEarnings },
+    });
+
+    const updatedWorkerEarnings = worker.earnings.filter(
+      (id) => id !== earningId
+    );
+    let updatedProfit = worker.profit ? Number(worker.profit) : 0;
+
+    updatedProfit -= (Number(total) / 100) * (Number(percentage) - 3);
+
+    await db.worker.update({
+      where: { id: worker.id },
+      data: {
+        earnings: updatedWorkerEarnings,
+        profit: updatedProfit.toFixed(1),
+      },
+    });
+
+    await db.earning.delete({
+      where: { id: earningId },
+    });
+
+    return { success: true, message: "Earning deleted successfully" };
+  } catch (error) {
+    console.error("Error deleting earning:", error);
+    throw error;
+  }
+};
