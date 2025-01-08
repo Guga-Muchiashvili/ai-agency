@@ -1,17 +1,16 @@
 export interface IModelDashboardProps {
   data: {
-    id: string;
-    name: string;
-    workers: string[];
     description: string;
+    name: string;
     age: string;
     country: string;
-    date: string;
-    telegram: string;
     drive: string;
+    telegram: string;
+    date: string;
+    image: string;
+    id: string;
     email: string;
     password: string;
-    image: string;
   } | null;
   workers: {
     id: string;

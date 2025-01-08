@@ -24,8 +24,6 @@ const ModelDashboardElement = ({ data, workers }: IModelDashboardProps) => {
     { id: data?.id, name: data?.name },
   ])?.filter((item) => item.model == data?.name);
 
-  const workersFormData = workerList?.map((item) => item.name);
-
   const labels = useChartLabels(filter);
 
   const CloseModal = () => {
@@ -49,8 +47,9 @@ const ModelDashboardElement = ({ data, workers }: IModelDashboardProps) => {
       {showModal && (
         <div className="fixed flex items-center justify-center w-full h-full top-0 left-0 bg-black bg-opacity-55 z-40">
           <PaymentModalElement
-            workers={workersFormData}
+            workers={workerList}
             changeModal={CloseModal}
+            id={data?.id}
           />
         </div>
       )}

@@ -5,6 +5,7 @@ import kakasha from "../../../public/kakasha.jpg";
 import gega from "../../../public/p3rsi.png";
 
 import { StaticImageData } from "next/image";
+import { FormValues } from "@/components/ModelDashboardComponent/types";
 
 const nameToImageMap: Record<string, StaticImageData> = {
   sichinava,
@@ -46,4 +47,43 @@ export const transformLeaderboardData = (
     .sort((a, b) => b.profitValue - a.profitValue);
 
   return data;
+};
+
+export const TransformEarningFormData = (
+  data: FormValues,
+  workers:
+    | {
+        name: string;
+        model: string;
+        profit: string;
+        id: string;
+        img: StaticImageData;
+        profitValue: number;
+      }[]
+    | undefined,
+  modelId: string | undefined
+) => {
+  const workerId = workers?.filter((item) => item.name == data.worker)[0].id;
+
+  const finalData = {
+    amount: data.amount,
+    modelId,
+    workerId,
+    createdAt: data.date,
+    status: data.status,
+    percentage: `${data.percentage}`,
+    total: `${data.total}`,
+    lead: data.name,
+  } as {
+    amount: number;
+    modelId: string;
+    workerId: string;
+    createdAt: string;
+    status: string;
+    percentage: string;
+    total: string;
+    lead: string;
+  };
+
+  return finalData;
 };

@@ -1,3 +1,5 @@
+import { createEarning } from "@/api/api";
+import { TransformEarningFormData } from "@/common/actions/transformData/transformData";
 import FormComponent from "@/common/context/FormProvider";
 import DropdownFieldElement from "@/common/elements/dropDownElement/DropDownElement";
 import NumberFieldElement from "@/common/elements/numberFieldElement/NumberFieldElement";
@@ -5,6 +7,7 @@ import TextFieldElementComponent from "@/common/elements/textInputElement/TextIn
 import { PaymentSchema } from "@/common/schema";
 import { FormValues } from "@/components/ModelDashboardComponent/types";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { StaticImageData } from "next/image";
 import React from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { IoIosCloseCircle } from "react-icons/io";
@@ -13,9 +16,20 @@ import { InferType } from "yup";
 const PaymentModalElement = ({
   workers,
   changeModal,
+  id: ModelId,
 }: {
-  workers: string[] | undefined;
+  workers:
+    | {
+        name: string;
+        model: string;
+        profit: string;
+        id: string;
+        img: StaticImageData;
+        profitValue: number;
+      }[]
+    | undefined;
   changeModal: () => void;
+  id?: string;
 }) => {
   const methods: UseFormReturn<FormValues> = useForm({
     resolver: yupResolver(PaymentSchema()),
@@ -35,9 +49,28 @@ const PaymentModalElement = ({
     formState: {},
   } = methods;
 
-  const submit = (event: InferType<ReturnType<typeof PaymentSchema>>) => {
-    console.log(event);
+  const submit = async (event: InferType<ReturnType<typeof PaymentSchema>>) => {
+    const data = TransformEarningFormData(event, workers, ModelId as string);
+
+    const res = await createEarning({
+      amount: data.amount,
+      createdAt: data.createdAt,
+      lead: data.lead,
+      modelId: data.modelId,
+      percentage: data.percentage,
+      status: data.status,
+      total: data.total,
+      workerId: data.workerId,
+    });
+
+    console.log(res);
   };
+
+  console.log(workers);
+
+  const optionWorkers = workers?.map((item) => item.name);
+
+  console.log(optionWorkers);
 
   return (
     <FormComponent methods={methods} submit={handleSubmit(submit)}>
@@ -51,7 +84,11 @@ const PaymentModalElement = ({
           <NumberFieldElement label="Amount" name="amount" />
           <TextFieldElementComponent label="Lead" name="name" />
         </div>
-        <DropdownFieldElement label="Worker" name="worker" options={workers} />
+        <DropdownFieldElement
+          label="Worker"
+          name="worker"
+          options={optionWorkers}
+        />
         <div className="w-full flex gap-4 items-center">
           <TextFieldElementComponent label="Date" name="date" />
           <DropdownFieldElement
