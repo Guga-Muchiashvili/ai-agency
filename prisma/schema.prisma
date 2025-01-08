@@ -8,39 +8,37 @@ datasource db {
 }
 
 model Earning {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
   amount     Float
   createdAt  String
   lead       String
-  modelId    String   @db.ObjectId
+  modelId    String @db.ObjectId
   percentage String
   status     String
   total      String
-  workerId   String   @db.ObjectId
-  model      Model    @relation(fields: [modelId], references: [id]) 
+  workerId   String @db.ObjectId
 }
 
 model Model {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   age         String
   country     String
   date        String
   description String
   drive       String
-  earnings    Earning[]  
   email       String
   image       String
-  name        String     @unique
+  name        String   @unique
   password    String
   telegram    String
-  workers     Worker[]   
+  workers     String[]
+  earnings    String[]
 }
 
 model Worker {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   earnings String[]
-  modelId  String   @db.ObjectId
+  modelId  String
   name     String
   profit   String
-  model    Model    @relation(fields: [modelId], references: [id]) 
 }

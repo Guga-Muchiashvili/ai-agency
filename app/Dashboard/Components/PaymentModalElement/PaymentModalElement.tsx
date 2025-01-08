@@ -63,7 +63,7 @@ const PaymentModalElement = ({
       workerId: data.workerId,
     });
 
-    console.log(res);
+    if (res) changeModal();
   };
 
   console.log(workers);

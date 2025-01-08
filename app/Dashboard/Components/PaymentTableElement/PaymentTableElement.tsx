@@ -1,3 +1,4 @@
+import { useGetWorkerById } from "@/queries/useGetWorkerQueru/useGetWorkerQuery";
 import React from "react";
 import { HiDotsVertical } from "react-icons/hi";
 
@@ -14,10 +15,12 @@ const PaymentTableElement = ({
   worker: string;
   status: string;
   date: string;
-  amount: string;
+  amount: number;
   perc: string;
   total: string;
 }) => {
+  const { data } = useGetWorkerById({ id: worker });
+
   return (
     <div className="w-full h-16 rounded-lg text-xl text-white flex justify-between items-center relative">
       <h1 className="hidden md:block w-[14%] text-center">{name}</h1>
@@ -36,7 +39,7 @@ const PaymentTableElement = ({
         </button>
       </div>
 
-      <h1 className="w-[25%] md:w-[14%] text-center">{worker}</h1>
+      <h1 className="w-[25%] md:w-[14%] text-center">{data && data[0].name}</h1>
       <h1 className="w-[25%] md:w-[14%] text-center">{date}</h1>
       <h1 className="hidden md:block w-[14%] text-center">{amount}$</h1>
       <h1 className="hidden md:block w-[14%] text-center">{perc}%</h1>

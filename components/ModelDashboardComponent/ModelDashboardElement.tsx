@@ -13,7 +13,11 @@ import { transformLeaderboardData } from "../../common/actions/transformData/tra
 import { IModelDashboardProps } from "./types";
 import PaymentModalElement from "@/app/Dashboard/Components/PaymentModalElement/PaymentModalElement";
 
-const ModelDashboardElement = ({ data, workers }: IModelDashboardProps) => {
+const ModelDashboardElement = ({
+  data,
+  workers,
+  earningData,
+}: IModelDashboardProps) => {
   const [showFilter, setShowFilter] = useState(true);
   const [filter, setfilter] = useState<"overall" | "last Month" | "last Week">(
     "overall"
@@ -134,41 +138,26 @@ const ModelDashboardElement = ({ data, workers }: IModelDashboardProps) => {
           </div>
           <div className="w-full text-white flex mt-5 items-center justify-between text-xl h-12 border-b-[1px] border-white ">
             <h1 className="hidden md:block w-[14%] text-center">name</h1>
-            <h1 className="w-[25%] m:w-[14%] text-center">status</h1>
-            <h1 className="w-[25%] m:w-[14%] text-center">worker</h1>
-            <h1 className="w-[25%] m:w-[14%] text-center">date</h1>
+            <h1 className="w-[25%] md:w-[14%] text-center">status</h1>
+            <h1 className="w-[25%] md:w-[14%] text-center">worker</h1>
+            <h1 className="w-[25%] md:w-[14%] text-center">date</h1>
             <h1 className="hidden md:block w-[14%] text-center">Amount</h1>
             <h1 className="hidden md:block w-[14%] text-center">percentage</h1>
-            <h1 className="w-[25%] m:w-[14%] text-center">Total</h1>
+            <h1 className="w-[25%] md:w-[14%] text-center">Total</h1>
           </div>
           <div className="w-full flex flex-col gap-3 mt-6">
-            <PaymentTableElement
-              amount="540"
-              date="05/01/2025"
-              name="manuel"
-              perc="60"
-              status="completed"
-              total="524"
-              worker="sichinava"
-            />
-            <PaymentTableElement
-              amount="128"
-              date="04/01/2025"
-              name="IAI"
-              perc="60"
-              status="hold"
-              total="119"
-              worker="sichinava"
-            />
-            <PaymentTableElement
-              amount="394"
-              date="05/01/2025"
-              name="Sydney"
-              perc="60"
-              status="balance"
-              total="376"
-              worker="Kakasha"
-            />
+            {earningData?.map((item) => (
+              <PaymentTableElement
+                key={item.id}
+                amount={item.amount}
+                date={item.createdAt}
+                name={item.lead}
+                perc={item.percentage}
+                status={item.status}
+                total={item.total}
+                worker={item.workerId}
+              />
+            ))}
           </div>
         </div>
       </div>

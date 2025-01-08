@@ -34,17 +34,43 @@ export const createEarning = async ({
       },
     });
 
-    console.log(newEarning);
+    const model = await db.model.findUnique({
+      where: { id: modelId },
+      select: { earnings: true },
+    });
 
-    await db.model.update({
+    const updatedEarnings = model?.earnings
+      ? [...model.earnings, newEarning.id]
+      : [newEarning.id];
+
+    const modelUpdated = await db.model.update({
       where: { id: modelId },
       data: {
-        earnings: {
-          connect: { id: newEarning.id },
-        },
+        earnings: updatedEarnings,
       },
     });
-    return newEarning;
+
+    const worker = await db.worker.findUnique({
+      where: { id: workerId },
+    });
+
+    const profit =
+      worker?.profit &&
+      Number(worker?.profit) + (Number(total) / 100) * (Number(percentage) - 3);
+
+    const updatedWorkerEarnings = worker?.earnings
+      ? [...worker.earnings, newEarning.id]
+      : [newEarning.id];
+
+    const workerUpdated = await db.worker.update({
+      where: { id: workerId },
+      data: {
+        earnings: updatedWorkerEarnings,
+        profit: `${Number(profit).toFixed(1)}`,
+      },
+    });
+
+    return newEarning || modelUpdated || workerUpdated;
   } catch (error) {
     console.error("Error fetching users:", error);
     throw error;

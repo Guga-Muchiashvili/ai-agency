@@ -49,3 +49,30 @@ export async function fetchWorkersByModel({ id }: { id: string }) {
     throw error;
   }
 }
+export async function fetchWorkersById({ id }: { id: string }) {
+  try {
+    const users = await db.worker.findMany({
+      where: {
+        id: id,
+      },
+    });
+    return users;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw error;
+  }
+}
+
+export async function fetchEarningsByModel({ id }: { id: string | undefined }) {
+  try {
+    const earnings = await db.earning.findMany({
+      where: {
+        modelId: id,
+      },
+    });
+    return earnings;
+  } catch (error) {
+    console.error("Error fetching earnings:", error);
+    throw error;
+  }
+}

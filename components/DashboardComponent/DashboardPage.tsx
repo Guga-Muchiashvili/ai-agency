@@ -25,8 +25,8 @@ const DashboardPage = () => {
   const labels = useChartLabels(filter);
 
   return (
-    <div className="text-white w-full min-h-screen flex flex-col items-center justify-center">
-      <div className="w-full h-[20vh] lg:h-[30vh] relative flex flex-col">
+    <div className="text-white w-full min-h-fit flex flex-col py-4">
+      <div className="w-full h-[20vh] lg:h-[28vh] relative flex flex-col">
         <div className="ml-auto flex relative gap-2 pr-2">
           <div
             className={`w-fit flex items-center gap-2 flex-wrap ${
@@ -73,8 +73,8 @@ const DashboardPage = () => {
           <OutputBoxElement index={4} title="katte" price="0$" />
         </div>
       </div>
-      <div className="w-full flex h-full flex-col xl:flex-row">
-        <div className="w-full mt-12 xl:mt-0 xl:h-[60vh] h-[50vh] xl:w-[75%]">
+      <div className="w-full flex h-fit flex-col xl:flex-row">
+        <div className="w-full mt-12 xl:mt-0 h-[60vh] xl:w-[75%]">
           <ChartTableElement
             dataset={[
               {
