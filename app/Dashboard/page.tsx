@@ -1,7 +1,7 @@
 import DashboardPage from "@/components/DashboardComponent/DashboardPage";
 import React from "react";
 
-const page = () => {
+const page = async () => {
   return <DashboardPage />;
 };
 

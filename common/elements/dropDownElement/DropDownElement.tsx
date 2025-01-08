@@ -15,7 +15,14 @@ const DropdownFieldElement: React.FC<
       render={({ field }) => (
         <FormControl fullWidth margin="normal">
           <InputLabel>{label}</InputLabel>
-          <Select {...field} label="Worker">
+          <Select
+            {...field}
+            label={label}
+            MenuProps={{
+              container: document.body,
+              disablePortal: true,
+            }}
+          >
             {options?.map((item) => (
               <MenuItem key={item} value={item}>
                 {item}

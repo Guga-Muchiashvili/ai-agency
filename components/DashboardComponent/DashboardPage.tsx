@@ -10,8 +10,9 @@ import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
 import { useGetModels } from "@/queries/useGetModelsQuery/useGetModelsQuery";
 import { transformLeaderboardData } from "../../common/actions/transformData/transformData";
 import useChartLabels from "@/common/hooks/useChartLabel";
+import { useGetDashboardData } from "@/queries/useGetDashboardQuery/useGetDashboardQuery";
 
-const DashboardPage = () => {
+const DashboardPage = ({}) => {
   const [showFilter, setShowFilter] = useState(true);
   const [filter, setfilter] = useState<"overall" | "last Month" | "last Week">(
     "overall"
@@ -23,6 +24,8 @@ const DashboardPage = () => {
   const workers = transformLeaderboardData(data, models);
 
   const labels = useChartLabels(filter);
+
+  const { data: dashboardData } = useGetDashboardData({ filter: filter });
 
   return (
     <div className="text-white w-full min-h-fit flex flex-col py-4">
@@ -67,10 +70,14 @@ const DashboardPage = () => {
           </motion.div>
         </div>
         <div className="w-full flex-wrap lg:flex-nowrap justify-center h-full lg:fit xl:px-3 items-center gap-2 xl:gap-6 mt-5 lg:mt-2 flex">
-          <OutputBoxElement index={1} title={`${filter}`} price="3,197$" />
-          <OutputBoxElement index={2} title="elenka" price="980$" />
-          <OutputBoxElement index={3} title="fionna" price="2,217$" />
-          <OutputBoxElement index={4} title="katte" price="0$" />
+          {dashboardData?.map((item, i) => (
+            <OutputBoxElement
+              key={item.name}
+              index={i}
+              title={`${item.name}`}
+              price={`${item.money}$`}
+            />
+          ))}
         </div>
       </div>
       <div className="w-full flex h-fit flex-col xl:flex-row">

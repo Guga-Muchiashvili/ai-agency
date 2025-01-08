@@ -71,7 +71,8 @@ const PaymentModalElement = ({
     const handleClickOutside = (event: MouseEvent) => {
       if (
         modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
+        !modalRef.current.contains(event.target as Node) &&
+        !(event.target as HTMLElement).closest(".MuiSelect-root")
       ) {
         changeModal();
       }

@@ -10,8 +10,9 @@ import OutputBoxElement from "@/app/Dashboard/Components/OutputBoxElement/Output
 import PaymentTableElement from "@/app/Dashboard/Components/PaymentTableElement/PaymentTableElement";
 import { transformLeaderboardData } from "../../common/actions/transformData/transformData";
 
-import { IModelDashboardProps } from "./types";
 import PaymentModalElement from "@/app/Dashboard/Components/PaymentModalElement/PaymentModalElement";
+import { IModelDashboardProps } from "./types";
+import { useGetModelDashboard } from "@/queries/useGetModelDashboardQuery/useGetModelDashboardQuery";
 
 const ModelDashboardElement = ({
   data,
@@ -24,17 +25,7 @@ const ModelDashboardElement = ({
   );
   const [showModal, setShowModal] = useState(false);
 
-  const overall = earningData.reduce(
-    (total, item) => total + Number(item.total),
-    0
-  );
-
-  const Balance = earningData
-    .filter((item) => item.status == "balance")
-    .reduce((total, item) => total + Number(item.total), 0);
-  const Hold = earningData
-    .filter((item) => item.status == "hold")
-    .reduce((total, item) => total + Number(item.total), 0);
+  const { data: DashboardData } = useGetModelDashboard({ name: data?.name });
 
   const workerList = transformLeaderboardData(workers, [
     { id: data?.id, name: data?.name },
@@ -114,10 +105,18 @@ const ModelDashboardElement = ({
           <OutputBoxElement
             index={1}
             title={`${filter}`}
-            price={`${overall}$`}
+            price={`${DashboardData?.formattedTotal || 0}$`}
           />
-          <OutputBoxElement index={2} title="Balance" price={`${Balance}$`} />
-          <OutputBoxElement index={3} title="Hold" price={`${Hold}$`} />
+          <OutputBoxElement
+            index={2}
+            title="Balance"
+            price={`${DashboardData?.formattedBalance || 0}$`}
+          />
+          <OutputBoxElement
+            index={3}
+            title="Hold"
+            price={`${DashboardData?.formattedHold || 0}$`}
+          />
         </div>
         <div className="w-full h-[50vh]">
           <ChartTableElement
