@@ -9,8 +9,9 @@ import { motion } from "framer-motion";
 import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
 import { useGetModels } from "@/queries/useGetModelsQuery/useGetModelsQuery";
 import { transformLeaderboardData } from "../../common/actions/transformData/transformData";
-import useChartLabels from "@/common/hooks/useChartLabel";
 import { useGetDashboardData } from "@/queries/useGetDashboardQuery/useGetDashboardQuery";
+import { useGetChartEarningData } from "@/queries/useGetChartEarningQuery/useGetChartEarningQuery";
+import useChartForModels from "@/common/hooks/useChartForModel";
 
 const DashboardPage = ({}) => {
   const [showFilter, setShowFilter] = useState(true);
@@ -22,8 +23,23 @@ const DashboardPage = ({}) => {
   const { data: models } = useGetModels();
 
   const workers = transformLeaderboardData(data, models);
+  const { data: chartEarning } = useGetChartEarningData({ filter });
 
-  const labels = useChartLabels(filter);
+  const chartData =
+    chartEarning?.chartData?.map((item, i) => ({
+      label: item.modelName,
+      data: item.earnings,
+      borderColor: i == 0 ? "white" : i == 1 ? "#DAA520" : "#9F2B68",
+      backgroundColor: i == 0 ? "white" : i == 1 ? "#DAA520" : "#9F2B68",
+    })) ||
+    ([] as {
+      label: string;
+      data: number[] | undefined;
+      borderColor: string;
+      backgroundColor: string;
+    }[]);
+
+  const labels = useChartForModels(filter, chartEarning?.chartData);
 
   const { data: dashboardData } = useGetDashboardData({ filter: filter });
 
@@ -82,29 +98,7 @@ const DashboardPage = ({}) => {
       </div>
       <div className="w-full flex h-full flex-col xl:flex-row">
         <div className="w-full mt-12 xl:mt-0 h-[60vh] xl:w-[75%]">
-          <ChartTableElement
-            dataset={[
-              {
-                label: "Fionna",
-                data: [0, 200, 500, 254, 560, 120, 970],
-                borderColor: "white",
-                backgroundColor: "white",
-              },
-              {
-                label: "Katte",
-                data: [0, 100, 361, 694, 260, 420, 270],
-                borderColor: "#9F2B68",
-                backgroundColor: "#9F2B68",
-              },
-              {
-                label: "Elenka",
-                data: [0, 500, 550, 24, 20, 310, 170],
-                borderColor: "#DAA520",
-                backgroundColor: "#DAA520",
-              },
-            ]}
-            labels={labels}
-          />
+          <ChartTableElement dataset={chartData} labels={labels} />
         </div>
         <div
           className="xl:w-[26%] w-full mt-5 xl:mt-0 hide-scrollbar xl:ml-4 overflow-hidden flex flex-col gap-5 p-2 overflow-y-auto"

@@ -43,7 +43,7 @@ const ChartTableElement = ({
   dataset:
     | {
         label: string;
-        data: number[];
+        data: number[] | undefined;
         borderColor: string;
         backgroundColor: string;
       }[];

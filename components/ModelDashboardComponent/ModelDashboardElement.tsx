@@ -5,16 +5,16 @@ import ChartTableElement from "../../app/Dashboard/Components/ChartTableElement/
 import { timePeriods } from "@/common/constants/constants";
 import { motion } from "framer-motion";
 import { IoFilterSharp } from "react-icons/io5";
-import useChartLabels from "@/common/hooks/useChartLabel";
 import OutputBoxElement from "@/app/Dashboard/Components/OutputBoxElement/OutputBoxElement";
 import PaymentTableElement from "@/app/Dashboard/Components/PaymentTableElement/PaymentTableElement";
 import { transformLeaderboardData } from "../../common/actions/transformData/transformData";
-
 import PaymentModalElement from "@/app/Dashboard/Components/PaymentModalElement/PaymentModalElement";
 import { IModelDashboardProps } from "./types";
 import { useGetModelDashboard } from "@/queries/useGetModelDashboardQuery/useGetModelDashboardQuery";
 import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
 import { useGetEarning } from "@/queries/useGetEarningQuery/useGetEarningQuery";
+import useChartForModels from "@/common/hooks/useChartForModel";
+import { Toaster } from "sonner";
 
 const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
   const [showFilter, setShowFilter] = useState(true);
@@ -29,6 +29,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
   const { data: workers, refetch: workersRefetch } = useGetWorkers();
   const { data: earnings, refetch: earningData } = useGetEarning({
     id: data?.id,
+    filter,
   });
 
   const Refetch = () => {
@@ -41,7 +42,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
     { id: data?.id, name: data?.name },
   ])?.filter((item) => item.model == data?.name);
 
-  const labels = useChartLabels(filter);
+  const labels = useChartForModels(filter, earnings?.chartData);
 
   const CloseModal = () => {
     setShowModal(false);
@@ -59,8 +60,23 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
     };
   }, [showModal]);
 
+  const chartData =
+    earnings?.chartData?.map((item, i) => ({
+      label: item.workerName,
+      data: item.earnings,
+      borderColor: i == 0 ? "white" : "#DAA520",
+      backgroundColor: i == 0 ? "white" : "#DAA520",
+    })) ||
+    ([] as {
+      label: string;
+      data: number[] | undefined;
+      borderColor: string;
+      backgroundColor: string;
+    }[]);
+
   return (
     <div className="w-full h-full flex ">
+      <Toaster />
       {showModal && (
         <div className="fixed flex items-center justify-center w-full h-full top-0 left-0 bg-black bg-opacity-55 z-40">
           <PaymentModalElement
@@ -130,27 +146,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
           />
         </div>
         <div className="w-full h-[50vh]">
-          <ChartTableElement
-            labels={labels}
-            dataset={
-              (workerList &&
-                workerList.map((item, i) => ({
-                  label: item.name,
-                  data: [
-                    Math.floor(Math.random() * 2000),
-                    Math.floor(Math.random() * 2000),
-                    Math.floor(Math.random() * 2000),
-                    Math.floor(Math.random() * 2000),
-                    Math.floor(Math.random() * 2000),
-                    Math.floor(Math.random() * 2000),
-                    Math.floor(Math.random() * 2000),
-                  ],
-                  borderColor: i == 0 ? "white" : "#DAA520",
-                  backgroundColor: i == 0 ? "white" : "#DAA520",
-                }))) ||
-              []
-            }
-          />
+          <ChartTableElement labels={labels} dataset={chartData} />
         </div>
         <div className="w-full h-fit font-bebas py-2 md:p-4">
           <div className="w-full flex justify-between items-center">
@@ -172,7 +168,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
             <h1 className="w-[25%] md:w-[14%] text-center">Total</h1>
           </div>
           <div className="w-full flex flex-col gap-12 mt-6 overflow-scroll hide-scrollbar h-[30vh]">
-            {earnings?.map((item) => (
+            {earnings?.earnings?.map((item) => (
               <PaymentTableElement
                 refetchEarnings={Refetch}
                 model={data?.name}
@@ -186,7 +182,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
                 total={item.total}
                 worker={item.workerId}
               />
-            ))}
+            )) || []}
           </div>
         </div>
       </div>

@@ -82,7 +82,7 @@ export const deleteEarningByNames = async ({
   workerId,
   modelName,
 }: {
-  earningId: string;
+  earningId: string | undefined;
   workerId: string | undefined;
   modelName: string | undefined;
 }) => {

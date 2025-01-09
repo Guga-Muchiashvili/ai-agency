@@ -1,15 +1,15 @@
 import { fetchEarningsByModel } from "@/actions/fetch/fetch";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetEarning = ({
-  id,
+export const useGetEarningsByModel = ({
   filter,
+  id,
 }: {
-  id: string | undefined;
   filter: "overall" | "last Month" | "last Week";
+  id: string;
 }) => {
   return useQuery({
-    queryKey: ["earningsByModel", id, filter],
-    queryFn: () => fetchEarningsByModel({ id, filter }),
+    queryKey: ["earningsByModel", filter],
+    queryFn: () => fetchEarningsByModel({ filter, id }),
   });
 };

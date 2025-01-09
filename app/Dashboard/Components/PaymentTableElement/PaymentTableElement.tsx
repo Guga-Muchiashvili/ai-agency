@@ -3,9 +3,10 @@ import { useGetWorkerById } from "@/queries/useGetWorkerQueru/useGetWorkerQuery"
 import { useMutation } from "@tanstack/react-query";
 import React, { useState, useRef } from "react";
 import { FiTrash } from "react-icons/fi";
+import { toast } from "sonner";
 
 type DeleteEarningMutationVariables = {
-  earningId: string;
+  earningId: string | undefined;
   workerId: string | undefined;
   modelName: string | undefined;
 };
@@ -27,15 +28,15 @@ const PaymentTableElement = ({
   model,
   refetchEarnings,
 }: {
-  name: string;
-  worker: string;
-  status: string;
-  date: string;
-  amount: number;
-  perc: string;
-  id: string;
-  total: string;
-  model: string | undefined;
+  name?: string;
+  worker?: string;
+  status?: string;
+  date?: string;
+  amount?: number;
+  perc?: string;
+  id?: string;
+  total?: string;
+  model?: string | undefined;
   refetchEarnings: () => void;
 }) => {
   const { data } = useGetWorkerById({ id: worker });
@@ -47,12 +48,12 @@ const PaymentTableElement = ({
   >({
     mutationFn: deleteEarningByNames,
     onSuccess: () => {
-      setShowModal(false);
+      setTimeout(() => setShowModal(false), 0);
       refetchEarnings();
     },
     onError: (error) => {
+      setTimeout(() => setShowModal(false), 0);
       alert("Failed to delete transaction");
-      setShowModal(false);
       throw error;
     },
   });
@@ -66,6 +67,9 @@ const PaymentTableElement = ({
         earningId: id,
         workerId: worker,
         modelName: model,
+      });
+      toast.success("Transaction removed", {
+        description: "Your transaction was removed.",
       });
     } catch (error) {
       alert("Failed to delete transaction");

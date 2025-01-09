@@ -12,6 +12,7 @@ import { IoIosCloseCircle } from "react-icons/io";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { InferType } from "yup";
 import { createEarning } from "@/api/api";
+import { toast } from "sonner";
 
 const PaymentModalElement = ({
   workers,
@@ -69,6 +70,9 @@ const PaymentModalElement = ({
     if (res) {
       refetch();
       changeModal();
+      toast.success("Transaction added successfully", {
+        description: "Your transaction has been added.",
+      });
     }
   };
 
