@@ -17,6 +17,7 @@ const PaymentModalElement = ({
   workers,
   changeModal,
   id: ModelId,
+  refetch,
 }: {
   workers:
     | {
@@ -30,6 +31,7 @@ const PaymentModalElement = ({
     | undefined;
   changeModal: () => void;
   id?: string;
+  refetch: () => void;
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const methods: UseFormReturn<FormValues> = useForm({
@@ -64,7 +66,10 @@ const PaymentModalElement = ({
       workerId: data.workerId,
     });
 
-    if (res) changeModal();
+    if (res) {
+      refetch();
+      changeModal();
+    }
   };
 
   useEffect(() => {

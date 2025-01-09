@@ -13,12 +13,10 @@ import { transformLeaderboardData } from "../../common/actions/transformData/tra
 import PaymentModalElement from "@/app/Dashboard/Components/PaymentModalElement/PaymentModalElement";
 import { IModelDashboardProps } from "./types";
 import { useGetModelDashboard } from "@/queries/useGetModelDashboardQuery/useGetModelDashboardQuery";
+import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
+import { useGetEarning } from "@/queries/useGetEarningQuery/useGetEarningQuery";
 
-const ModelDashboardElement = ({
-  data,
-  workers,
-  earningData,
-}: IModelDashboardProps) => {
+const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
   const [showFilter, setShowFilter] = useState(true);
   const [filter, setfilter] = useState<"overall" | "last Month" | "last Week">(
     "overall"
@@ -28,6 +26,16 @@ const ModelDashboardElement = ({
   const { data: DashboardData, refetch } = useGetModelDashboard({
     name: data?.name,
   });
+  const { data: workers, refetch: workersRefetch } = useGetWorkers();
+  const { data: earnings, refetch: earningData } = useGetEarning({
+    id: data?.id,
+  });
+
+  const Refetch = () => {
+    refetch();
+    workersRefetch();
+    earningData();
+  };
 
   const workerList = transformLeaderboardData(workers, [
     { id: data?.id, name: data?.name },
@@ -59,6 +67,7 @@ const ModelDashboardElement = ({
             workers={workerList}
             changeModal={CloseModal}
             id={data?.id}
+            refetch={() => Refetch()}
           />
         </div>
       )}
@@ -163,9 +172,9 @@ const ModelDashboardElement = ({
             <h1 className="w-[25%] md:w-[14%] text-center">Total</h1>
           </div>
           <div className="w-full flex flex-col gap-12 mt-6 overflow-scroll hide-scrollbar h-[30vh]">
-            {earningData?.map((item) => (
+            {earnings?.map((item) => (
               <PaymentTableElement
-                refetchEarnings={refetch}
+                refetchEarnings={Refetch}
                 model={data?.name}
                 id={item.id}
                 key={item.id}

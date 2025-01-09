@@ -25,7 +25,7 @@ const PaymentTableElement = ({
   total,
   id,
   model,
-  refetchEarnings, // Add refetchEarnings function as a prop
+  refetchEarnings,
 }: {
   name: string;
   worker: string;
@@ -36,7 +36,7 @@ const PaymentTableElement = ({
   id: string;
   total: string;
   model: string | undefined;
-  refetchEarnings: () => void; // Expecting a function to refetch earnings
+  refetchEarnings: () => void;
 }) => {
   const { data } = useGetWorkerById({ id: worker });
 
@@ -46,10 +46,9 @@ const PaymentTableElement = ({
     DeleteEarningMutationVariables
   >({
     mutationFn: deleteEarningByNames,
-    onSuccess: (data) => {
-      alert(data.message);
+    onSuccess: () => {
       setShowModal(false);
-      refetchEarnings(); // Refetch data after successful delete
+      refetchEarnings();
     },
     onError: (error) => {
       alert("Failed to delete transaction");
@@ -121,12 +120,13 @@ const PaymentTableElement = ({
 
       {showModal && (
         <div
-          className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center"
+          className="fixed inset-0 bg-black z-30 bg-opacity-50 flex justify-center items-center"
           onClick={handleClickOutside}
         >
           <div
             ref={modalRef}
             className="bg-white p-6 rounded-lg flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-2xl text-gray-800">
               Are you sure you want to delete?

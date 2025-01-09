@@ -12,24 +12,6 @@ export interface IModelDashboardProps {
     email: string;
     password: string;
   } | null;
-  workers: {
-    id: string;
-    name: string;
-    modelId: string;
-    earnings: string[];
-    profit: string;
-  }[];
-  earningData: {
-    id: string;
-    modelId: string;
-    amount: number;
-    createdAt: string;
-    lead: string;
-    percentage: string;
-    status: string;
-    total: string;
-    workerId: string;
-  }[];
 }
 
 export interface FormValues {

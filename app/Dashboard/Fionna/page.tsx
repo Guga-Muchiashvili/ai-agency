@@ -1,21 +1,9 @@
 import ModelDashboardElement from "@/components/ModelDashboardComponent/ModelDashboardElement";
-import {
-  fetchEarningsByModel,
-  fetchModel,
-  fetchUsers,
-} from "@/actions/fetch/fetch";
+import { fetchModel } from "@/actions/fetch/fetch";
 const Page = async () => {
   const modelData = await fetchModel({ name: "Fionna" });
-  const workersData = await fetchUsers();
-  const earningData = await fetchEarningsByModel({ id: modelData?.id });
 
-  return (
-    <ModelDashboardElement
-      data={modelData}
-      workers={workersData}
-      earningData={earningData}
-    />
-  );
+  return <ModelDashboardElement data={modelData} />;
 };
 
 export default Page;
