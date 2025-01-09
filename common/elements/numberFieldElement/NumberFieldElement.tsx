@@ -13,7 +13,10 @@ const NumberFieldElement: React.FC<TextFieldElementProps> = ({
   label,
   name,
 }) => {
-  const { control } = useFormContext();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
 
   return (
     <Controller
@@ -27,6 +30,8 @@ const NumberFieldElement: React.FC<TextFieldElementProps> = ({
           fullWidth
           variant="outlined"
           margin="normal"
+          error={!!errors[name]}
+          helperText={errors[name]?.message?.toString() || ""}
         />
       )}
     />

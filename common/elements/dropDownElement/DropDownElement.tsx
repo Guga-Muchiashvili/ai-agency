@@ -6,14 +6,17 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 const DropdownFieldElement: React.FC<
   FormElementProps & { options: string[] | undefined }
 > = ({ label, name, options }) => {
-  const { control } = useFormContext();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
 
   return (
     <Controller
       name={name}
       control={control}
       render={({ field }) => (
-        <FormControl fullWidth margin="normal">
+        <FormControl fullWidth margin="normal" error={!!errors[name]}>
           <InputLabel>{label}</InputLabel>
           <Select
             {...field}
@@ -29,6 +32,9 @@ const DropdownFieldElement: React.FC<
               </MenuItem>
             ))}
           </Select>
+          <p style={{ color: "red", fontSize: "0.8em" }}>
+            {errors[name]?.message?.toString() || ""}
+          </p>
         </FormControl>
       )}
     />
