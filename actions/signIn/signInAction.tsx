@@ -6,6 +6,8 @@ const signIn = (password: string) => {
     now.setDate(now.getDate() + 3);
 
     document.cookie = `authToken=your_auth_token_value; expires=${now.toUTCString()}; path=/; secure; SameSite=Strict`;
+  } else {
+    return false;
   }
 };
 
