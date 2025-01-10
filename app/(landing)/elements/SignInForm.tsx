@@ -3,6 +3,7 @@ import signIn from "@/actions/signIn/signInAction";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { toast } from "sonner";
 
 const SignInForm = () => {
   const [type, setType] = useState("password");
@@ -27,7 +28,7 @@ const SignInForm = () => {
     e.preventDefault();
     if (!validatePassword()) return;
 
-    const isSignedIn = await signIn(password);
+    const isSignedIn = signIn(password);
 
     if (!isSignedIn) {
       setError(true);
@@ -35,6 +36,10 @@ const SignInForm = () => {
     }
 
     setPassword("");
+    toast.success("Signed in", {
+      description: "Signed in successfully",
+    });
+
     router.push("/Dashboard");
   };
 
@@ -48,8 +53,10 @@ const SignInForm = () => {
             name="password"
             placeholder="Enter password"
             value={password}
-            className={`text-sm bg-transparent text-white border-b-[1px] sm:text-base py-3 w-full pl-2.5 sm:pl-2 md:pl-3 outline-none block ease-in-out pr-10 duration-300 ${
-              error ? "border-b-red-500 text-red-500" : "border-b-white"
+            className={`text-sm bg-transparent border-b-[1px] sm:text-base py-3 w-full pl-2.5 sm:pl-2 md:pl-3 outline-none block ease-in-out pr-10 duration-300 ${
+              error
+                ? "border-b-red-500 text-red-500"
+                : "border-b-white text-white"
             }`}
             onChange={(e) => setPassword(e.target.value)}
           />
