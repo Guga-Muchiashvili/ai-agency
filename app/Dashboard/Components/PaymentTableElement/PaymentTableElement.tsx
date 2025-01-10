@@ -1,19 +1,13 @@
-import { deleteEarningByNames } from "@/api/api";
-import { useGetWorkerById } from "@/queries/useGetWorkerQueru/useGetWorkerQuery";
 import { useMutation } from "@tanstack/react-query";
-import React, { useState, useRef } from "react";
+import { changeEarningStatus } from "@/api/api";
 import { FiTrash } from "react-icons/fi";
 import { toast } from "sonner";
+import React, { useState, useRef } from "react";
+import { useGetWorkerById } from "@/queries/useGetWorkerQueru/useGetWorkerQuery";
 
-type DeleteEarningMutationVariables = {
-  earningId: string | undefined;
-  workerId: string | undefined;
-  modelName: string | undefined;
-};
-
-type DeleteEarningMutationResponse = {
-  success: boolean;
-  message: string;
+type ChangeStatusMutationVariables = {
+  earningId: string;
+  newStatus: string;
 };
 
 const PaymentTableElement = ({
@@ -39,38 +33,44 @@ const PaymentTableElement = ({
   model?: string | undefined;
   refetchEarnings: () => void;
 }) => {
+  const [showModal, setShowModal] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
   const { data } = useGetWorkerById({ id: worker });
 
-  const { mutate: deleteTransaction } = useMutation<
-    DeleteEarningMutationResponse,
+  const { mutate: changeStatus } = useMutation<
+    {
+      status: string;
+      amount: number;
+      total: string;
+      id: string;
+      workerId: string;
+      createdAt: string;
+      lead: string;
+      modelId: string;
+      percentage: string;
+    },
     Error,
-    DeleteEarningMutationVariables
+    ChangeStatusMutationVariables
   >({
-    mutationFn: deleteEarningByNames,
+    mutationFn: changeEarningStatus,
     onSuccess: () => {
-      setTimeout(() => setShowModal(false), 0);
       refetchEarnings();
+      toast.success("Status updated successfully", {
+        description: "The earning status was updated.",
+      });
     },
     onError: (error) => {
-      setTimeout(() => setShowModal(false), 0);
-      alert("Failed to delete transaction");
+      alert("Failed to update status");
       throw error;
     },
   });
 
-  const [showModal, setShowModal] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null);
-
   const handleDelete = async () => {
     try {
-      await deleteTransaction({
-        earningId: id,
-        workerId: worker,
-        modelName: model,
-      });
       toast.success("Transaction removed", {
         description: "Your transaction was removed.",
       });
+      refetchEarnings();
     } catch (error) {
       alert("Failed to delete transaction");
       throw error;
@@ -80,6 +80,15 @@ const PaymentTableElement = ({
   const handleClickOutside = (event: React.MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
       setShowModal(false);
+    }
+  };
+
+  const handleStatusChange = (newStatus: string) => {
+    if (id && worker && model) {
+      changeStatus({
+        earningId: id,
+        newStatus: newStatus,
+      });
     }
   };
 
@@ -95,10 +104,27 @@ const PaymentTableElement = ({
                 ? "bg-green-600"
                 : status === "hold"
                 ? "bg-red-600"
+                : status === "balance"
+                ? "bg-yellow-600"
                 : "bg-blue-600"
             } rounded-md`}
+            onClick={() => {
+              if (status === "completed") {
+                handleStatusChange("hold");
+              } else if (status === "hold") {
+                handleStatusChange("balance");
+              } else if (status === "balance") {
+                handleStatusChange("completed");
+              } else {
+                handleStatusChange("balance");
+              }
+            }}
           >
-            {status}
+            {status === "completed"
+              ? "Completed"
+              : status === "hold"
+              ? "Hold"
+              : "Balance"}
           </button>
         </div>
 

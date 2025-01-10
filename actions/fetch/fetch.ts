@@ -81,6 +81,7 @@ export async function fetchEarningsByModel({
     const currentDate = new Date();
     let chartData: { workerName: string; earnings: number[] }[] = [];
 
+    // Helper function to parse date
     function parseDate(dateString: string): Date {
       const [day, month, year] = dateString.split("/").map(Number);
       return new Date(year, month - 1, day);
@@ -92,12 +93,8 @@ export async function fetchEarningsByModel({
     }));
 
     earningsWithParsedDates.sort(
-      (a, b) => b.parsedDate.getTime() - a.parsedDate.getTime()
+      (a, b) => a.parsedDate.getTime() - b.parsedDate.getTime()
     );
-
-    chartData.forEach((workerData) => {
-      workerData.earnings.reverse();
-    });
 
     const firstTransactionDate =
       earningsWithParsedDates[0]?.parsedDate || currentDate;
@@ -106,14 +103,15 @@ export async function fetchEarningsByModel({
       currentDate.getTime() - firstTransactionDate.getTime();
     const oneMonthInMs = 1000 * 3600 * 24 * 30;
     const oneYearInMs = oneMonthInMs * 12;
-
     if (filter === "last Month") {
+      // Filter by the last 30 days
       const lastMonthStart = new Date(currentDate);
-      lastMonthStart.setDate(currentDate.getDate() - 30);
+      lastMonthStart.setDate(currentDate.getDate() - 30); // 30 days ago
 
+      // Create an array with 30 elements for each day of the last month
       const dateRange = workers.map((worker) => ({
         workerName: worker.name,
-        earnings: Array(30).fill(0),
+        earnings: Array(30).fill(0), // Initialize with 30 days of data
       }));
 
       earningsWithParsedDates.forEach((earning) => {
@@ -133,14 +131,14 @@ export async function fetchEarningsByModel({
         }
       });
 
-      chartData = dateRange;
-      chartData.reverse();
+      chartData = dateRange.reverse(); // Reverse the chartData after filling it
     } else if (filter === "last Week") {
+      // Filter by the last 7 days
       const lastWeekStart = new Date(currentDate);
-      lastWeekStart.setDate(currentDate.getDate() - 7);
+      lastWeekStart.setDate(currentDate.getDate() - 7); // 7 days ago
       const dateRange = workers.map((worker) => ({
         workerName: worker.name,
-        earnings: Array(7).fill(0),
+        earnings: Array(7).fill(0), // Initialize with 7 days of data
       }));
 
       earningsWithParsedDates.forEach((earning) => {
@@ -160,10 +158,11 @@ export async function fetchEarningsByModel({
         }
       });
 
-      chartData = dateRange;
-      chartData.reverse();
+      chartData = dateRange.reverse();
     } else {
+      // Logic for "overall" filter, including various time difference conditions
       if (timeDifferenceInMs > oneYearInMs) {
+        // Group by months if more than a year ago from the first transaction
         const monthsBetween = Math.ceil(
           timeDifferenceInMs / (1000 * 3600 * 24 * 30)
         );
@@ -191,9 +190,10 @@ export async function fetchEarningsByModel({
           }
         });
       } else if (timeDifferenceInMs <= oneMonthInMs) {
+        // Group by days if less than a month ago from the first transaction
         const dateRange = workers.map((worker) => ({
           workerName: worker.name,
-          earnings: Array(30).fill(0),
+          earnings: Array(30).fill(0), // 30 days for last month filter
         }));
 
         earningsWithParsedDates.forEach((earning) => {
@@ -213,6 +213,7 @@ export async function fetchEarningsByModel({
 
         chartData = dateRange;
       } else if (timeDifferenceInMs <= oneYearInMs) {
+        // Group by weeks if less than a year and more than a month
         const weeksBetween = Math.ceil(
           timeDifferenceInMs / (1000 * 3600 * 24 * 7)
         );
@@ -242,10 +243,7 @@ export async function fetchEarningsByModel({
       }
     }
 
-    chartData.forEach((workerData) => {
-      workerData.earnings.reverse();
-    });
-
+    console.log(chartData);
     return { earnings: earningsWithParsedDates, chartData };
   } catch (error) {
     console.error("Error fetching earnings:", error);

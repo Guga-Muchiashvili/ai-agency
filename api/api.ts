@@ -1,4 +1,5 @@
 "use server";
+import { ChangeStatusMutationVariables } from "@/app/Dashboard/Components/PaymentTableElement/types";
 import { db } from "@/common/utils/db";
 
 export const createEarning = async ({
@@ -146,5 +147,62 @@ export const deleteEarningByNames = async ({
   } catch (error) {
     console.error("Error deleting earning:", error);
     throw error;
+  }
+};
+export const changeEarningStatus = async (
+  variables: ChangeStatusMutationVariables
+) => {
+  const { earningId, newStatus } = variables;
+
+  console.log(earningId, newStatus);
+  try {
+    const earning = await db.earning.findUnique({
+      where: { id: earningId },
+    });
+
+    if (!earning) {
+      throw new Error("Earning not found");
+    }
+
+    const updatedEarning = await db.earning.update({
+      where: { id: earningId },
+      data: { status: newStatus },
+    });
+
+    const model = await db.model.findUnique({
+      where: { id: earning.modelId },
+      select: { earnings: true },
+    });
+
+    if (model) {
+      const updatedModelEarnings = model.earnings.map((id) =>
+        id === earningId ? updatedEarning.id : id
+      );
+
+      await db.model.update({
+        where: { id: earning.modelId },
+        data: { earnings: updatedModelEarnings },
+      });
+    }
+
+    const worker = await db.worker.findUnique({
+      where: { id: earning.workerId },
+    });
+
+    if (worker) {
+      const updatedWorkerEarnings = worker.earnings.map((id) =>
+        id === earningId ? updatedEarning.id : id
+      );
+
+      await db.worker.update({
+        where: { id: earning.workerId },
+        data: { earnings: updatedWorkerEarnings },
+      });
+    }
+
+    return updatedEarning;
+  } catch (error) {
+    console.error("Error changing earning status:", error);
+    throw new Error("Failed to change earning status");
   }
 };
