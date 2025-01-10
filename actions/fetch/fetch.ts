@@ -74,7 +74,6 @@ export async function fetchEarningsByModel({
     const earnings = await db.earning.findMany({
       where: { modelId: id },
     });
-
     const workers = await db.worker.findMany({
       where: { modelId: id },
     });
@@ -93,136 +92,94 @@ export async function fetchEarningsByModel({
     }));
 
     earningsWithParsedDates.sort(
-      (a, b) => a.parsedDate.getTime() - b.parsedDate.getTime()
+      (a, b) => b.parsedDate.getTime() - a.parsedDate.getTime()
     );
+
+    chartData.forEach((workerData) => {
+      workerData.earnings.reverse();
+    });
 
     const firstTransactionDate =
       earningsWithParsedDates[0]?.parsedDate || currentDate;
 
-    function createEarningsArray(size: number) {
-      return Array(size).fill(0);
-    }
+    const timeDifferenceInMs =
+      currentDate.getTime() - firstTransactionDate.getTime();
+    const oneMonthInMs = 1000 * 3600 * 24 * 30;
+    const oneYearInMs = oneMonthInMs * 12;
 
     if (filter === "last Month") {
-      const thirtyDaysAgo = new Date(currentDate);
-      thirtyDaysAgo.setDate(currentDate.getDate() - 30);
+      const lastMonthStart = new Date(currentDate);
+      lastMonthStart.setDate(currentDate.getDate() - 30);
 
       const dateRange = workers.map((worker) => ({
         workerName: worker.name,
-        earnings: createEarningsArray(30),
+        earnings: Array(30).fill(0),
       }));
 
       earningsWithParsedDates.forEach((earning) => {
         const earningDate = earning.parsedDate;
-        if (earningDate >= thirtyDaysAgo && earningDate <= currentDate) {
-          const dayIndex = Math.floor(
+        if (earningDate >= lastMonthStart && earningDate <= currentDate) {
+          const daysAgo = Math.floor(
             (currentDate.getTime() - earningDate.getTime()) / (1000 * 3600 * 24)
           );
-          const workerIndex = workers.findIndex(
-            (worker) => worker.id === earning.workerId
-          );
-          if (workerIndex !== -1 && dayIndex < 30) {
-            dateRange[workerIndex].earnings[dayIndex] += Number(earning.total);
+          if (daysAgo < 30) {
+            const workerIndex = workers.findIndex(
+              (worker) => worker.id === earning.workerId
+            );
+            if (workerIndex !== -1) {
+              dateRange[workerIndex].earnings[daysAgo] += Number(earning.total);
+            }
           }
         }
       });
 
       chartData = dateRange;
-      chartData.forEach((workerData) => {
-        workerData.earnings.reverse();
-      });
+      chartData.reverse();
     } else if (filter === "last Week") {
-      const sevenDaysAgo = new Date(currentDate);
-      sevenDaysAgo.setDate(currentDate.getDate() - 7);
-
+      const lastWeekStart = new Date(currentDate);
+      lastWeekStart.setDate(currentDate.getDate() - 7);
       const dateRange = workers.map((worker) => ({
         workerName: worker.name,
-        earnings: createEarningsArray(7),
+        earnings: Array(7).fill(0),
       }));
 
       earningsWithParsedDates.forEach((earning) => {
         const earningDate = earning.parsedDate;
-        if (earningDate >= sevenDaysAgo && earningDate <= currentDate) {
-          const dayIndex = Math.floor(
+        if (earningDate >= lastWeekStart && earningDate <= currentDate) {
+          const daysAgo = Math.floor(
             (currentDate.getTime() - earningDate.getTime()) / (1000 * 3600 * 24)
           );
-          const workerIndex = workers.findIndex(
-            (worker) => worker.id === earning.workerId
-          );
-          if (workerIndex !== -1 && dayIndex < 7) {
-            dateRange[workerIndex].earnings[dayIndex] += Number(earning.total);
+          if (daysAgo < 7) {
+            const workerIndex = workers.findIndex(
+              (worker) => worker.id === earning.workerId
+            );
+            if (workerIndex !== -1) {
+              dateRange[workerIndex].earnings[daysAgo] += Number(earning.total);
+            }
           }
         }
       });
 
       chartData = dateRange;
-      chartData.forEach((workerData) => {
-        workerData.earnings.reverse();
-      });
+      chartData.reverse();
     } else {
-      const timeDifferenceInMs =
-        currentDate.getTime() - firstTransactionDate.getTime();
-      const oneMonthInMs = 1000 * 3600 * 24 * 30;
-      const oneYearInMs = oneMonthInMs * 12;
-
-      if (timeDifferenceInMs <= oneMonthInMs) {
-        const monthsBetween = Math.ceil(timeDifferenceInMs / oneMonthInMs);
-
-        const dateRange = [...Array(monthsBetween)].map((_, index) => {
-          const date = new Date(firstTransactionDate);
-          date.setMonth(date.getMonth() + index);
-          return `${date.getFullYear()}-${date.getMonth() + 1}`;
-        });
-
-        chartData = workers.map((worker) => ({
-          workerName: worker.name,
-          earnings: createEarningsArray(dateRange.length),
-        }));
-
-        earningsWithParsedDates.forEach((earning) => {
-          const earningYearMonth = `${earning.parsedDate.getFullYear()}-${
-            earning.parsedDate.getMonth() + 1
-          }`;
-          const monthIndex = dateRange.indexOf(earningYearMonth);
-
-          if (monthIndex !== -1) {
-            const workerIndex = workers.findIndex(
-              (worker) => worker.id === earning.workerId
-            );
-            if (workerIndex !== -1) {
-              chartData[workerIndex].earnings[monthIndex] += Number(
-                earning.total
-              );
-            }
-          }
-        });
-      } else if (
-        timeDifferenceInMs > oneMonthInMs &&
-        timeDifferenceInMs <= oneYearInMs
-      ) {
+      if (timeDifferenceInMs > oneYearInMs) {
         const monthsBetween = Math.ceil(
-          (currentDate.getTime() - firstTransactionDate.getTime()) /
-            oneMonthInMs
+          timeDifferenceInMs / (1000 * 3600 * 24 * 30)
         );
-
-        const dateRange = [...Array(monthsBetween)].map((_, index) => {
-          const date = new Date(firstTransactionDate);
-          date.setMonth(date.getMonth() + index);
-          return `${date.getFullYear()}-${date.getMonth() + 1}`;
-        });
-
         chartData = workers.map((worker) => ({
           workerName: worker.name,
-          earnings: createEarningsArray(dateRange.length),
+          earnings: Array(monthsBetween).fill(0),
         }));
 
         earningsWithParsedDates.forEach((earning) => {
-          const earningYearMonth = `${earning.parsedDate.getFullYear()}-${
-            earning.parsedDate.getMonth() + 1
-          }`;
-          const monthIndex = dateRange.indexOf(earningYearMonth);
+          const earningDate = earning.parsedDate;
+          const monthIndex = Math.floor(
+            (earningDate.getTime() - firstTransactionDate.getTime()) /
+              (1000 * 3600 * 24 * 30)
+          );
 
-          if (monthIndex !== -1) {
+          if (monthIndex >= 0 && monthIndex < chartData[0].earnings.length) {
             const workerIndex = workers.findIndex(
               (worker) => worker.id === earning.workerId
             );
@@ -233,30 +190,50 @@ export async function fetchEarningsByModel({
             }
           }
         });
-      } else if (timeDifferenceInMs > oneYearInMs) {
-        const yearsBetween = Math.ceil(timeDifferenceInMs / oneYearInMs);
-
-        const dateRange = [...Array(yearsBetween)].map((_, index) => {
-          const date = new Date(firstTransactionDate);
-          date.setFullYear(date.getFullYear() + index);
-          return `${date.getFullYear()}`;
-        });
-
-        chartData = workers.map((worker) => ({
+      } else if (timeDifferenceInMs <= oneMonthInMs) {
+        const dateRange = workers.map((worker) => ({
           workerName: worker.name,
-          earnings: createEarningsArray(dateRange.length),
+          earnings: Array(30).fill(0),
         }));
 
         earningsWithParsedDates.forEach((earning) => {
-          const earningYear = `${earning.parsedDate.getFullYear()}`;
-          const yearIndex = dateRange.indexOf(earningYear);
-
-          if (yearIndex !== -1) {
+          const earningDate = earning.parsedDate;
+          const daysAgo = Math.floor(
+            (currentDate.getTime() - earningDate.getTime()) / (1000 * 3600 * 24)
+          );
+          if (daysAgo < 30) {
             const workerIndex = workers.findIndex(
               (worker) => worker.id === earning.workerId
             );
             if (workerIndex !== -1) {
-              chartData[workerIndex].earnings[yearIndex] += Number(
+              dateRange[workerIndex].earnings[daysAgo] += Number(earning.total);
+            }
+          }
+        });
+
+        chartData = dateRange;
+      } else if (timeDifferenceInMs <= oneYearInMs) {
+        const weeksBetween = Math.ceil(
+          timeDifferenceInMs / (1000 * 3600 * 24 * 7)
+        );
+        chartData = workers.map((worker) => ({
+          workerName: worker.name,
+          earnings: Array(weeksBetween).fill(0),
+        }));
+
+        earningsWithParsedDates.forEach((earning) => {
+          const earningDate = earning.parsedDate;
+          const weekIndex = Math.floor(
+            (earningDate.getTime() - firstTransactionDate.getTime()) /
+              (1000 * 3600 * 24 * 7)
+          );
+
+          if (weekIndex >= 0 && weekIndex < chartData[0].earnings.length) {
+            const workerIndex = workers.findIndex(
+              (worker) => worker.id === earning.workerId
+            );
+            if (workerIndex !== -1) {
+              chartData[workerIndex].earnings[weekIndex] += Number(
                 earning.total
               );
             }
@@ -265,10 +242,9 @@ export async function fetchEarningsByModel({
       }
     }
 
-    chartData = chartData.map((workerData) => ({
-      ...workerData,
-      earnings: workerData.earnings.map((earning) => earning || 0),
-    }));
+    chartData.forEach((workerData) => {
+      workerData.earnings.reverse();
+    });
 
     return { earnings: earningsWithParsedDates, chartData };
   } catch (error) {
