@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import { motion } from "framer-motion";
-import { StaticImageData } from "next/image";
+import { IleaderboardElementProps } from "./types";
 
 const LeaderBoardElement = ({
   name,
@@ -9,13 +9,7 @@ const LeaderBoardElement = ({
   money,
   index,
   img,
-}: {
-  name: string;
-  model?: string;
-  money: string;
-  index: number;
-  img: StaticImageData;
-}) => {
+}: IleaderboardElementProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, translateY: -20 }}

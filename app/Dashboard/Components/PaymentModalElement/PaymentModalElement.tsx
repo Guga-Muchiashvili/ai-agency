@@ -7,33 +7,19 @@ import TextFieldElementComponent from "@/common/elements/textInputElement/TextIn
 import { PaymentSchema } from "@/common/schema";
 import { FormValues } from "@/components/ModelDashboardComponent/types";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { StaticImageData } from "next/image";
 import { IoIosCloseCircle } from "react-icons/io";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { InferType } from "yup";
 import { createEarning } from "@/api/api";
 import { toast } from "sonner";
+import { IPaymentModalElementProps } from "./types";
 
 const PaymentModalElement = ({
   workers,
   changeModal,
   id: ModelId,
   refetch,
-}: {
-  workers:
-    | {
-        name: string;
-        model: string;
-        profit: string;
-        id: string;
-        img: StaticImageData;
-        profitValue: number;
-      }[]
-    | undefined;
-  changeModal: () => void;
-  id?: string;
-  refetch: () => void;
-}) => {
+}: IPaymentModalElementProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const methods: UseFormReturn<FormValues> = useForm({
     resolver: yupResolver(PaymentSchema()),

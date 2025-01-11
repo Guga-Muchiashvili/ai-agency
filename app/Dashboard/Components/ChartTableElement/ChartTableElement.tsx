@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { IChartData } from "@/common/types/types";
 
 ChartJS.register(
   CategoryScale,
@@ -23,7 +24,7 @@ ChartJS.register(
 
 export const options = {
   responsive: true,
-  maintainAspectRatio: false, // Disable the aspect ratio to allow custom height
+  maintainAspectRatio: false,
   plugins: {
     legend: {
       position: "top" as const,
@@ -40,13 +41,7 @@ const ChartTableElement = ({
   dataset,
 }: {
   labels: string[];
-  dataset:
-    | {
-        label: string;
-        data: number[] | undefined;
-        borderColor: string;
-        backgroundColor: string;
-      }[];
+  dataset: IChartData[];
 }) => {
   const data = {
     labels,

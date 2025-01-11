@@ -1,16 +1,9 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
+import { IOutputBoxElementProps } from "./types";
 
-const OutputBoxElement = ({
-  title,
-  price,
-  index,
-}: {
-  title: string;
-  price: string;
-  index: number;
-}) => {
+const OutputBoxElement = ({ title, price, index }: IOutputBoxElementProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, translateX: -20 }}

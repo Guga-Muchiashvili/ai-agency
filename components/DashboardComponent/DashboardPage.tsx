@@ -12,6 +12,7 @@ import { transformLeaderboardData } from "../../common/actions/transformData/tra
 import { useGetDashboardData } from "@/queries/useGetDashboardQuery/useGetDashboardQuery";
 import { useGetChartEarningData } from "@/queries/useGetChartEarningQuery/useGetChartEarningQuery";
 import useChartForModels from "@/common/hooks/useChartForModel";
+import { IChartData } from "@/common/types/types";
 
 const DashboardPage = ({}) => {
   const [showFilter, setShowFilter] = useState(true);
@@ -31,13 +32,7 @@ const DashboardPage = ({}) => {
       data: item.earnings,
       borderColor: i == 0 ? "white" : i == 1 ? "#DAA520" : "#9F2B68",
       backgroundColor: i == 0 ? "white" : i == 1 ? "#DAA520" : "#9F2B68",
-    })) ||
-    ([] as {
-      label: string;
-      data: number[] | undefined;
-      borderColor: string;
-      backgroundColor: string;
-    }[]);
+    })) || ([] as IChartData[]);
 
   const labels = useChartForModels(filter, chartEarning?.chartData);
 

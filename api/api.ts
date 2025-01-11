@@ -1,6 +1,8 @@
 "use server";
 import { ChangeStatusMutationVariables } from "@/app/Dashboard/Components/PaymentTableElement/types";
+import { IWorker } from "@/common/types/types";
 import { db } from "@/common/utils/db";
+import { IdeleteEarningByNamesProps } from "./types";
 
 export const createEarning = async ({
   amount,
@@ -11,16 +13,7 @@ export const createEarning = async ({
   total,
   workerId,
   modelId,
-}: {
-  amount: number;
-  createdAt: string;
-  lead: string;
-  percentage: string;
-  status: string;
-  total: string;
-  workerId: string;
-  modelId: string;
-}) => {
+}: IWorker) => {
   try {
     const newEarning = await db.earning.create({
       data: {
@@ -82,11 +75,7 @@ export const deleteEarningByNames = async ({
   earningId,
   workerId,
   modelName,
-}: {
-  earningId: string | undefined;
-  workerId: string | undefined;
-  modelName: string | undefined;
-}) => {
+}: IdeleteEarningByNamesProps) => {
   try {
     const model = await db.model.findUnique({
       where: { name: modelName },

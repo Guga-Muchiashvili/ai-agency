@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { useGetWorkerById } from "@/queries/useGetWorkerQueru/useGetWorkerQuery";
 import { useChangeEarningStatusMutation } from "@/mutations/mutations";
 import { deleteEarningByNames } from "@/api/api";
+import { IPaymentTableElementProps } from "./types";
 
 const PaymentTableElement = ({
   name,
@@ -16,18 +17,7 @@ const PaymentTableElement = ({
   id,
   model,
   refetchEarnings,
-}: {
-  name?: string;
-  worker?: string;
-  status?: string;
-  date?: string;
-  amount?: number;
-  perc?: string;
-  id?: string;
-  total?: string;
-  model?: string | undefined;
-  refetchEarnings: () => void;
-}) => {
+}: IPaymentTableElementProps) => {
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const { data } = useGetWorkerById({ id: worker });

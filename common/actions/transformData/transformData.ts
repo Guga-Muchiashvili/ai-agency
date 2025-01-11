@@ -6,6 +6,7 @@ import gega from "../../../public/p3rsi.png";
 
 import { StaticImageData } from "next/image";
 import { FormValues } from "@/components/ModelDashboardComponent/types";
+import { IWorker } from "@/common/types/types";
 
 const nameToImageMap: Record<string, StaticImageData> = {
   sichinava,
@@ -74,16 +75,7 @@ export const TransformEarningFormData = (
     percentage: `${data.percentage}`,
     total: `${data.total}`,
     lead: data.name,
-  } as {
-    amount: number;
-    modelId: string;
-    workerId: string;
-    createdAt: string;
-    status: string;
-    percentage: string;
-    total: string;
-    lead: string;
-  };
+  } as IWorker;
 
   return finalData;
 };
