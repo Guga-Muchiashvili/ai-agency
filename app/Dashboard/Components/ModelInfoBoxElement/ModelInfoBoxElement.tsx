@@ -109,9 +109,9 @@ const ModelInfoBoxElement = ({
         transition={{ duration: 0.7, delay: 0.5 }}
         className="w-full flex flex-col gap-2 text-left text-2xl mt-5"
       >
-        {workers?.map((item) => (
+        {workers?.map((item, i) => (
           <LeaderBoardElement
-            index={1}
+            index={i}
             name={item.name}
             img={item.img}
             money={item.profit}
