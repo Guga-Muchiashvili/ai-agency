@@ -15,6 +15,7 @@ import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
 import { useGetEarning } from "@/queries/useGetEarningQuery/useGetEarningQuery";
 import useChartForModels from "@/common/hooks/useChartForModel";
 import { Toaster } from "sonner";
+import { IChartData } from "@/common/types/types";
 
 const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
   const [showFilter, setShowFilter] = useState(true);
@@ -25,6 +26,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
 
   const { data: DashboardData, refetch } = useGetModelDashboard({
     name: data?.name,
+    filter,
   });
   const { data: workers, refetch: workersRefetch } = useGetWorkers();
   const { data: earnings, refetch: earningData } = useGetEarning({
@@ -66,13 +68,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
       data: item.earnings,
       borderColor: i == 0 ? "white" : "#DAA520",
       backgroundColor: i == 0 ? "white" : "#DAA520",
-    })) ||
-    ([] as {
-      label: string;
-      data: number[] | undefined;
-      borderColor: string;
-      backgroundColor: string;
-    }[]);
+    })) || ([] as IChartData[]);
 
   return (
     <div className="w-full h-full flex ">

@@ -81,6 +81,7 @@ export async function fetchEarningsByModel({
     const currentDate = new Date();
     let chartData: { workerName: string; earnings: number[] }[] = [];
 
+    // Helper function to parse date
     function parseDate(dateString: string): Date {
       const [day, month, year] = dateString.split("/").map(Number);
       return new Date(year, month - 1, day);
@@ -103,12 +104,14 @@ export async function fetchEarningsByModel({
     const oneMonthInMs = 1000 * 3600 * 24 * 30;
     const oneYearInMs = oneMonthInMs * 12;
     if (filter === "last Month") {
+      // Filter by the last 30 days
       const lastMonthStart = new Date(currentDate);
-      lastMonthStart.setDate(currentDate.getDate() - 30);
+      lastMonthStart.setDate(currentDate.getDate() - 30); // 30 days ago
 
+      // Create an array with 30 elements for each day of the last month
       const dateRange = workers.map((worker) => ({
         workerName: worker.name,
-        earnings: Array(30).fill(0),
+        earnings: Array(30).fill(0), // Initialize with 30 days of data
       }));
 
       earningsWithParsedDates.forEach((earning) => {
@@ -128,13 +131,14 @@ export async function fetchEarningsByModel({
         }
       });
 
-      chartData = dateRange.reverse();
+      chartData = dateRange.reverse(); // Reverse the chartData after filling it
     } else if (filter === "last Week") {
+      // Filter by the last 7 days
       const lastWeekStart = new Date(currentDate);
-      lastWeekStart.setDate(currentDate.getDate() - 7);
+      lastWeekStart.setDate(currentDate.getDate() - 7); // 7 days ago
       const dateRange = workers.map((worker) => ({
         workerName: worker.name,
-        earnings: Array(7).fill(0),
+        earnings: Array(7).fill(0), // Initialize with 7 days of data
       }));
 
       earningsWithParsedDates.forEach((earning) => {
@@ -156,7 +160,9 @@ export async function fetchEarningsByModel({
 
       chartData = dateRange.reverse();
     } else {
+      // Logic for "overall" filter, including various time difference conditions
       if (timeDifferenceInMs > oneYearInMs) {
+        // Group by months if more than a year ago from the first transaction
         const monthsBetween = Math.ceil(
           timeDifferenceInMs / (1000 * 3600 * 24 * 30)
         );
@@ -184,9 +190,10 @@ export async function fetchEarningsByModel({
           }
         });
       } else if (timeDifferenceInMs <= oneMonthInMs) {
+        // Group by days if less than a month ago from the first transaction
         const dateRange = workers.map((worker) => ({
           workerName: worker.name,
-          earnings: Array(30).fill(0),
+          earnings: Array(30).fill(0), // 30 days for last month filter
         }));
 
         earningsWithParsedDates.forEach((earning) => {
@@ -206,6 +213,7 @@ export async function fetchEarningsByModel({
 
         chartData = dateRange;
       } else if (timeDifferenceInMs <= oneYearInMs) {
+        // Group by weeks if less than a year and more than a month
         const weeksBetween = Math.ceil(
           timeDifferenceInMs / (1000 * 3600 * 24 * 7)
         );
@@ -384,6 +392,23 @@ export async function fetchDashboardPageInfo({
   filter: "overall" | "last Month" | "last Week";
 }) {
   try {
+    let dateFilter: Date | undefined;
+    const today = new Date();
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(today.getDate() - 7);
+
+    // Apply date filters based on the selected filter
+    if (filter === "last Week") {
+      dateFilter = sevenDaysAgo;
+    } else if (filter === "last Month") {
+      dateFilter = new Date(
+        today.getFullYear(),
+        today.getMonth() - 1,
+        today.getDate()
+      );
+    }
+
+    // Fetch all earnings and users (models)
     const earnings = await db.earning.findMany();
     const users = await db.model.findMany();
 
@@ -395,21 +420,29 @@ export async function fetchDashboardPageInfo({
     earnings.forEach((item) => {
       const amount = item.amount;
 
-      const user = users.find((user) => user.id === item.modelId);
+      // Convert string date to Date object
+      const createdAtDate = new Date(
+        item.createdAt.split("/").reverse().join("-")
+      );
 
-      total += amount;
+      // If it's not "overall", apply the date filter
+      if (!dateFilter || createdAtDate >= dateFilter) {
+        const user = users.find((user) => user.id === item.modelId);
 
-      if (user) {
-        switch (user.name.toLowerCase()) {
-          case "elenka":
-            elenka += amount;
-            break;
-          case "fionna":
-            fionna += amount;
-            break;
-          case "katte":
-            katte += amount;
-            break;
+        total += amount;
+
+        if (user) {
+          switch (user.name.toLowerCase()) {
+            case "elenka":
+              elenka += amount;
+              break;
+            case "fionna":
+              fionna += amount;
+              break;
+            case "katte":
+              katte += amount;
+              break;
+          }
         }
       }
     });
@@ -427,45 +460,79 @@ export async function fetchDashboardPageInfo({
     throw error;
   }
 }
-
 export async function fetchModelDashboardData({
-  name,
+  modelName,
+  filter,
 }: {
-  name: string | undefined;
+  modelName: string | undefined;
+  filter: "overall" | "last Month" | "last Week";
 }) {
   try {
-    const modelData = await db.model.findUnique({ where: { name } });
-    if (!modelData) throw new Error("Model not found");
+    let dateFilter: Date | undefined;
+    const today = new Date();
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(today.getDate() - 7);
 
-    const earnings = await db.earning.findMany({
-      where: { modelId: modelData.id },
-    });
+    if (filter === "last Week") {
+      dateFilter = sevenDaysAgo;
+    } else if (filter === "last Month") {
+      dateFilter = new Date(
+        today.getFullYear(),
+        today.getMonth() - 1,
+        today.getDate()
+      );
+    }
 
-    const total = earnings.reduce((acc, curr) => acc + Number(curr.total), 0);
-    const formattedTotal = new Intl.NumberFormat().format(total);
+    const models = await db.model.findMany();
+    const earnings = await db.earning.findMany();
 
-    const { balance, hold } = earnings.reduce(
-      (acc, curr) => {
-        if (curr.status === "balance") {
-          acc.balance += Number(curr.total);
-        } else if (curr.status === "hold") {
-          acc.hold += Number(curr.total);
-        }
-        return acc;
-      },
-      { balance: 0, hold: 0 }
+    const model = models.find(
+      (m) => m.name.toLowerCase() === modelName?.toLowerCase()
     );
 
-    const formattedBalance = new Intl.NumberFormat().format(balance);
-    const formattedHold = new Intl.NumberFormat().format(hold);
+    if (!model) {
+      throw new Error(`Model with name ${modelName} not found`);
+    }
+
+    let total = 0;
+    let hold = 0;
+    let balance = 0;
+
+    earnings.forEach((item) => {
+      const amount = item.amount;
+
+      const createdAtDate = new Date(
+        item.createdAt.split("/").reverse().join("-")
+      );
+
+      if (
+        item.modelId === model.id &&
+        (filter === "overall" || (dateFilter && createdAtDate >= dateFilter))
+      ) {
+        total += amount;
+
+        if (item.status.toLowerCase() === "hold") {
+          hold += amount;
+        }
+        if (item.status.toLowerCase() === "balance") {
+          balance += amount;
+        }
+      }
+    });
+
+    if (hold + balance > total) {
+      total = hold + balance;
+    }
+
+    const formatNumber = (num: number) => num.toLocaleString();
 
     return {
-      formattedTotal,
-      formattedBalance,
-      formattedHold,
+      formattedTotal: formatNumber(total),
+      formattedBalance: formatNumber(balance),
+      formattedHold: formatNumber(hold),
     };
   } catch (error) {
-    console.error("Error fetching model dashboard data:", error);
+    console.error("Error fetching model dashboard data", error);
     throw error;
   }
 }
