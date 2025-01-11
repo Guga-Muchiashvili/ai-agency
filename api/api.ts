@@ -154,7 +154,6 @@ export const changeEarningStatus = async (
 ) => {
   const { earningId, newStatus } = variables;
 
-  console.log(earningId, newStatus);
   try {
     const earning = await db.earning.findUnique({
       where: { id: earningId },

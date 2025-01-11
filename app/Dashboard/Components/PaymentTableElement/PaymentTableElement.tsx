@@ -1,14 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
-import { changeEarningStatus } from "@/api/api";
+import React, { useState, useRef } from "react";
 import { FiTrash } from "react-icons/fi";
 import { toast } from "sonner";
-import React, { useState, useRef } from "react";
 import { useGetWorkerById } from "@/queries/useGetWorkerQueru/useGetWorkerQuery";
-
-type ChangeStatusMutationVariables = {
-  earningId: string;
-  newStatus: string;
-};
+import { useChangeEarningStatusMutation } from "@/mutations/mutations";
+import { deleteEarningByNames } from "@/api/api";
 
 const PaymentTableElement = ({
   name,
@@ -37,43 +32,36 @@ const PaymentTableElement = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const { data } = useGetWorkerById({ id: worker });
 
-  const { mutate: changeStatus } = useMutation<
-    {
-      status: string;
-      amount: number;
-      total: string;
-      id: string;
-      workerId: string;
-      createdAt: string;
-      lead: string;
-      modelId: string;
-      percentage: string;
-    },
-    Error,
-    ChangeStatusMutationVariables
-  >({
-    mutationFn: changeEarningStatus,
-    onSuccess: () => {
-      refetchEarnings();
-      toast.success("Status updated successfully", {
-        description: "The earning status was updated.",
-      });
-    },
-    onError: (error) => {
-      alert("Failed to update status");
-      throw error;
-    },
-  });
+  const { mutate: changeStatus } =
+    useChangeEarningStatusMutation(refetchEarnings);
 
   const handleDelete = async () => {
+    if (!id || !worker || !model) {
+      alert("Missing required data to delete the transaction.");
+      return;
+    }
+
     try {
-      toast.success("Transaction removed", {
-        description: "Your transaction was removed.",
+      const response = await deleteEarningByNames({
+        earningId: id,
+        workerId: worker,
+        modelName: model,
       });
-      refetchEarnings();
+
+      if (response?.success) {
+        toast.success("Transaction removed", {
+          description: response.message,
+        });
+        refetchEarnings();
+        setShowModal(false);
+      } else {
+        throw new Error(response?.message || "Failed to delete the earning.");
+      }
     } catch (error) {
-      alert("Failed to delete transaction");
-      throw error;
+      toast.error("Failed to delete transaction", {
+        description: "An error occurred while deleting the earning.",
+      });
+      console.error(error);
     }
   };
 
