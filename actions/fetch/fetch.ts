@@ -81,7 +81,6 @@ export async function fetchEarningsByModel({
     const currentDate = new Date();
     let chartData: { workerName: string; earnings: number[] }[] = [];
 
-    // Helper function to parse date
     function parseDate(dateString: string): Date {
       const [day, month, year] = dateString.split("/").map(Number);
       return new Date(year, month - 1, day);
@@ -104,14 +103,12 @@ export async function fetchEarningsByModel({
     const oneMonthInMs = 1000 * 3600 * 24 * 30;
     const oneYearInMs = oneMonthInMs * 12;
     if (filter === "last Month") {
-      // Filter by the last 30 days
       const lastMonthStart = new Date(currentDate);
-      lastMonthStart.setDate(currentDate.getDate() - 30); // 30 days ago
+      lastMonthStart.setDate(currentDate.getDate() - 30);
 
-      // Create an array with 30 elements for each day of the last month
       const dateRange = workers.map((worker) => ({
         workerName: worker.name,
-        earnings: Array(30).fill(0), // Initialize with 30 days of data
+        earnings: Array(30).fill(0),
       }));
 
       earningsWithParsedDates.forEach((earning) => {
@@ -131,14 +128,13 @@ export async function fetchEarningsByModel({
         }
       });
 
-      chartData = dateRange.reverse(); // Reverse the chartData after filling it
+      chartData = dateRange.reverse();
     } else if (filter === "last Week") {
-      // Filter by the last 7 days
       const lastWeekStart = new Date(currentDate);
-      lastWeekStart.setDate(currentDate.getDate() - 7); // 7 days ago
+      lastWeekStart.setDate(currentDate.getDate() - 7);
       const dateRange = workers.map((worker) => ({
         workerName: worker.name,
-        earnings: Array(7).fill(0), // Initialize with 7 days of data
+        earnings: Array(7).fill(0),
       }));
 
       earningsWithParsedDates.forEach((earning) => {
@@ -160,9 +156,7 @@ export async function fetchEarningsByModel({
 
       chartData = dateRange.reverse();
     } else {
-      // Logic for "overall" filter, including various time difference conditions
       if (timeDifferenceInMs > oneYearInMs) {
-        // Group by months if more than a year ago from the first transaction
         const monthsBetween = Math.ceil(
           timeDifferenceInMs / (1000 * 3600 * 24 * 30)
         );
@@ -190,10 +184,9 @@ export async function fetchEarningsByModel({
           }
         });
       } else if (timeDifferenceInMs <= oneMonthInMs) {
-        // Group by days if less than a month ago from the first transaction
         const dateRange = workers.map((worker) => ({
           workerName: worker.name,
-          earnings: Array(30).fill(0), // 30 days for last month filter
+          earnings: Array(30).fill(0),
         }));
 
         earningsWithParsedDates.forEach((earning) => {
@@ -213,7 +206,6 @@ export async function fetchEarningsByModel({
 
         chartData = dateRange;
       } else if (timeDifferenceInMs <= oneYearInMs) {
-        // Group by weeks if less than a year and more than a month
         const weeksBetween = Math.ceil(
           timeDifferenceInMs / (1000 * 3600 * 24 * 7)
         );
@@ -369,6 +361,8 @@ export async function fetchEarningsByModelGroup({
       });
     });
 
+    console.log(chartData);
+
     return { chartData };
   } catch (error) {
     console.error("Error fetching model earnings:", error);
@@ -397,7 +391,6 @@ export async function fetchDashboardPageInfo({
     const sevenDaysAgo = new Date(today);
     sevenDaysAgo.setDate(today.getDate() - 7);
 
-    // Apply date filters based on the selected filter
     if (filter === "last Week") {
       dateFilter = sevenDaysAgo;
     } else if (filter === "last Month") {
@@ -408,7 +401,6 @@ export async function fetchDashboardPageInfo({
       );
     }
 
-    // Fetch all earnings and users (models)
     const earnings = await db.earning.findMany();
     const users = await db.model.findMany();
 
@@ -420,12 +412,10 @@ export async function fetchDashboardPageInfo({
     earnings.forEach((item) => {
       const amount = item.amount;
 
-      // Convert string date to Date object
       const createdAtDate = new Date(
         item.createdAt.split("/").reverse().join("-")
       );
 
-      // If it's not "overall", apply the date filter
       if (!dateFilter || createdAtDate >= dateFilter) {
         const user = users.find((user) => user.id === item.modelId);
 

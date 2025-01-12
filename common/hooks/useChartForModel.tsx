@@ -48,7 +48,7 @@ const useChartForModels = (
         if (earnings && earnings.length > 0) {
           setLabels(
             Array.from(
-              { length: earnings[0].earnings.length },
+              { length: earnings[1].earnings.length },
               (_, i) => `${i + 1}`
             )
           );
