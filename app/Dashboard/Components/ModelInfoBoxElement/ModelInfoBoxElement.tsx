@@ -17,6 +17,7 @@ const ModelInfoBoxElement = ({
   instagram,
   date,
   workers,
+  paypal,
 }: IModelInfoBoxElementProps) => {
   return (
     <motion.div
@@ -81,6 +82,16 @@ const ModelInfoBoxElement = ({
             className="underline text-xl text-gray-200 cursor-pointer"
           >
             Link
+          </a>
+        </h1>
+        <h1>
+          Paypal :{" "}
+          <a
+            href={paypal}
+            download={true}
+            className="underline text-xl text-gray-200 cursor-pointer"
+          >
+            Download
           </a>
         </h1>
         <h1 className="text-xl">

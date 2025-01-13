@@ -2,7 +2,12 @@
 import ModelInfoBoxElement from "@/app/Dashboard/Components/ModelInfoBoxElement/ModelInfoBoxElement";
 import React, { useEffect, useState } from "react";
 import ChartTableElement from "../../app/Dashboard/Components/ChartTableElement/ChartTableElement";
-import { timePeriods } from "@/common/constants/constants";
+import {
+  ePaypal,
+  fPaypal,
+  kPaypal,
+  timePeriods,
+} from "@/common/constants/constants";
 import { motion } from "framer-motion";
 import { IoFilterSharp } from "react-icons/io5";
 import OutputBoxElement from "@/app/Dashboard/Components/OutputBoxElement/OutputBoxElement";
@@ -15,7 +20,6 @@ import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
 import { useGetEarning } from "@/queries/useGetEarningQuery/useGetEarningQuery";
 import useChartForModels from "@/common/hooks/useChartForModel";
 import { Toaster } from "sonner";
-import { IChartData } from "@/common/types/types";
 
 const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
   const [showFilter, setShowFilter] = useState(true);
@@ -62,13 +66,12 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
     };
   }, [showModal]);
 
-  const chartData =
-    earnings?.chartData?.map((item, i) => ({
-      label: item.workerName,
-      data: item.earnings,
-      borderColor: i == 0 ? "white" : "#DAA520",
-      backgroundColor: i == 0 ? "white" : "#DAA520",
-    })) || ([] as IChartData[]);
+  const chartData = (earnings?.chartData || []).map((item, i) => ({
+    label: item.workerName,
+    data: item.earnings.slice().reverse(),
+    borderColor: i === 0 ? "white" : "#DAA520",
+    backgroundColor: i === 0 ? "white" : "#DAA520",
+  }));
 
   return (
     <div className="w-full h-full flex ">
@@ -164,7 +167,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
             <h1 className="w-[25%] md:w-[14%] text-center">Total</h1>
           </div>
           <div className="w-full flex flex-col gap-12 mt-6 overflow-scroll hide-scrollbar h-[30vh]">
-            {earnings?.earnings?.map((item) => (
+            {earnings?.earnings.map((item) => (
               <PaymentTableElement
                 refetchEarnings={Refetch}
                 model={data?.name}
@@ -194,6 +197,13 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
           date={data?.telegram}
           workers={workerList}
           img={data?.image}
+          paypal={
+            data?.name == "Elenka"
+              ? ePaypal
+              : data?.name == "Fionna"
+              ? fPaypal
+              : kPaypal
+          }
         />
       </div>
     </div>

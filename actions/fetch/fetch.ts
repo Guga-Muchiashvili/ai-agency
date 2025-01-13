@@ -128,7 +128,7 @@ export async function fetchEarningsByModel({
         }
       });
 
-      chartData = dateRange.reverse();
+      chartData = dateRange;
     } else if (filter === "last Week") {
       const lastWeekStart = new Date(currentDate);
       lastWeekStart.setDate(currentDate.getDate() - 7);
@@ -154,7 +154,7 @@ export async function fetchEarningsByModel({
         }
       });
 
-      chartData = dateRange.reverse();
+      chartData = dateRange;
     } else {
       if (timeDifferenceInMs > oneYearInMs) {
         const monthsBetween = Math.ceil(
@@ -235,7 +235,7 @@ export async function fetchEarningsByModel({
       }
     }
 
-    return { earnings: earningsWithParsedDates, chartData };
+    return { earnings: earningsWithParsedDates.slice().reverse(), chartData };
   } catch (error) {
     console.error("Error fetching earnings:", error);
     throw error;
@@ -360,8 +360,6 @@ export async function fetchEarningsByModelGroup({
         earnings: earningsArray,
       });
     });
-
-    console.log(chartData);
 
     return { chartData };
   } catch (error) {

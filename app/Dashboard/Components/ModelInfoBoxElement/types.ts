@@ -8,6 +8,7 @@ export interface IModelInfoBoxElementProps {
   country?: string;
   drive?: string;
   telegram?: string;
+  paypal: string;
   instagram?: { email?: string; password?: string };
   date?: string;
   workers?:
