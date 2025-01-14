@@ -203,8 +203,6 @@ export async function fetchEarningsByModel({
             }
           }
         });
-
-        chartData = dateRange;
       } else if (timeDifferenceInMs <= oneYearInMs) {
         const weeksBetween = Math.ceil(
           timeDifferenceInMs / (1000 * 3600 * 24 * 7)
@@ -235,7 +233,7 @@ export async function fetchEarningsByModel({
       }
     }
 
-    return { earnings: earningsWithParsedDates.slice().reverse(), chartData };
+    return { earnings: earningsWithParsedDates, chartData };
   } catch (error) {
     console.error("Error fetching earnings:", error);
     throw error;
