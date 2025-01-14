@@ -233,7 +233,7 @@ export async function fetchEarningsByModel({
       }
     }
 
-    return { earnings: earningsWithParsedDates, chartData };
+    return { earnings: earningsWithParsedDates.slice().reverse(), chartData };
   } catch (error) {
     console.error("Error fetching earnings:", error);
     throw error;
