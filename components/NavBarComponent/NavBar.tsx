@@ -57,7 +57,7 @@ const NavBar = () => {
       </div>
       <div className="w-[17vw] hidden xl:block p-2 bg-black h-full font-bebas rounded-lg">
         <h1 className="w-full text-center text-4xl pl-2 h-32 flex items-center text-white">
-          AiAgency
+          Model Agency
         </h1>
         <ul className="w-full text-white flex flex-col gap-7">
           {routerLinks.map((item) => (
