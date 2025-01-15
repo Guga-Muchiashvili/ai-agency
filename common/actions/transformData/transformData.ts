@@ -1,7 +1,7 @@
-import sichinava from "../../../public/sicho.jpg";
+import zoro from "../../../public/sicho.png";
 import adesha from "../../../public/adesha.jpg";
 import otari from "../../../public/oto.jpg";
-import kakasha from "../../../public/kakasha.jpg";
+import zangologi from "../../../public/kakasha.png";
 import gega from "../../../public/p3rsi.png";
 
 import { StaticImageData } from "next/image";
@@ -9,10 +9,10 @@ import { FormValues } from "@/components/ModelDashboardComponent/types";
 import { IWorker } from "@/common/types/types";
 
 const nameToImageMap: Record<string, StaticImageData> = {
-  sichinava,
+  zoro,
   adesha,
   otari,
-  kakasha,
+  zangologi,
   gega,
 };
 
