@@ -485,7 +485,7 @@ export async function fetchModelDashboardData({
     let balance = 0;
 
     earnings.forEach((item) => {
-      const amount = item.amount;
+      const amount = item.total;
 
       const createdAtDate = new Date(
         item.createdAt.split("/").reverse().join("-")
@@ -495,13 +495,13 @@ export async function fetchModelDashboardData({
         item.modelId === model.id &&
         (filter === "overall" || (dateFilter && createdAtDate >= dateFilter))
       ) {
-        total += amount;
+        total += Number(amount);
 
         if (item.status.toLowerCase() === "hold") {
-          hold += amount;
+          hold += Number(amount);
         }
         if (item.status.toLowerCase() === "balance") {
-          balance += amount;
+          balance += Number(amount);
         }
       }
     });
