@@ -406,7 +406,7 @@ export async function fetchDashboardPageInfo({
     let katte = 0;
 
     earnings.forEach((item) => {
-      const amount = item.amount;
+      const amount = item.total;
 
       const createdAtDate = new Date(
         item.createdAt.split("/").reverse().join("-")
@@ -415,18 +415,18 @@ export async function fetchDashboardPageInfo({
       if (!dateFilter || createdAtDate >= dateFilter) {
         const user = users.find((user) => user.id === item.modelId);
 
-        total += amount;
+        total += Number(amount);
 
         if (user) {
           switch (user.name.toLowerCase()) {
             case "elenka":
-              elenka += amount;
+              elenka += Number(amount);
               break;
             case "fionna":
-              fionna += amount;
+              fionna += Number(amount);
               break;
             case "katte":
-              katte += amount;
+              katte += Number(amount);
               break;
           }
         }
