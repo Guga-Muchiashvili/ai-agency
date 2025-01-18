@@ -80,6 +80,7 @@ export async function fetchEarningsByModel({
 
     const currentDate = new Date();
     let chartData: { workerName: string; earnings: number[] }[] = [];
+    const chartLabels: string[] = [];
 
     function parseDate(dateString: string): Date {
       const [day, month, year] = dateString.split("/").map(Number);
@@ -102,6 +103,7 @@ export async function fetchEarningsByModel({
       currentDate.getTime() - firstTransactionDate.getTime();
     const oneMonthInMs = 1000 * 3600 * 24 * 30;
     const oneYearInMs = oneMonthInMs * 12;
+
     if (filter === "last Month") {
       const lastMonthStart = new Date(currentDate);
       lastMonthStart.setDate(currentDate.getDate() - 30);
@@ -129,6 +131,12 @@ export async function fetchEarningsByModel({
       });
 
       chartData = dateRange;
+
+      for (let i = 0; i < 30; i++) {
+        const labelDate = new Date(lastMonthStart);
+        labelDate.setDate(lastMonthStart.getDate() + i);
+        chartLabels.push(labelDate.toLocaleDateString());
+      }
     } else if (filter === "last Week") {
       const lastWeekStart = new Date(currentDate);
       lastWeekStart.setDate(currentDate.getDate() - 7);
@@ -155,6 +163,14 @@ export async function fetchEarningsByModel({
       });
 
       chartData = dateRange;
+
+      for (let i = 0; i < 7; i++) {
+        const labelDate = new Date(lastWeekStart);
+        labelDate.setDate(lastWeekStart.getDate() + i);
+        chartLabels.push(
+          labelDate.toLocaleDateString("default", { weekday: "short" })
+        );
+      }
     } else {
       if (timeDifferenceInMs > oneYearInMs) {
         const monthsBetween = Math.ceil(
@@ -183,6 +199,16 @@ export async function fetchEarningsByModel({
             }
           }
         });
+
+        for (let i = 0; i < monthsBetween; i++) {
+          const labelDate = new Date(firstTransactionDate);
+          labelDate.setMonth(firstTransactionDate.getMonth() + i);
+          chartLabels.push(
+            `${labelDate.toLocaleString("default", {
+              month: "short",
+            })} ${labelDate.getFullYear()}`
+          );
+        }
       } else if (timeDifferenceInMs <= oneMonthInMs) {
         const dateRange = workers.map((worker) => ({
           workerName: worker.name,
@@ -203,6 +229,14 @@ export async function fetchEarningsByModel({
             }
           }
         });
+
+        chartData = dateRange;
+
+        for (let i = 0; i < 30; i++) {
+          const labelDate = new Date(currentDate);
+          labelDate.setDate(currentDate.getDate() - i);
+          chartLabels.push(labelDate.toLocaleDateString());
+        }
       } else if (timeDifferenceInMs <= oneYearInMs) {
         const weeksBetween = Math.ceil(
           timeDifferenceInMs / (1000 * 3600 * 24 * 7)
@@ -230,10 +264,27 @@ export async function fetchEarningsByModel({
             }
           }
         });
+
+        for (let i = 0; i < weeksBetween; i++) {
+          const startDate = new Date(firstTransactionDate);
+          startDate.setDate(startDate.getDate() + i * 7);
+          const endDate = new Date(startDate);
+          endDate.setDate(endDate.getDate() + 6);
+          const label = `${startDate.toLocaleString("default", {
+            month: "short",
+          })} ${startDate.getDate()} - ${endDate.toLocaleString("default", {
+            month: "short",
+          })} ${endDate.getDate()}`;
+          chartLabels.push(label);
+        }
       }
     }
 
-    return { earnings: earningsWithParsedDates.slice().reverse(), chartData };
+    return {
+      earnings: earningsWithParsedDates.slice().reverse(),
+      chartData,
+      labels: chartLabels,
+    };
   } catch (error) {
     console.error("Error fetching earnings:", error);
     throw error;
@@ -295,6 +346,92 @@ export async function fetchEarningsByModelGroup({
     } else if (filter === "last Week") {
       arrayLength = 7;
     }
+
+    // Label generator function
+    const generateLabel = (index: number): string => {
+      const labels = [];
+      let startDate: Date;
+      let endDate: Date;
+
+      if (filter === "overall") {
+        if (timeDiffInDays > 365) {
+          startDate = new Date(firstTransactionDate);
+          startDate.setMonth(startDate.getMonth() + index);
+          endDate = new Date(startDate);
+          endDate.setMonth(endDate.getMonth() + 1); // Next month
+          labels.push(
+            `${startDate.toLocaleString("en-US", {
+              month: "short",
+              year: "numeric",
+            })} - ${endDate.toLocaleString("en-US", {
+              month: "short",
+              year: "numeric",
+            })}`
+          );
+        } else if (timeDiffInDays <= 30) {
+          const start = new Date(currentDate);
+          start.setDate(currentDate.getDate() - (30 - index));
+          endDate = new Date(start);
+          endDate.setDate(endDate.getDate() + 1); // Next day
+          labels.push(
+            `${start.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })} - ${endDate.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })}`
+          );
+        } else {
+          startDate = new Date(firstTransactionDate);
+          startDate.setDate(startDate.getDate() + index * 7);
+          endDate = new Date(startDate);
+          endDate.setDate(endDate.getDate() + 7); // Next week
+          labels.push(
+            `${startDate.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })} - ${endDate.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })}`
+          );
+        }
+      } else if (filter === "last Month") {
+        const last30DaysStart = new Date();
+        last30DaysStart.setDate(currentDate.getDate() - 30);
+        startDate = new Date(
+          last30DaysStart.getTime() + index * (1000 * 3600 * 24)
+        );
+        endDate = new Date(startDate.getTime() + 1000 * 3600 * 24); // Next day
+        labels.push(
+          `${startDate.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          })} - ${endDate.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          })}`
+        );
+      } else if (filter === "last Week") {
+        const last7DaysStart = new Date();
+        last7DaysStart.setDate(currentDate.getDate() - 7);
+        startDate = new Date(
+          last7DaysStart.getTime() + index * (1000 * 3600 * 24)
+        );
+        endDate = new Date(startDate.getTime() + 1000 * 3600 * 24); // Next day
+        labels.push(
+          `${startDate.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          })} - ${endDate.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          })}`
+        );
+      }
+      return labels.join(" - ");
+    };
 
     models.forEach((model) => {
       const modelEarnings = earningsWithParsedDates.filter(
@@ -359,7 +496,12 @@ export async function fetchEarningsByModelGroup({
       });
     });
 
-    return { chartData };
+    return {
+      chartData,
+      labels: Array.from({ length: arrayLength }).map((_, index) =>
+        generateLabel(index)
+      ),
+    };
   } catch (error) {
     console.error("Error fetching model earnings:", error);
     throw error;

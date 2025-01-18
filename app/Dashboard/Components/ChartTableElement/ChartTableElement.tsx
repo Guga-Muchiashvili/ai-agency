@@ -40,7 +40,7 @@ const ChartTableElement = ({
   labels,
   dataset,
 }: {
-  labels: string[];
+  labels: string[] | undefined;
   dataset: IChartData[];
 }) => {
   const data = {

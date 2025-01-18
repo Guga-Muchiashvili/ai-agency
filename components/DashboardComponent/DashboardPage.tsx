@@ -11,7 +11,6 @@ import { useGetModels } from "@/queries/useGetModelsQuery/useGetModelsQuery";
 import { transformLeaderboardData } from "../../common/actions/transformData/transformData";
 import { useGetDashboardData } from "@/queries/useGetDashboardQuery/useGetDashboardQuery";
 import { useGetChartEarningData } from "@/queries/useGetChartEarningQuery/useGetChartEarningQuery";
-import useChartForModels from "@/common/hooks/useChartForModel";
 import { IChartData } from "@/common/types/types";
 
 const DashboardPage = ({}) => {
@@ -33,8 +32,6 @@ const DashboardPage = ({}) => {
       borderColor: i == 0 ? "white" : i == 1 ? "#DAA520" : "#9F2B68",
       backgroundColor: i == 0 ? "white" : i == 1 ? "#DAA520" : "#9F2B68",
     })) || ([] as IChartData[]);
-
-  const labels = useChartForModels(filter, chartEarning?.chartData);
 
   const { data: dashboardData } = useGetDashboardData({ filter: filter });
 
@@ -93,7 +90,10 @@ const DashboardPage = ({}) => {
       </div>
       <div className="w-full flex h-full flex-col xl:flex-row">
         <div className="w-full mt-12 xl:mt-0 h-[60vh] xl:w-[75%]">
-          <ChartTableElement dataset={chartData} labels={labels} />
+          <ChartTableElement
+            dataset={chartData}
+            labels={chartEarning?.labels}
+          />
         </div>
         <div
           className="xl:w-[26%] w-full mt-5 xl:mt-0 hide-scrollbar xl:ml-4 overflow-hidden flex flex-col gap-5 p-2 overflow-y-auto"

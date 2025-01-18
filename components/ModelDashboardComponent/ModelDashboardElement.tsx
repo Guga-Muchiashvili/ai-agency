@@ -18,7 +18,6 @@ import { IModelDashboardProps } from "./types";
 import { useGetModelDashboard } from "@/queries/useGetModelDashboardQuery/useGetModelDashboardQuery";
 import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
 import { useGetEarning } from "@/queries/useGetEarningQuery/useGetEarningQuery";
-import useChartForModels from "@/common/hooks/useChartForModel";
 import { Toaster } from "sonner";
 
 const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
@@ -48,8 +47,6 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
     { id: data?.id, name: data?.name },
   ])?.filter((item) => item.model == data?.name);
 
-  const labels = useChartForModels(filter, earnings?.chartData);
-
   const CloseModal = () => {
     setShowModal(false);
   };
@@ -73,8 +70,6 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
     borderColor: i === 0 ? "white" : "#DAA520",
     backgroundColor: i === 0 ? "white" : "#DAA520",
   }));
-
-  console.log(chartData, earnings?.chartData);
   return (
     <div className="w-full h-full flex ">
       <Toaster />
@@ -147,7 +142,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
           />
         </div>
         <div className="w-full h-[50vh]">
-          <ChartTableElement labels={labels} dataset={chartData} />
+          <ChartTableElement labels={earnings?.labels} dataset={chartData} />
         </div>
         <div className="w-full h-fit font-bebas py-2 md:p-4">
           <div className="w-full flex justify-between items-center">
