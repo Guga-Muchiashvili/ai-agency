@@ -1,24 +1,25 @@
 "use client";
-import ModelInfoBoxElement from "@/app/Dashboard/Components/ModelInfoBoxElement/ModelInfoBoxElement";
+import { motion } from "framer-motion";
+import { Toaster } from "sonner";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { IoFilterSharp } from "react-icons/io5";
+import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
+import { useGetEarning } from "@/queries/useGetEarningQuery/useGetEarningQuery";
+import { IModelDashboardProps } from "./types";
+import { useGetModelDashboard } from "@/queries/useGetModelDashboardQuery/useGetModelDashboardQuery";
+import { transformLeaderboardData } from "../../common/actions/transformData/transformData";
 import React, { useEffect, useState } from "react";
+import OutputBoxElement from "@/app/Dashboard/Components/OutputBoxElement/OutputBoxElement";
 import ChartTableElement from "../../app/Dashboard/Components/ChartTableElement/ChartTableElement";
+import ModelInfoBoxElement from "@/app/Dashboard/Components/ModelInfoBoxElement/ModelInfoBoxElement";
+import PaymentTableElement from "@/app/Dashboard/Components/PaymentTableElement/PaymentTableElement";
+import PaymentModalElement from "@/app/Dashboard/Components/PaymentModalElement/PaymentModalElement";
 import {
   ePaypal,
   fPaypal,
   kPaypal,
   timePeriods,
 } from "@/common/constants/constants";
-import { motion } from "framer-motion";
-import { IoFilterSharp } from "react-icons/io5";
-import OutputBoxElement from "@/app/Dashboard/Components/OutputBoxElement/OutputBoxElement";
-import PaymentTableElement from "@/app/Dashboard/Components/PaymentTableElement/PaymentTableElement";
-import { transformLeaderboardData } from "../../common/actions/transformData/transformData";
-import PaymentModalElement from "@/app/Dashboard/Components/PaymentModalElement/PaymentModalElement";
-import { IModelDashboardProps } from "./types";
-import { useGetModelDashboard } from "@/queries/useGetModelDashboardQuery/useGetModelDashboardQuery";
-import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
-import { useGetEarning } from "@/queries/useGetEarningQuery/useGetEarningQuery";
-import { Toaster } from "sonner";
 
 const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
   const [showFilter, setShowFilter] = useState(true);
@@ -26,6 +27,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
     "overall"
   );
   const [showModal, setShowModal] = useState(false);
+  const [showModalInfo, setShowModalInfo] = useState(false);
 
   const { data: DashboardData, refetch } = useGetModelDashboard({
     name: data?.name,
@@ -52,7 +54,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
   };
 
   useEffect(() => {
-    if (showModal) {
+    if (showModal || showModalInfo) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
@@ -61,7 +63,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [showModal]);
+  }, [showModal, showModalInfo]);
 
   const chartData = (earnings?.chartData || []).map((item, i) => ({
     label: item.workerName,
@@ -71,7 +73,43 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
     backgroundColor: i === 0 ? "white" : "#DAA520",
   }));
   return (
-    <div className="w-full h-full flex ">
+    <div className="w-full h-full flex">
+      <div className="fixed w-10 h-10 bottom-3 flex items-center justify-center right-3 z-40 rounded-full bg-white lg:hidden">
+        {showModalInfo ? (
+          <FaArrowRight
+            className="text-xl"
+            onClick={() => setShowModalInfo(false)}
+          />
+        ) : (
+          <FaArrowLeft
+            className="text-xl"
+            onClick={() => setShowModalInfo(true)}
+          />
+        )}
+      </div>
+      {showModalInfo && (
+        <div className="absolute w-full h-full top-0 left-0 bg-black z-30">
+          <ModelInfoBoxElement
+            age={data?.age}
+            country={data?.country}
+            description={data?.description}
+            drive={data?.drive}
+            instagram={{ email: data?.email, password: data?.password }}
+            name={data?.name}
+            telegram={data?.telegram}
+            date={data?.telegram}
+            workers={workerList}
+            img={data?.image}
+            paypal={
+              data?.name == "Elenka"
+                ? ePaypal
+                : data?.name == "Fionna"
+                ? fPaypal
+                : kPaypal
+            }
+          />
+        </div>
+      )}
       <Toaster />
       {showModal && (
         <div className="fixed flex items-center justify-center w-full h-full top-0 left-0 bg-black bg-opacity-55 z-40">
@@ -83,7 +121,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
           />
         </div>
       )}
-      <div className="w-full lg:w-3/4 flex hide-scrollbar h-fit gap-4 p-2 flex-col">
+      <div className="w-[95vw] lg:w-3/4 flex hide-scrollbar h-fit gap-4 p-2 flex-col">
         <div className="ml-auto flex relative gap-2 pr-2">
           <div
             className={`w-fit flex items-center gap-2 flex-wrap ${

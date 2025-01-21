@@ -36,7 +36,7 @@ const DashboardPage = ({}) => {
   const { data: dashboardData } = useGetDashboardData({ filter: filter });
 
   return (
-    <div className="text-white w-full min-h-fit flex flex-col py-4">
+    <div className="text-white w-[98vw] xl:w-[80vw] min-h-fit flex flex-col py-4">
       <div className="w-full h-[20vh] lg:h-[28vh] relative flex flex-col">
         <div className="ml-auto flex relative gap-2 pr-2">
           <div

@@ -34,6 +34,24 @@ export const options = {
       text: "",
     },
   },
+  scales: {
+    x: {
+      ticks: {
+        font: {
+          size: 10,
+        },
+        maxRotation: 0,
+        minRotation: 0,
+      },
+    },
+    y: {
+      ticks: {
+        font: {
+          size: 12,
+        },
+      },
+    },
+  },
 };
 
 const ChartTableElement = ({
