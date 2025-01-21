@@ -184,9 +184,9 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
         </div>
         <div className="w-full h-fit font-bebas py-2 md:p-4">
           <div className="w-full flex justify-between items-center">
-            <h1 className="text-4xl text-white">Transactions</h1>
+            <h1 className="text-2xl md:text-4xl text-white">Transactions</h1>
             <button
-              className="px-3 py-1 bg-slate-100 text-ბლაცკ rounded-lg text-xl"
+              className="px-3 py-1 bg-slate-100 rounded-lg text-xl"
               onClick={() => setShowModal(true)}
             >
               Add Transaction

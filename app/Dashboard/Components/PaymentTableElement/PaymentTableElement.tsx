@@ -112,10 +112,10 @@ const PaymentTableElement = ({
         <h1 className="w-[25%] md:w-[14%] text-center">{date}</h1>
         <h1 className="hidden md:block w-[14%] text-center">{amount}$</h1>
         <h1 className="hidden md:block w-[14%] text-center">{perc}%</h1>
-        <h1 className="w-[25%] md:w-[14%] text-center text-2xl text-green-400">
+        <h1 className="w-[25%] md:w-[14%] text-center text-2xl text-green-400 pr-1">
           {total}$
         </h1>
-        <div className="absolute right-[-1px] flex group">
+        <div className="absolute right-[-3px] flex group">
           <FiTrash
             className="text-white cursor-pointer"
             onClick={() => setShowModal(true)}
