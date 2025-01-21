@@ -56,6 +56,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
   useEffect(() => {
     if (showModal || showModalInfo) {
       document.body.style.overflow = "hidden";
+      window.scrollTo(0, 0);
     } else {
       document.body.style.overflow = "auto";
     }
@@ -74,7 +75,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
   }));
   return (
     <div className="w-full h-full flex">
-      <div className="fixed w-10 h-10 bottom-3 flex items-center justify-center right-3 z-40 rounded-full bg-white lg:hidden">
+      <div className="fixed w-10 h-10 bottom-3 flex items-center justify-center right-3 z-[1000] rounded-full bg-white lg:hidden">
         {showModalInfo ? (
           <FaArrowRight
             className="text-xl"
@@ -88,31 +89,34 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
         )}
       </div>
       {showModalInfo && (
-        <div className="absolute w-full h-full top-0 left-0 bg-black z-30">
-          <ModelInfoBoxElement
-            age={data?.age}
-            country={data?.country}
-            description={data?.description}
-            drive={data?.drive}
-            instagram={{ email: data?.email, password: data?.password }}
-            name={data?.name}
-            telegram={data?.telegram}
-            date={data?.telegram}
-            workers={workerList}
-            img={data?.image}
-            paypal={
-              data?.name == "Elenka"
-                ? ePaypal
-                : data?.name == "Fionna"
-                ? fPaypal
-                : kPaypal
-            }
-          />
+        <div className="modal-overlay">
+          <div className="scrollable-modal">
+            <ModelInfoBoxElement
+              age={data?.age}
+              country={data?.country}
+              description={data?.description}
+              drive={data?.drive}
+              instagram={{ email: data?.email, password: data?.password }}
+              name={data?.name}
+              telegram={data?.telegram}
+              date={data?.telegram}
+              workers={workerList}
+              img={data?.image}
+              paypal={
+                data?.name === "Elenka"
+                  ? ePaypal
+                  : data?.name === "Fionna"
+                  ? fPaypal
+                  : kPaypal
+              }
+            />
+          </div>
         </div>
       )}
+
       <Toaster />
       {showModal && (
-        <div className="fixed flex items-center justify-center w-full h-full top-0 left-0 bg-black bg-opacity-55 z-40">
+        <div className="fixed flex items-center justify-center w-full h-full top-0 left-0 bg-black bg-opacity-55 z-50">
           <PaymentModalElement
             workers={workerList}
             changeModal={CloseModal}
