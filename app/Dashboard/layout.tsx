@@ -11,7 +11,7 @@ export default function DashboardLayout({
     <div style={{ display: "flex", height: "100vh", padding: "10px" }}>
       <NavBar />
       <Toaster />
-      <main style={{}}>{children}</main>
+      <main>{children}</main>
     </div>
   );
 }
