@@ -125,7 +125,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
           />
         </div>
       )}
-      <div className="w-[95vw] lg:w-3/4 flex hide-scrollbar h-fit gap-4 p-2 flex-col">
+      <div className="w-[95vw] lg:w-full flex hide-scrollbar h-fit gap-4 p-2 flex-col">
         <div className="ml-auto flex relative gap-2 pr-2">
           <div
             className={`w-fit flex items-center gap-2 flex-wrap ${

@@ -24,7 +24,7 @@ const ModelInfoBoxElement = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="w-full text-center text-white h-full p-2 font-bebas"
+      className="w-[20vw] text-center text-white h-full p-2 font-bebas"
     >
       <motion.div
         whileHover={{ scale: 1.1 }}
