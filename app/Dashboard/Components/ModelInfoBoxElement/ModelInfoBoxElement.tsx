@@ -33,7 +33,7 @@ const ModelInfoBoxElement = ({
       >
         <Image
           src={
-            name == "stasia"
+            name == "Stasia"
               ? kattia.src
               : name == "Fionna"
               ? fionna.src
