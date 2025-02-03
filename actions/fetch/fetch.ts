@@ -242,6 +242,7 @@ export async function fetchEarningsByModel({
           labelDate.setDate(currentDate.getDate() - i);
           chartLabels.push(labelDate.toLocaleDateString());
         }
+        chartLabels.reverse();
       } else if (timeDifferenceInMs <= oneYearInMs) {
         const weeksBetween = Math.ceil(
           timeDifferenceInMs / (1000 * 3600 * 24 * 7)
