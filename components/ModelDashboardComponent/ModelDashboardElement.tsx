@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Toaster } from "sonner";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { IoFilterSharp } from "react-icons/io5";
-import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
 import { useGetEarning } from "@/queries/useGetEarningQuery/useGetEarningQuery";
 import { IModelDashboardProps } from "./types";
 import { useGetModelDashboard } from "@/queries/useGetModelDashboardQuery/useGetModelDashboardQuery";
@@ -20,6 +19,7 @@ import {
   kPaypal,
   timePeriods,
 } from "@/common/constants/constants";
+import { useGetWorkersByModel } from "@/queries/useGetWorkersByModel/useGetWorkersByModel";
 
 const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
   const [showFilter, setShowFilter] = useState(true);
@@ -33,11 +33,14 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
     name: data?.name,
     filter,
   });
-  const { data: workers, refetch: workersRefetch } = useGetWorkers();
   const { data: earnings, refetch: earningData } = useGetEarning({
     id: data?.id,
     filter,
   });
+
+  const { data: WorkersData, refetch: workersRefetch } = useGetWorkersByModel(
+    data?.id
+  );
 
   const Refetch = () => {
     refetch();
@@ -45,7 +48,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
     earningData();
   };
 
-  const workerList = transformLeaderboardData(workers, [
+  const workerList = transformLeaderboardData(WorkersData, [
     { id: data?.id, name: data?.name },
   ])?.filter((item) => item.model == data?.name);
 

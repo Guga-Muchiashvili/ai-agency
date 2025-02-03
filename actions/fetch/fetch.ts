@@ -669,3 +669,44 @@ export async function fetchModelDashboardData({
     throw error;
   }
 }
+
+export const getWorkersByModel = async (modelId: string | undefined) => {
+  try {
+    const workers = await db.worker.findMany({
+      where: { modelId },
+    });
+
+    const model = await db.model.findUnique({
+      where: { id: modelId },
+    });
+
+    const result = await Promise.all(
+      workers.map(async (worker) => {
+        const earnings = await db.earning.findMany({
+          where: { workerId: worker.id },
+        });
+
+        const totalProfit = earnings.reduce((acc, earning) => {
+          const percentage = Number(earning.percentage) - 3.5;
+          const profit =
+            (parseFloat(earning.amount.toString()) * percentage) / 100;
+          return acc + profit;
+        }, 0);
+
+        return {
+          id: worker.id,
+          modelId: model?.id,
+          name: worker.name,
+          profit: totalProfit.toFixed(2),
+        };
+      })
+    );
+
+    return result;
+  } catch (error) {
+    console.error("Error fetching workers by model:", error);
+    return [];
+  } finally {
+    await db.$disconnect();
+  }
+};

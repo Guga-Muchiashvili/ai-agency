@@ -18,7 +18,12 @@ const nameToImageMap: Record<string, StaticImageData> = {
 
 export const transformLeaderboardData = (
   workers:
-    | { id: string; name: string; modelId: string; profit: number | string }[]
+    | {
+        id: string;
+        name: string;
+        modelId: string | undefined;
+        profit: number | string;
+      }[]
     | undefined,
   models:
     | {
