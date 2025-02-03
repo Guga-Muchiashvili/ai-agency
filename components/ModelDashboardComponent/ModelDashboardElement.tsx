@@ -73,6 +73,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
     borderColor: i === 0 ? "white" : "#DAA520",
     backgroundColor: i === 0 ? "white" : "#DAA520",
   }));
+
   return (
     <div className="w-full h-full flex">
       <div className="fixed w-10 h-10 bottom-3 flex items-center justify-center right-3 z-[1000] rounded-full bg-white lg:hidden">

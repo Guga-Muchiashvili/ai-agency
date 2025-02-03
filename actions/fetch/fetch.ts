@@ -63,6 +63,7 @@ export async function fetchWorkersById({ id }: { id: string | undefined }) {
     throw error;
   }
 }
+
 export async function fetchEarningsByModel({
   id,
   filter,
@@ -210,7 +211,7 @@ export async function fetchEarningsByModel({
           );
         }
       } else if (timeDifferenceInMs <= oneMonthInMs) {
-        const dateRange = workers.map((worker) => ({
+        let dateRange = workers.map((worker) => ({
           workerName: worker.name,
           earnings: Array(30).fill(0),
         }));
@@ -227,6 +228,10 @@ export async function fetchEarningsByModel({
             if (workerIndex !== -1) {
               dateRange[workerIndex].earnings[daysAgo] += Number(earning.total);
             }
+            dateRange = dateRange.map((item) => ({
+              earnings: item.earnings.reverse(),
+              workerName: item.workerName,
+            }));
           }
         });
 
@@ -347,7 +352,6 @@ export async function fetchEarningsByModelGroup({
       arrayLength = 7;
     }
 
-    // Label generator function
     const generateLabel = (index: number): string => {
       const labels = [];
       let startDate: Date;
@@ -358,7 +362,7 @@ export async function fetchEarningsByModelGroup({
           startDate = new Date(firstTransactionDate);
           startDate.setMonth(startDate.getMonth() + index);
           endDate = new Date(startDate);
-          endDate.setMonth(endDate.getMonth() + 1); // Next month
+          endDate.setMonth(endDate.getMonth() + 1);
           labels.push(
             `${startDate.toLocaleString("en-US", {
               month: "short",
@@ -372,7 +376,7 @@ export async function fetchEarningsByModelGroup({
           const start = new Date(currentDate);
           start.setDate(currentDate.getDate() - (30 - index));
           endDate = new Date(start);
-          endDate.setDate(endDate.getDate() + 1); // Next day
+          endDate.setDate(endDate.getDate() + 1);
           labels.push(
             `${start.toLocaleDateString("en-US", {
               month: "short",
@@ -386,7 +390,7 @@ export async function fetchEarningsByModelGroup({
           startDate = new Date(firstTransactionDate);
           startDate.setDate(startDate.getDate() + index * 7);
           endDate = new Date(startDate);
-          endDate.setDate(endDate.getDate() + 7); // Next week
+          endDate.setDate(endDate.getDate() + 7);
           labels.push(
             `${startDate.toLocaleDateString("en-US", {
               month: "short",
@@ -403,7 +407,7 @@ export async function fetchEarningsByModelGroup({
         startDate = new Date(
           last30DaysStart.getTime() + index * (1000 * 3600 * 24)
         );
-        endDate = new Date(startDate.getTime() + 1000 * 3600 * 24); // Next day
+        endDate = new Date(startDate.getTime() + 1000 * 3600 * 24);
         labels.push(
           `${startDate.toLocaleDateString("en-US", {
             month: "short",
@@ -419,7 +423,7 @@ export async function fetchEarningsByModelGroup({
         startDate = new Date(
           last7DaysStart.getTime() + index * (1000 * 3600 * 24)
         );
-        endDate = new Date(startDate.getTime() + 1000 * 3600 * 24); // Next day
+        endDate = new Date(startDate.getTime() + 1000 * 3600 * 24);
         labels.push(
           `${startDate.toLocaleDateString("en-US", {
             month: "short",
