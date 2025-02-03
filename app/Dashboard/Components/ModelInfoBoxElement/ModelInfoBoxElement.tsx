@@ -5,6 +5,7 @@ import LeaderBoardElement from "../LeaderBoardElement/LeaderBoardElement";
 import { motion } from "framer-motion";
 import fionna from "../../../../public/fionna.png";
 import kattia from "../../../../public/kattia.png";
+import Elenka from "../../../../public/elenka.jpg";
 
 const ModelInfoBoxElement = ({
   img,
@@ -32,10 +33,12 @@ const ModelInfoBoxElement = ({
       >
         <Image
           src={
-            name == "Katte"
+            name == "stasia"
               ? kattia.src
               : name == "Fionna"
               ? fionna.src
+              : name == "Elenka"
+              ? Elenka.src
               : img ||
                 "https://www.google.com/search?q=default+image+pfp&oq=default+image+pfp&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQLhhA0gEIMzMxOWowajGoAgCwAgA&sourceid=chrome&ie=UTF-8#vhid=JNzXO3Fe39JcaM&vssid=_Oyt9Z8qDMPqGkdUPldr0iQo_40"
           }
