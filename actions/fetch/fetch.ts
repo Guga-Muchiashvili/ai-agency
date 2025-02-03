@@ -1,5 +1,6 @@
 "use server";
 
+import { transformLeaderboardData } from "@/common/actions/transformData/transformData";
 import { db } from "@/common/utils/db";
 
 export async function fetchModels() {
@@ -550,7 +551,7 @@ export async function fetchDashboardPageInfo({
     let total = 0;
     let elenka = 0;
     let fionna = 0;
-    let katte = 0;
+    let Stasia = 0;
 
     earnings.forEach((item) => {
       const amount = item.total;
@@ -572,8 +573,8 @@ export async function fetchDashboardPageInfo({
             case "fionna":
               fionna += Number(amount);
               break;
-            case "katte":
-              katte += Number(amount);
+            case "stasia":
+              Stasia += Number(amount);
               break;
           }
         }
@@ -586,7 +587,7 @@ export async function fetchDashboardPageInfo({
       { name: filter, money: formatNumber(total) },
       { name: "Elenka", money: formatNumber(elenka) },
       { name: "Fionna", money: formatNumber(fionna) },
-      { name: "Katte", money: formatNumber(katte) },
+      { name: "Stasia", money: formatNumber(Stasia) },
     ];
   } catch (error) {
     console.error("Error fetching dashboard", error);
@@ -705,6 +706,49 @@ export const getWorkersByModel = async (modelId: string | undefined) => {
     return result;
   } catch (error) {
     console.error("Error fetching workers by model:", error);
+    return [];
+  } finally {
+    await db.$disconnect();
+  }
+};
+
+export const getAllModelsWithWorkers = async () => {
+  try {
+    const models = await db.model.findMany();
+    const workers = await db.worker.findMany();
+    const earnings = await db.earning.findMany();
+
+    const data = models
+      .map((model) => {
+        const modelWorkers = workers.filter(
+          (worker) => worker.modelId === model.id
+        );
+
+        return modelWorkers.map((worker) => {
+          const workerEarnings = earnings.filter(
+            (earning) => earning.workerId === worker.id
+          );
+
+          const totalProfit = workerEarnings.reduce((acc, earning) => {
+            const percentage = Number(earning.percentage) - 3.5;
+            const profit =
+              (parseFloat(earning.amount.toString()) * percentage) / 100;
+            return acc + profit;
+          }, 0);
+
+          return {
+            id: worker.id,
+            modelId: model.id,
+            name: worker.name,
+            profit: totalProfit.toFixed(2),
+          };
+        });
+      })
+      .flat();
+
+    return transformLeaderboardData(data, models);
+  } catch (error) {
+    console.error("Error fetching all models with workers:", error);
     return [];
   } finally {
     await db.$disconnect();

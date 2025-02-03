@@ -6,12 +6,10 @@ import React, { useState } from "react";
 import { IoFilterSharp } from "react-icons/io5";
 import ChartTableElement from "../../app/Dashboard/Components/ChartTableElement/ChartTableElement";
 import { motion } from "framer-motion";
-import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
-import { useGetModels } from "@/queries/useGetModelsQuery/useGetModelsQuery";
-import { transformLeaderboardData } from "../../common/actions/transformData/transformData";
 import { useGetDashboardData } from "@/queries/useGetDashboardQuery/useGetDashboardQuery";
 import { useGetChartEarningData } from "@/queries/useGetChartEarningQuery/useGetChartEarningQuery";
 import { IChartData } from "@/common/types/types";
+import { useGetWorkersLeaderboard } from "@/queries/useGetWorkerLeaderBoardQuery/useGetWorkersLeaderboard";
 
 const DashboardPage = ({}) => {
   const [showFilter, setShowFilter] = useState(true);
@@ -19,10 +17,8 @@ const DashboardPage = ({}) => {
     "overall"
   );
 
-  const { data } = useGetWorkers();
-  const { data: models } = useGetModels();
+  const { data: workers } = useGetWorkersLeaderboard();
 
-  const workers = transformLeaderboardData(data, models);
   const { data: chartEarning } = useGetChartEarningData({ filter });
 
   const chartData =

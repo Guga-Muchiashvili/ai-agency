@@ -50,7 +50,8 @@ export const createEarning = async ({
 
     const profit =
       worker?.profit &&
-      Number(worker?.profit) + (Number(total) / 100) * (Number(percentage) - 3);
+      Number(worker?.profit) +
+        (Number(total) / 100) * (Number(percentage) - 3.5);
 
     const updatedWorkerEarnings = worker?.earnings
       ? [...worker.earnings, newEarning.id]
@@ -118,7 +119,7 @@ export const deleteEarningByNames = async ({
     );
     let updatedProfit = worker.profit ? Number(worker.profit) : 0;
 
-    updatedProfit -= (Number(total) / 100) * (Number(percentage) - 3);
+    updatedProfit -= (Number(total) / 100) * (Number(percentage) - 3.5);
 
     await db.worker.update({
       where: { id: worker.id },
