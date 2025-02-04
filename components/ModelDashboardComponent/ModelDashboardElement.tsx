@@ -33,6 +33,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
     name: data?.name,
     filter,
   });
+
   const { data: earnings, refetch: earningData } = useGetEarning({
     id: data?.id,
     filter,
@@ -50,7 +51,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
 
   const workerList = transformLeaderboardData(WorkersData, [
     { id: data?.id, name: data?.name },
-  ])?.filter((item) => item.model == data?.name);
+  ])?.filter((item) => item.model == data?.name && item.name !== "Admin");
 
   const CloseModal = () => {
     setShowModal(false);

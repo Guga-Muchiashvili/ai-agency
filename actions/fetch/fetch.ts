@@ -76,9 +76,11 @@ export async function fetchEarningsByModel({
     const earnings = await db.earning.findMany({
       where: { modelId: id },
     });
-    const workers = await db.worker.findMany({
+    let workers = await db.worker.findMany({
       where: { modelId: id },
     });
+
+    workers = workers.filter((item) => item.name !== "Admin");
 
     const currentDate = new Date();
     let chartData: { workerName: string; earnings: number[] }[] = [];
@@ -212,9 +214,11 @@ export async function fetchEarningsByModel({
           );
         }
       } else if (timeDifferenceInMs <= oneMonthInMs) {
-        let dateRange = workers.map((worker) => ({
+        const numberOfDays = Math.ceil(timeDifferenceInMs / (1000 * 3600 * 24));
+
+        const dateRange = workers.map((worker) => ({
           workerName: worker.name,
-          earnings: Array(30).fill(0),
+          earnings: Array(numberOfDays).fill(0),
         }));
 
         earningsWithParsedDates.forEach((earning) => {
@@ -222,28 +226,24 @@ export async function fetchEarningsByModel({
           const daysAgo = Math.floor(
             (currentDate.getTime() - earningDate.getTime()) / (1000 * 3600 * 24)
           );
-          if (daysAgo < 30) {
+
+          if (daysAgo < numberOfDays) {
             const workerIndex = workers.findIndex(
               (worker) => worker.id === earning.workerId
             );
             if (workerIndex !== -1) {
               dateRange[workerIndex].earnings[daysAgo] += Number(earning.total);
             }
-            dateRange = dateRange.map((item) => ({
-              earnings: item.earnings.reverse(),
-              workerName: item.workerName,
-            }));
           }
         });
 
         chartData = dateRange;
 
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < numberOfDays; i++) {
           const labelDate = new Date(currentDate);
-          labelDate.setDate(currentDate.getDate() - i);
+          labelDate.setDate(currentDate.getDate() - (numberOfDays - i));
           chartLabels.push(labelDate.toLocaleDateString());
         }
-        chartLabels.reverse();
       } else if (timeDifferenceInMs <= oneYearInMs) {
         const weeksBetween = Math.ceil(
           timeDifferenceInMs / (1000 * 3600 * 24 * 7)
@@ -715,8 +715,10 @@ export const getWorkersByModel = async (modelId: string | undefined) => {
 export const getAllModelsWithWorkers = async () => {
   try {
     const models = await db.model.findMany();
-    const workers = await db.worker.findMany();
+    let workers = await db.worker.findMany();
     const earnings = await db.earning.findMany();
+
+    workers = workers.filter((item) => item.name !== "Admin");
 
     const data = models
       .map((model) => {
