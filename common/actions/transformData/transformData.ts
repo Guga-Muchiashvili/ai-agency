@@ -35,7 +35,6 @@ export const transformLeaderboardData = (
 ) => {
   const data = workers
     ?.map((item) => {
-      console.log(item.name);
       const profitNumber =
         typeof item.profit === "string" ? parseFloat(item.profit) : item.profit;
       const formattedProfit = profitNumber.toLocaleString();
