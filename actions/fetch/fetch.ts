@@ -237,7 +237,7 @@ export async function fetchEarningsByModel({
           }
         });
 
-        chartData = dateRange;
+        chartData = dateRange.reverse();
 
         for (let i = 0; i < numberOfDays; i++) {
           const labelDate = new Date(currentDate);
@@ -690,7 +690,7 @@ export const getWorkersByModel = async (modelId: string | undefined) => {
         const totalProfit = earnings.reduce((acc, earning) => {
           const percentage = Number(earning.percentage) - 3.5;
           const profit =
-            (parseFloat(earning.amount.toString()) * percentage) / 100;
+            (parseFloat(earning.total.toString()) * percentage) / 100;
           return acc + profit;
         }, 0);
 
@@ -734,7 +734,7 @@ export const getAllModelsWithWorkers = async () => {
           const totalProfit = workerEarnings.reduce((acc, earning) => {
             const percentage = Number(earning.percentage) - 3.5;
             const profit =
-              (parseFloat(earning.amount.toString()) * percentage) / 100;
+              (parseFloat(earning.total.toString()) * percentage) / 100;
             return acc + profit;
           }, 0);
 

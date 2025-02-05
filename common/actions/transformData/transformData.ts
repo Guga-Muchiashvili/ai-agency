@@ -1,19 +1,20 @@
 import zoro from "../../../public/sicho.png";
-import adesha from "../../../public/adesha.jpg";
-import otari from "../../../public/oto.jpg";
 import zangologi from "../../../public/kakasha.png";
 import gega from "../../../public/p3rsi.png";
-
+import Ilo from "../../../public/ilo.png";
+import Kira from "../../../public/kira.png";
+import vano from "../../../public/vano.png";
 import { StaticImageData } from "next/image";
 import { FormValues } from "@/components/ModelDashboardComponent/types";
 import { IWorker } from "@/common/types/types";
 
 const nameToImageMap: Record<string, StaticImageData> = {
   zoro,
-  adesha,
-  otari,
   zangologi,
   gega,
+  Ilo,
+  Kira,
+  vano,
 };
 
 export const transformLeaderboardData = (
@@ -34,6 +35,7 @@ export const transformLeaderboardData = (
 ) => {
   const data = workers
     ?.map((item) => {
+      console.log(item.name);
       const profitNumber =
         typeof item.profit === "string" ? parseFloat(item.profit) : item.profit;
       const formattedProfit = profitNumber.toLocaleString();
