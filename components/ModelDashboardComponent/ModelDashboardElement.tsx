@@ -72,11 +72,12 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
 
   const chartData = (earnings?.chartData || []).map((item, i) => ({
     label: item.workerName,
-    data:
-      filter !== "overall" ? item.earnings.slice().reverse() : item.earnings,
+    data: item.earnings.slice().reverse(),
     borderColor: i === 0 ? "white" : "#DAA520",
     backgroundColor: i === 0 ? "white" : "#DAA520",
   }));
+
+  console.log(chartData);
 
   return (
     <div className="w-full h-full flex">

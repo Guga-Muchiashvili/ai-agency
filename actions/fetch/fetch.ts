@@ -237,7 +237,7 @@ export async function fetchEarningsByModel({
           }
         });
 
-        chartData = dateRange.reverse();
+        chartData = dateRange;
 
         for (let i = 0; i < numberOfDays; i++) {
           const labelDate = new Date(currentDate);
