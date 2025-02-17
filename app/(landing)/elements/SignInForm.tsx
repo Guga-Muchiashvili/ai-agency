@@ -16,7 +16,7 @@ const SignInForm = () => {
   };
 
   const validatePassword = () => {
-    if (password.length < 6) {
+    if (password.length < 3) {
       setError(true);
       return false;
     }
