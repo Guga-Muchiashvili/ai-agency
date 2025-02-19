@@ -72,7 +72,7 @@ const ModelDashboardElement = ({ data }: IModelDashboardProps) => {
 
   const chartData = (earnings?.chartData || []).map((item, i) => ({
     label: item.workerName,
-    data: item.earnings.slice().reverse(),
+    data: item.earnings,
     borderColor: i === 0 ? "white" : "#DAA520",
     backgroundColor: i === 0 ? "white" : "#DAA520",
   }));
