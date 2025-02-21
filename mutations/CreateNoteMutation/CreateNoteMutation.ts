@@ -2,7 +2,6 @@ import { addNoteToLead } from "@/api/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-// Custom hook for creating a note
 export default function useCreateNote() {
   const queryClient = useQueryClient();
 
