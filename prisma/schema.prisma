@@ -42,3 +42,15 @@ model Worker {
   name     String
   profit   String
 }
+
+model Lead {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  img       String
+  modelId   String[]
+  workerId  String   
+  notes     Json 
+  active    Boolean    
+  seen      Boolean
+  description String
+}

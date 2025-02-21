@@ -1,6 +1,6 @@
 "use server";
 import { ChangeStatusMutationVariables } from "@/app/Dashboard/Components/PaymentTableElement/types";
-import { IWorker } from "@/common/types/types";
+import { Iearning } from "@/common/types/types";
 import { db } from "@/common/utils/db";
 import { IdeleteEarningByNamesProps } from "./types";
 
@@ -13,7 +13,7 @@ export const createEarning = async ({
   total,
   workerId,
   modelId,
-}: IWorker) => {
+}: Iearning) => {
   try {
     const newEarning = await db.earning.create({
       data: {

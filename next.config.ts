@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
       "www.google.com",
       "via.placeholder.com",
       "",
+      "imagekit.io",
+      "web.telegram.org",
+      "gratisography.com",
     ],
   },
   webpack: (config) => {

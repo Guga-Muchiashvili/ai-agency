@@ -759,3 +759,27 @@ export const getAllModelsWithWorkers = async () => {
     await db.$disconnect();
   }
 };
+
+export async function fetchLeads() {
+  try {
+    const leads = await db.lead.findMany();
+    return leads;
+  } catch (error) {
+    console.error("Error fetching leads:", error);
+    throw error;
+  }
+}
+
+export async function fetchLeadById({ id }: { id: string | undefined }) {
+  try {
+    const Lead = await db.lead.findMany({
+      where: {
+        id: id,
+      },
+    });
+    return Lead;
+  } catch (error) {
+    console.error("Error fetching Lead:", error);
+    throw error;
+  }
+}

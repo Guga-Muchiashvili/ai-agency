@@ -6,7 +6,7 @@ import Kira from "../../../public/kira.png";
 import vano from "../../../public/vano.png";
 import { StaticImageData } from "next/image";
 import { FormValues } from "@/components/ModelDashboardComponent/types";
-import { IWorker } from "@/common/types/types";
+import { Iearning } from "@/common/types/types";
 
 const nameToImageMap: Record<string, StaticImageData> = {
   zoro,
@@ -81,7 +81,7 @@ export const TransformEarningFormData = (
     percentage: `${data.percentage}`,
     total: `${data.total}`,
     lead: data.name,
-  } as IWorker;
+  } as Iearning;
 
   return finalData;
 };
