@@ -9,14 +9,10 @@ import Image from "next/image";
 import React from "react";
 
 const LeadsComponent = () => {
-  const onChange = () => {
-    console.log("hello");
-  };
+  const onChange = () => {};
 
   const models = useGetModels();
   const workers = useGetWorkers();
-
-  console.log(workers.data);
 
   return (
     <div className="text-white w-[98vw] xl:w-[80vw] min-h-fit flex flex-col gap-3 py-4 font-bebas">

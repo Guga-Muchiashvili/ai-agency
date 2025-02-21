@@ -1,5 +1,12 @@
 "use client";
-import { Imodel, Iworker } from "@/common/types/types";
+import FormComponent from "@/common/context/FormProvider";
+import DropdownFieldElement from "@/common/elements/dropDownElement/DropDownElement";
+import MultiSelectFieldElement from "@/common/elements/MultiSelectElement/MultiSelectElement";
+import TextFieldElementComponent from "@/common/elements/textInputElement/TextInputElement";
+import ToggleElementComponent from "@/common/elements/toggleElement/ToggleElement";
+import { LeadSchema } from "@/common/schema";
+import { IFormLead, Imodel, Iworker } from "@/common/types/types";
+import { yupResolver } from "@hookform/resolvers/yup";
 import {
   FormControl,
   InputLabel,
@@ -8,7 +15,8 @@ import {
   TextField,
   SelectChangeEvent,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { useForm, UseFormReturn } from "react-hook-form";
 
 const LeadFilterElement = ({
   onModelChange,
@@ -21,6 +29,32 @@ const LeadFilterElement = ({
 }) => {
   const [selectedModel, setSelectedModel] = useState("");
   const [selectedWorker, setSelectedWorker] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  const methods: UseFormReturn<IFormLead> = useForm({
+    resolver: yupResolver(LeadSchema),
+    defaultValues: {
+      active: false,
+      description: "",
+      img: "",
+      modelId: [],
+      name: "",
+      seen: false,
+      workerId: "",
+    },
+  });
+
+  const submit = (data: IFormLead) => {
+    console.log(data);
+  };
+
+  const modelOptions = models?.map((item) => ({
+    value: item.id,
+    label: item.name,
+  }));
+
+  const workerOptions = workers?.map((item) => item.name);
 
   const handleModelChange = (event: SelectChangeEvent<string>) => {
     const value = event.target.value;
@@ -30,6 +64,16 @@ const LeadFilterElement = ({
 
   const handleWorkerChange = (event: SelectChangeEvent<string>) => {
     setSelectedWorker(event.target.value);
+  };
+
+  const handleAddLead = () => {
+    setShowModal(true);
+  };
+
+  const handleClickOutside = (event: React.MouseEvent) => {
+    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      setShowModal(false);
+    }
   };
 
   return (
@@ -50,7 +94,7 @@ const LeadFilterElement = ({
         className="border-b-2 border-white w-[250px] xl:w-[350px]"
       />
 
-      <div className="flex gap-5">
+      <div className="flex gap-5 items-center">
         <FormControl sx={{ minWidth: 120, maxWidth: 180 }}>
           <InputLabel id="model-select-label" style={{ color: "white" }}>
             Model
@@ -108,7 +152,61 @@ const LeadFilterElement = ({
             ))}
           </Select>
         </FormControl>
+        <div
+          className="h-12 text-2xl flex items-center justify-center cursor-pointer w-fit px-6 rounded-xl bg-white text-black"
+          onClick={handleAddLead}
+        >
+          <h1>Add Lead</h1>
+        </div>
       </div>
+
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black z-30 bg-opacity-50 flex justify-center items-center"
+          onClick={handleClickOutside}
+        >
+          <div
+            ref={modalRef}
+            className="bg-white p-6 rounded-lg flex flex-col items-center w-[90vw] md:w-[65vw] lg:w-[40vw]"
+          >
+            <h2 className="text-2xl text-gray-800">Add New Lead</h2>
+            <FormComponent
+              methods={methods}
+              submit={methods.handleSubmit(submit)}
+            >
+              <TextFieldElementComponent label="name" name="name" />
+              <TextFieldElementComponent label="image" name="img" />
+              <TextFieldElementComponent
+                label="description"
+                name="description"
+              />
+              <div className="w-full flex gap-5">
+                <MultiSelectFieldElement
+                  label="Model"
+                  name="modelId"
+                  options={modelOptions}
+                />
+                <DropdownFieldElement
+                  label="worker"
+                  name="workerId"
+                  options={workerOptions}
+                />
+              </div>
+
+              <div className="w-full flex gap-5">
+                <ToggleElementComponent label="isActive" name="active" />
+                <ToggleElementComponent label="isSeen" name="seen" />
+              </div>
+              <button
+                type="submit"
+                className="mt-5 p-2 bg-black w-32 text-white rounded-md"
+              >
+                Submit
+              </button>
+            </FormComponent>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

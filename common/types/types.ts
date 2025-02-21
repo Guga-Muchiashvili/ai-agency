@@ -41,3 +41,25 @@ export interface Iworker {
   name: string;
   profit: string;
 }
+
+export interface ILead {
+  id: string;
+  name: string;
+  img: string;
+  modelId: string[];
+  workerId: string;
+  notes: JSON;
+  active: boolean;
+  seen: boolean;
+  description: string;
+}
+
+export interface IFormLead {
+  name: string;
+  img: string;
+  modelId: string[];
+  workerId: string;
+  active: boolean;
+  seen: boolean;
+  description?: string;
+}
