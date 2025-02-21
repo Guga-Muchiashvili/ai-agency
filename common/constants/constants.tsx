@@ -1,4 +1,5 @@
-export const routerLinks = ["Dashboard", "Elenka", "Fionna", "Stasia", "Leads"];
+export const routerLinks = ["Dashboard", "Elenka", "Fionna", "Stasia"];
+export const AdditionalLinks = ["Leads"];
 export const timePeriods = ["overall", "last Month", "last Week"];
 export const ePaypal = "/files/e-paypal.txt";
 export const fPaypal = "/files/f-paypal.txt";

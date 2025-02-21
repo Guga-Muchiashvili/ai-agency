@@ -1,5 +1,5 @@
 "use client";
-import { routerLinks } from "@/common/constants/constants";
+import { AdditionalLinks, routerLinks } from "@/common/constants/constants";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoMenu } from "react-icons/io5";
@@ -69,9 +69,30 @@ const NavBar = () => {
                 item.toLowerCase() === "dashboard"
                   ? "bg-slate-100 text-black"
                   : currentPath === `/Dashboard/${item}`
-                  ? "bg-slate-100 text-black"
+                  ? "bg-slate-100 text-black px-3"
                   : ""
-              } hover:bg-slate-200 hover:text-black duration-700 ease-out rounded-lg px-3 text-sm md:text-2xl`}
+              } hover:bg-slate-200 hover:text-black duration-700 ease-out rounded-lg px-8 text-sm md:text-2xl`}
+            >
+              {item}
+            </li>
+          ))}
+        </ul>
+        <h1 className="w-full text-center text-4xl pl-2 h-32 flex items-center text-white">
+          Additional
+        </h1>
+        <ul className="w-full text-white flex flex-col gap-7">
+          {AdditionalLinks.map((item) => (
+            <li
+              key={item}
+              onClick={() => handleClick(item)}
+              className={`w-full py-2 cursor-pointer ${
+                currentPath === `/Dashboard` &&
+                item.toLowerCase() === "dashboard"
+                  ? "bg-slate-100 text-black"
+                  : currentPath === `/Dashboard/${item}`
+                  ? "bg-slate-100 text-black  px-3"
+                  : ""
+              } hover:bg-slate-200 hover:text-black duration-700 ease-out rounded-lg px-8 w-fit text-sm md:text-2xl`}
             >
               {item}
             </li>

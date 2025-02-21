@@ -1,6 +1,6 @@
 "use server";
 import { ChangeStatusMutationVariables } from "@/app/Dashboard/Components/PaymentTableElement/types";
-import { Iearning } from "@/common/types/types";
+import { Iearning, IFormLead } from "@/common/types/types";
 import { db } from "@/common/utils/db";
 import { IdeleteEarningByNamesProps } from "./types";
 
@@ -193,5 +193,109 @@ export const changeEarningStatus = async (
   } catch (error) {
     console.error("Error changing earning status:", error);
     throw new Error("Failed to change earning status");
+  }
+};
+
+export const createLead = async ({
+  name,
+  img,
+  modelId,
+  workerId,
+  active,
+  seen,
+  description,
+}: IFormLead) => {
+  try {
+    const worker = await db.worker.findFirst({
+      where: { name: workerId },
+    });
+
+    if (!worker) {
+      throw new Error("Worker not found");
+    }
+
+    const newLead = await db.lead.create({
+      data: {
+        name,
+        img,
+        modelId,
+        workerId: worker.id,
+        active,
+        seen,
+        description,
+        notes: JSON.stringify(""),
+      },
+    });
+
+    return newLead;
+  } catch (error) {
+    console.error("Error creating lead:", error);
+    throw new Error("Failed to create lead");
+  }
+};
+
+export const deleteLead = async (leadId: string) => {
+  try {
+    const lead = await db.lead.findUnique({
+      where: { id: leadId },
+    });
+
+    if (!lead) {
+      throw new Error("Lead not found");
+    }
+
+    await db.lead.delete({
+      where: { id: leadId },
+    });
+
+    return { success: true, message: "Lead deleted successfully" };
+  } catch (error) {
+    console.error("Error deleting lead:", error);
+    throw new Error("Failed to delete lead");
+  }
+};
+
+export const addNoteToLead = async (params: {
+  leadId: string;
+  noteContent: string;
+}) => {
+  const { leadId, noteContent } = params;
+  try {
+    const date = new Date().toISOString();
+
+    const lead = await db.lead.findUnique({
+      where: { id: leadId },
+    });
+
+    if (!lead) {
+      throw new Error("Lead not found");
+    }
+
+    let existingNotes = lead.notes;
+
+    if (!Array.isArray(existingNotes)) {
+      existingNotes = [];
+    }
+
+    const newNoteWithDate = {
+      content: noteContent,
+      date: date,
+    };
+
+    const updatedNotes = [...existingNotes, newNoteWithDate];
+
+    await db.lead.update({
+      where: { id: leadId },
+      data: {
+        notes: updatedNotes,
+      },
+    });
+
+    return {
+      success: true,
+      message: "Note added successfully",
+    };
+  } catch (error) {
+    throw new Error(`Error adding note: ${error}`);
   }
 };

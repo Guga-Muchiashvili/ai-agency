@@ -1,3 +1,5 @@
+import { JsonValue } from "@prisma/client/runtime/library";
+
 export interface FormElementProps {
   name: string;
   label: string;
@@ -43,15 +45,15 @@ export interface Iworker {
 }
 
 export interface ILead {
-  id: string;
-  name: string;
+  modelId: (string | null)[];
+  workerId: string | null;
   img: string;
-  modelId: string[];
-  workerId: string;
-  notes: JSON;
+  id: string;
+  description: string;
+  name: string;
+  notes: JsonValue;
   active: boolean;
   seen: boolean;
-  description: string;
 }
 
 export interface IFormLead {
@@ -61,5 +63,5 @@ export interface IFormLead {
   workerId: string;
   active: boolean;
   seen: boolean;
-  description?: string;
+  description: string;
 }

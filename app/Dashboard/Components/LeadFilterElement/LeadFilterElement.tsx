@@ -1,11 +1,12 @@
 "use client";
 import FormComponent from "@/common/context/FormProvider";
 import DropdownFieldElement from "@/common/elements/dropDownElement/DropDownElement";
-import MultiSelectFieldElement from "@/common/elements/MultiSelectElement/MultiSelectElement";
+import MultiSelectFieldElement from "@/common/elements/multiSelectElement/MultiSelectElement";
 import TextFieldElementComponent from "@/common/elements/textInputElement/TextInputElement";
 import ToggleElementComponent from "@/common/elements/toggleElement/ToggleElement";
 import { LeadSchema } from "@/common/schema";
 import { IFormLead, Imodel, Iworker } from "@/common/types/types";
+import useCreateLead from "@/mutations/CreateLeadMutation/createLeadMutation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   FormControl,
@@ -15,7 +16,7 @@ import {
   TextField,
   SelectChangeEvent,
 } from "@mui/material";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
 
 const LeadFilterElement = ({
@@ -32,6 +33,8 @@ const LeadFilterElement = ({
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
+  const { mutate: addLead, isSuccess } = useCreateLead();
+
   const methods: UseFormReturn<IFormLead> = useForm({
     resolver: yupResolver(LeadSchema),
     defaultValues: {
@@ -45,9 +48,20 @@ const LeadFilterElement = ({
     },
   });
 
-  const submit = (data: IFormLead) => {
-    console.log(data);
+  const submit = async (data: IFormLead) => {
+    try {
+      addLead(data);
+    } catch (err) {
+      console.error("Error adding lead:", err);
+    }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setShowModal(false);
+      methods.reset();
+    }
+  }, [isSuccess, setShowModal, methods]);
 
   const modelOptions = models?.map((item) => ({
     value: item.id,
@@ -73,6 +87,7 @@ const LeadFilterElement = ({
   const handleClickOutside = (event: React.MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
       setShowModal(false);
+      methods.reset();
     }
   };
 

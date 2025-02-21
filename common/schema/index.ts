@@ -39,5 +39,5 @@ export const LeadSchema = yup.object().shape({
   workerId: yup.string().required("Worker ID is required"),
   active: yup.boolean().required("Active status is required"),
   seen: yup.boolean().required("Seen status is required"),
-  description: yup.string(),
+  description: yup.string().required("Description is required"),
 });

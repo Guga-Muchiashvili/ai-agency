@@ -134,7 +134,10 @@ export async function fetchEarningsByModel({
         }
       });
 
-      chartData = dateRange;
+      chartData = dateRange.map((item) => ({
+        ...item,
+        earnings: item.earnings.slice().reverse(),
+      }));
 
       for (let i = 0; i < 30; i++) {
         const labelDate = new Date(lastMonthStart);
@@ -166,7 +169,10 @@ export async function fetchEarningsByModel({
         }
       });
 
-      chartData = dateRange;
+      chartData = dateRange.map((item) => ({
+        ...item,
+        earnings: item.earnings.slice().reverse(),
+      }));
 
       for (let i = 0; i < 7; i++) {
         const labelDate = new Date(lastWeekStart);
@@ -763,7 +769,28 @@ export const getAllModelsWithWorkers = async () => {
 export async function fetchLeads() {
   try {
     const leads = await db.lead.findMany();
-    return leads;
+    const models = await db.model.findMany();
+    const workers = await db.worker.findMany();
+
+    const leadsWithDetails = leads.map((lead) => {
+      const modelNames = lead.modelId
+        .map((modelId) => {
+          const model = models.find((item) => item.id === modelId);
+          return model ? model.name : null;
+        })
+        .filter(Boolean);
+
+      const worker = workers.find((worker) => worker.id === lead.workerId);
+      const workerName = worker ? worker.name : null;
+
+      return {
+        ...lead,
+        modelId: modelNames,
+        workerId: workerName,
+      };
+    });
+
+    return leadsWithDetails;
   } catch (error) {
     console.error("Error fetching leads:", error);
     throw error;
@@ -772,12 +799,28 @@ export async function fetchLeads() {
 
 export async function fetchLeadById({ id }: { id: string | undefined }) {
   try {
-    const Lead = await db.lead.findMany({
+    const models = await db.model.findMany();
+    const workers = await db.worker.findMany();
+
+    const lead = await db.lead.findUnique({
       where: {
         id: id,
       },
     });
-    return Lead;
+
+    if (!lead) {
+      throw new Error("Lead not found");
+    }
+
+    const modelNames = lead.modelId.map((modelId) => {
+      const model = models.find((item) => item.id === modelId);
+      return model ? model.name : null;
+    });
+
+    const worker = workers.find((worker) => worker.id === lead.workerId);
+    const workerName = worker ? worker.name : null;
+
+    return { ...lead, modelId: modelNames, workerId: workerName };
   } catch (error) {
     console.error("Error fetching Lead:", error);
     throw error;

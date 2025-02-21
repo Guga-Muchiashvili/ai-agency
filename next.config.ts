@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       "imagekit.io",
       "web.telegram.org",
       "gratisography.com",
+      "cdn-icons-png.flaticon.com",
     ],
   },
   webpack: (config) => {
