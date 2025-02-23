@@ -1,7 +1,7 @@
 "use client";
 import FormComponent from "@/common/context/FormProvider";
 import DropdownFieldElement from "@/common/elements/dropDownElement/DropDownElement";
-import { MultiSelect } from "@/common/elements/multiSelectElement";
+import { MultiSelect } from "@/app/Dashboard/Components/LeadFilterElement/MultiSelectElement";
 import TextFieldElementComponent from "@/common/elements/textInputElement/TextInputElement";
 import ToggleElementComponent from "@/common/elements/toggleElement/ToggleElement";
 import { LeadSchema } from "@/common/schema";
