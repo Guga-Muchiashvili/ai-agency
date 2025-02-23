@@ -1,7 +1,7 @@
 "use client";
 import FormComponent from "@/common/context/FormProvider";
 import DropdownFieldElement from "@/common/elements/dropDownElement/DropDownElement";
-import MultiSelectFieldElement from "@/common/elements/multiSelectElement/MultiSelectElement";
+import { MultiSelect } from "@/common/elements/multiSelectElement";
 import TextFieldElementComponent from "@/common/elements/textInputElement/TextInputElement";
 import ToggleElementComponent from "@/common/elements/toggleElement/ToggleElement";
 import { LeadSchema } from "@/common/schema";
@@ -196,7 +196,7 @@ const LeadFilterElement = ({
                 name="description"
               />
               <div className="w-full flex gap-5">
-                <MultiSelectFieldElement
+                <MultiSelect
                   label="Model"
                   name="modelId"
                   options={modelOptions}
