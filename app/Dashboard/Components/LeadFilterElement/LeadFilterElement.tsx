@@ -14,22 +14,29 @@ import {
   MenuItem,
   Select,
   TextField,
-  SelectChangeEvent,
 } from "@mui/material";
 import React, { useState, useRef, useEffect } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
 
 const LeadFilterElement = ({
-  onModelChange,
+  onFilterChange,
   models,
   workers,
 }: {
-  onModelChange: (value: string) => void;
+  onFilterChange: (filters: {
+    workerName: string;
+    modelName: string;
+    leadName: string;
+  }) => void;
   models: Imodel[] | undefined;
   workers: Iworker[] | undefined;
 }) => {
-  const [selectedModel, setSelectedModel] = useState("");
-  const [selectedWorker, setSelectedWorker] = useState("");
+  const [filters, setFilters] = useState({
+    workerName: "",
+    modelName: "",
+    leadName: "",
+  });
+  const [debouncedSearch, setDebouncedSearch] = useState(filters.leadName);
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -61,7 +68,7 @@ const LeadFilterElement = ({
       setShowModal(false);
       methods.reset();
     }
-  }, [isSuccess, setShowModal, methods]);
+  }, [isSuccess, methods]);
 
   const modelOptions = models?.map((item) => ({
     value: item.id,
@@ -70,14 +77,27 @@ const LeadFilterElement = ({
 
   const workerOptions = workers?.map((item) => item.name);
 
-  const handleModelChange = (event: SelectChangeEvent<string>) => {
-    const value = event.target.value;
-    setSelectedModel(value);
-    onModelChange(value);
-  };
+  useEffect(() => {
+    onFilterChange(filters);
+  }, [filters, onFilterChange]);
 
-  const handleWorkerChange = (event: SelectChangeEvent<string>) => {
-    setSelectedWorker(event.target.value);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        leadName: debouncedSearch,
+      }));
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [debouncedSearch]);
+
+  const handleFilterChange = (field: string, value: string) => {
+    if (field === "leadName") {
+      setDebouncedSearch(value);
+    } else {
+      setFilters((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleAddLead = () => {
@@ -93,22 +113,29 @@ const LeadFilterElement = ({
 
   return (
     <div className="w-full h-fit flex md:flex-row flex-col items-center gap-4 justify-between px-4 rounded-2xl shadow-lg">
-      <TextField
-        id="outlined-basic"
-        label="Search"
-        variant="standard"
-        InputLabelProps={{
-          style: { color: "white" },
-        }}
-        InputProps={{
-          style: {
-            color: "white",
-            borderBottom: "2px solid white",
-          },
-        }}
-        className="border-b-2 border-white w-[250px] xl:w-[350px]"
-      />
-
+      <div className="flex items-end gap-3 justify-end">
+        <TextField
+          id="search"
+          label="Search"
+          variant="standard"
+          value={debouncedSearch}
+          onChange={(e) => handleFilterChange("leadName", e.target.value)}
+          InputLabelProps={{ style: { color: "white" } }}
+          InputProps={{
+            style: {
+              color: "white",
+              borderBottom: "2px solid white",
+            },
+          }}
+          className="border-b-2 border-white w-[250px] xl:w-[350px]"
+        />
+        <div
+          className="h-8 text-md items-center justify-center cursor-pointer w-16 rounded-xl bg-white text-black flex md:hidden"
+          onClick={handleAddLead}
+        >
+          <h1>Add Lead</h1>
+        </div>
+      </div>
       <div className="flex gap-5 items-center">
         <FormControl sx={{ minWidth: 120, maxWidth: 180 }}>
           <InputLabel id="model-select-label" style={{ color: "white" }}>
@@ -117,22 +144,17 @@ const LeadFilterElement = ({
           <Select
             labelId="model-select-label"
             id="model-select"
-            value={selectedModel}
-            label="Model"
-            onChange={handleModelChange}
+            value={filters.modelName}
+            onChange={(e) => handleFilterChange("modelName", e.target.value)}
             className="text-white"
             sx={{
-              "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
-              },
-              "& .MuiSvgIcon-root": {
-                color: "white",
-              },
+              "& .MuiOutlinedInput-notchedOutline": { borderColor: "white" },
+              "& .MuiSvgIcon-root": { color: "white" },
               color: "white",
             }}
           >
             {models?.map((item) => (
-              <MenuItem value={item.id} key={item.id}>
+              <MenuItem value={item.name} key={item.id}>
                 {item.name}
               </MenuItem>
             ))}
@@ -146,29 +168,24 @@ const LeadFilterElement = ({
           <Select
             labelId="worker-select-label"
             id="worker-select"
-            value={selectedWorker}
-            label="Worker"
-            onChange={handleWorkerChange}
+            value={filters.workerName}
+            onChange={(e) => handleFilterChange("workerName", e.target.value)}
             className="text-white"
             sx={{
-              "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "white",
-              },
-              "& .MuiSvgIcon-root": {
-                color: "white",
-              },
+              "& .MuiOutlinedInput-notchedOutline": { borderColor: "white" },
+              "& .MuiSvgIcon-root": { color: "white" },
               color: "white",
             }}
           >
             {workers?.map((item) => (
-              <MenuItem value={item.id} key={item.id}>
+              <MenuItem value={item.name} key={item.id}>
                 {item.name}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
         <div
-          className="h-12 text-2xl flex items-center justify-center cursor-pointer w-fit px-6 rounded-xl bg-white text-black"
+          className="h-12 text-2xl items-center justify-center cursor-pointer w-fit px-6 rounded-xl bg-white text-black hidden md:flex"
           onClick={handleAddLead}
         >
           <h1>Add Lead</h1>

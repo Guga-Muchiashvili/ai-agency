@@ -766,8 +766,14 @@ export const getAllModelsWithWorkers = async () => {
   }
 };
 
-export async function fetchLeads() {
+export async function fetchLeads(searchParams: {
+  workerName: string;
+  modelName: string;
+  leadName: string;
+}) {
   try {
+    const { workerName, modelName, leadName } = searchParams;
+
     const leads = await db.lead.findMany();
     const models = await db.model.findMany();
     const workers = await db.worker.findMany();
@@ -790,7 +796,16 @@ export async function fetchLeads() {
       };
     });
 
-    return leadsWithDetails;
+    const filteredLeads = leadsWithDetails.filter((lead) => {
+      const matchesWorker = workerName ? lead.workerId === workerName : true;
+      const matchesModel = modelName ? lead.modelId.includes(modelName) : true;
+      const matchesLeadName = leadName
+        ? lead.name.toLowerCase().includes(leadName.toLowerCase())
+        : true;
+      return matchesWorker && matchesModel && matchesLeadName;
+    });
+
+    return filteredLeads;
   } catch (error) {
     console.error("Error fetching leads:", error);
     throw error;

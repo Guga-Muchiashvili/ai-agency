@@ -2,19 +2,23 @@
 
 import LeadFilterElement from "@/app/Dashboard/Components/LeadFilterElement/LeadFilterElement";
 import { useGetModels } from "@/queries/useGetModelsQuery/useGetModelsQuery";
-import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
 import React, { useState } from "react";
 import { useGetLeads } from "@/queries/useGetLeadsQuery/useGetLeadsQuery";
 import useDeleteLead from "@/mutations/DeleteLeadMutation/DeleteLeadMutation";
 import CheckModal from "@/common/elements/checkModal/CheckModal";
 import LeadCardComponent from "@/app/Dashboard/Components/LeadCardComponent/LeadCardComponent";
+import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
 
 const LeadsComponent = () => {
-  const onChange = () => {};
+  const [searchParams, setSearchParams] = useState({
+    workerName: "",
+    modelName: "",
+    leadName: "",
+  });
 
   const models = useGetModels();
   const workers = useGetWorkers();
-  const { data: leads, refetch } = useGetLeads();
+  const { data: leads, refetch } = useGetLeads(searchParams);
   const { mutate: deleteLeadMutation } = useDeleteLead();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
@@ -39,7 +43,7 @@ const LeadsComponent = () => {
   return (
     <div className="text-white w-[98vw] xl:w-[80vw] min-h-fit flex flex-col gap-3 py-4 font-bebas">
       <LeadFilterElement
-        onModelChange={onChange}
+        onFilterChange={setSearchParams}
         models={models.data}
         workers={workers.data}
       />
@@ -52,7 +56,6 @@ const LeadsComponent = () => {
           />
         ))}
       </div>
-
       <CheckModal
         isOpen={isModalOpen}
         onClose={closeModal}
