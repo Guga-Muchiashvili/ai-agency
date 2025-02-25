@@ -58,7 +58,6 @@ export interface ILead {
 
 export interface IFormLead {
   name: string;
-  img: string;
   modelId: string[];
   workerId: string;
   active: boolean;

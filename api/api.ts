@@ -204,7 +204,7 @@ export const createLead = async ({
   active,
   seen,
   description,
-}: IFormLead) => {
+}: IFormLead & { img: string }) => {
   try {
     const worker = await db.worker.findFirst({
       where: { name: workerId },

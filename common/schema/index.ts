@@ -27,10 +27,6 @@ export const PaymentSchema = () => {
 
 export const LeadSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
-  img: yup
-    .string()
-    .url("Image URL is invalid")
-    .required("Image URL is required"),
   modelId: yup
     .array()
     .of(yup.string().required("Model ID is required"))

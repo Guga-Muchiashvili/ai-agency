@@ -107,7 +107,7 @@ const PaymentTableElement = ({
         </div>
 
         <h1 className="w-[25%] md:w-[14%] text-center">
-          {data && data[0].name}
+          {(data && data[0]?.name && data[0].name) || "Unknown"}
         </h1>
         <h1 className="w-[25%] md:w-[14%] text-center">{date}</h1>
         <h1 className="hidden md:block w-[14%] text-center">{amount}$</h1>

@@ -6,7 +6,11 @@ import { IFormLead } from "@/common/types/types";
 export default function useCreateLead() {
   const queryClient = useQueryClient();
 
-  return useMutation<IFormLead, Error, IFormLead>({
+  return useMutation<
+    IFormLead & { img: string },
+    Error,
+    IFormLead & { img: string }
+  >({
     mutationFn: createLead,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["leads"] });

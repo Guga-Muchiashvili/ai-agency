@@ -15,8 +15,10 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
+import { createAvatar } from "@dicebear/core";
+import { initials } from "@dicebear/collection";
 
 const LeadFilterElement = ({
   onFilterChange,
@@ -47,7 +49,6 @@ const LeadFilterElement = ({
     defaultValues: {
       active: false,
       description: "",
-      img: "",
       modelId: [],
       name: "",
       seen: false,
@@ -55,9 +56,22 @@ const LeadFilterElement = ({
     },
   });
 
+  const name = methods.watch("name");
+
+  const avatar = useMemo(() => {
+    return createAvatar(initials, {
+      size: 128,
+      seed: name,
+    }).toDataUri();
+  }, [name]);
+
   const submit = async (data: IFormLead) => {
+    const finalData = {
+      ...data,
+      img: avatar,
+    };
     try {
-      addLead(data);
+      addLead(finalData);
     } catch (err) {
       console.error("Error adding lead:", err);
     }
@@ -207,7 +221,6 @@ const LeadFilterElement = ({
               submit={methods.handleSubmit(submit)}
             >
               <TextFieldElementComponent label="name" name="name" />
-              <TextFieldElementComponent label="image" name="img" />
               <TextFieldElementComponent
                 label="description"
                 name="description"
