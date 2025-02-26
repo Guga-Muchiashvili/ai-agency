@@ -42,6 +42,7 @@ export interface Iworker {
   modelId: string;
   name: string;
   profit: string;
+  active: boolean;
 }
 
 export interface ILead {

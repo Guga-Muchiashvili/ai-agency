@@ -41,6 +41,7 @@ model Worker {
   modelId  String
   name     String
   profit   String
+  active   Boolean
 }
 
 model Lead {

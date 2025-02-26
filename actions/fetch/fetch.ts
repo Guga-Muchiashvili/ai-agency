@@ -690,8 +690,10 @@ export const getWorkersByModel = async (modelId: string | undefined) => {
       where: { id: modelId },
     });
 
+    const updatedWorkers = workers.filter((item) => item.active);
+
     const result = await Promise.all(
-      workers.map(async (worker) => {
+      updatedWorkers.map(async (worker) => {
         const earnings = await db.earning.findMany({
           where: { workerId: worker.id },
         });
@@ -727,7 +729,7 @@ export const getAllModelsWithWorkers = async () => {
     let workers = await db.worker.findMany();
     const earnings = await db.earning.findMany();
 
-    workers = workers.filter((item) => item.name !== "Admin");
+    workers = workers.filter((item) => item.name !== "Admin" && item.active);
 
     const data = models
       .map((model) => {
