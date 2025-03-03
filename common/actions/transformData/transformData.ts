@@ -4,6 +4,7 @@ import gega from "../../../public/p3rsi.png";
 import Ilo from "../../../public/ilo.png";
 import Kira from "../../../public/kira.png";
 import vano from "../../../public/vano.png";
+import Lexo from "../../../public/Lexo.png";
 import { StaticImageData } from "next/image";
 import { FormValues } from "@/components/ModelDashboardComponent/types";
 import { Iearning } from "@/common/types/types";
@@ -15,6 +16,7 @@ const nameToImageMap: Record<string, StaticImageData> = {
   Ilo,
   Kira,
   vano,
+  Lexo,
 };
 
 export const transformLeaderboardData = (

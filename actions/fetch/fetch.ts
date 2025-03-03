@@ -306,7 +306,6 @@ export async function fetchEarningsByModel({
     throw error;
   }
 }
-
 export async function fetchEarningsByModelGroup({
   filter,
 }: {
@@ -345,17 +344,10 @@ export async function fetchEarningsByModelGroup({
     let arrayLength = 0;
 
     if (filter === "overall") {
-      if (timeDiffInDays > 365) {
-        const totalMonths =
-          (currentDate.getFullYear() - firstTransactionDate.getFullYear()) *
-            12 +
-          (currentDate.getMonth() - firstTransactionDate.getMonth()) +
-          1;
-        arrayLength = totalMonths;
-      } else if (timeDiffInDays <= 30) {
-        arrayLength = 30;
+      if (timeDiffInDays > 30) {
+        arrayLength = Math.ceil(timeDiffInDays / 14);
       } else {
-        arrayLength = Math.ceil(timeDiffInDays / 7);
+        arrayLength = timeDiffInDays;
       }
     } else if (filter === "last Month") {
       arrayLength = 30;
@@ -364,89 +356,26 @@ export async function fetchEarningsByModelGroup({
     }
 
     const generateLabel = (index: number): string => {
-      const labels = [];
-      let startDate: Date;
-      let endDate: Date;
-
-      if (filter === "overall") {
-        if (timeDiffInDays > 365) {
-          startDate = new Date(firstTransactionDate);
-          startDate.setMonth(startDate.getMonth() + index);
-          endDate = new Date(startDate);
-          endDate.setMonth(endDate.getMonth() + 1);
-          labels.push(
-            `${startDate.toLocaleString("en-US", {
-              month: "short",
-              year: "numeric",
-            })} - ${endDate.toLocaleString("en-US", {
-              month: "short",
-              year: "numeric",
-            })}`
-          );
-        } else if (timeDiffInDays <= 30) {
-          const start = new Date(currentDate);
-          start.setDate(currentDate.getDate() - (30 - index));
-          endDate = new Date(start);
-          endDate.setDate(endDate.getDate() + 1);
-          labels.push(
-            `${start.toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })} - ${endDate.toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })}`
-          );
-        } else {
-          startDate = new Date(firstTransactionDate);
-          startDate.setDate(startDate.getDate() + index * 7);
-          endDate = new Date(startDate);
-          endDate.setDate(endDate.getDate() + 7);
-          labels.push(
-            `${startDate.toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })} - ${endDate.toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })}`
-          );
-        }
-      } else if (filter === "last Month") {
-        const last30DaysStart = new Date();
-        last30DaysStart.setDate(currentDate.getDate() - 30);
-        startDate = new Date(
-          last30DaysStart.getTime() + index * (1000 * 3600 * 24)
-        );
-        endDate = new Date(startDate.getTime() + 1000 * 3600 * 24);
-        labels.push(
-          `${startDate.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          })} - ${endDate.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          })}`
-        );
-      } else if (filter === "last Week") {
-        const last7DaysStart = new Date();
-        last7DaysStart.setDate(currentDate.getDate() - 7);
-        startDate = new Date(
-          last7DaysStart.getTime() + index * (1000 * 3600 * 24)
-        );
-        endDate = new Date(startDate.getTime() + 1000 * 3600 * 24);
-        labels.push(
-          `${startDate.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          })} - ${endDate.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          })}`
-        );
-      }
-      return labels.join(" - ");
+      const startDate = new Date(firstTransactionDate);
+      startDate.setDate(startDate.getDate() + index * 14);
+      const endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + 13);
+      return `${startDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      })} - ${endDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      })}`;
     };
+
+    const lastPeriodEnd = new Date(firstTransactionDate);
+    lastPeriodEnd.setDate(
+      lastPeriodEnd.getDate() + (arrayLength - 1) * 14 + 13
+    );
+    if (currentDate > lastPeriodEnd) {
+      arrayLength += 1;
+    }
 
     models.forEach((model) => {
       const modelEarnings = earningsWithParsedDates.filter(
@@ -458,49 +387,18 @@ export async function fetchEarningsByModelGroup({
       modelEarnings.forEach((earning) => {
         const earningDate = earning.parsedDate;
 
-        if (filter === "overall") {
-          if (timeDiffInDays > 365) {
-            const monthIndex =
-              (earningDate.getFullYear() - firstTransactionDate.getFullYear()) *
-                12 +
-              (earningDate.getMonth() - firstTransactionDate.getMonth());
-            earningsArray[monthIndex] += Number(earning.total);
-          } else if (timeDiffInDays <= 30) {
-            const daysAgo = Math.floor(
-              (currentDate.getTime() - earningDate.getTime()) /
-                (1000 * 3600 * 24)
-            );
-            if (daysAgo < 30) {
-              earningsArray[29 - daysAgo] += Number(earning.total);
-            }
-          } else {
-            const weekIndex = Math.floor(
-              (currentDate.getTime() - earningDate.getTime()) /
-                (1000 * 3600 * 24 * 7)
-            );
-            earningsArray[arrayLength - 1 - weekIndex] += Number(earning.total);
-          }
-        } else if (filter === "last Month") {
-          const last30DaysStart = new Date();
-          last30DaysStart.setDate(currentDate.getDate() - 30);
-
-          if (earningDate >= last30DaysStart && earningDate <= currentDate) {
-            const daysAgo = Math.floor(
-              (currentDate.getTime() - earningDate.getTime()) /
-                (1000 * 3600 * 24)
-            );
-            earningsArray[29 - daysAgo] += Number(earning.total);
-          }
-        } else if (filter === "last Week") {
-          const last7DaysStart = new Date();
-          last7DaysStart.setDate(currentDate.getDate() - 7);
-
-          if (earningDate >= last7DaysStart && earningDate <= currentDate) {
-            const daysAgo = Math.floor(
-              (currentDate.getTime() - earningDate.getTime()) /
-                (1000 * 3600 * 24)
-            );
-            earningsArray[6 - daysAgo] += Number(earning.total);
+        if (filter === "overall" && timeDiffInDays > 30) {
+          const periodIndex = Math.floor(
+            (earningDate.getTime() - firstTransactionDate.getTime()) /
+              (1000 * 3600 * 24 * 14)
+          );
+          earningsArray[periodIndex] += Number(earning.total);
+        } else {
+          const daysAgo = Math.floor(
+            (currentDate.getTime() - earningDate.getTime()) / (1000 * 3600 * 24)
+          );
+          if (daysAgo < arrayLength) {
+            earningsArray[arrayLength - 1 - daysAgo] += Number(earning.total);
           }
         }
       });
@@ -519,16 +417,6 @@ export async function fetchEarningsByModelGroup({
     };
   } catch (error) {
     console.error("Error fetching model earnings:", error);
-    throw error;
-  }
-}
-
-export async function fetchEarnings() {
-  try {
-    const earnings = await db.earning.findMany();
-    return earnings;
-  } catch (error) {
-    console.error("Error fetching earnings:", error);
     throw error;
   }
 }
