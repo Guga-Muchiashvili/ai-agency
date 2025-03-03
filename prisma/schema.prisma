@@ -55,3 +55,14 @@ model Lead {
   seen      Boolean
   description String
 }
+
+model Todo {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  description   String
+  workerId      String[]
+  createdAt     String
+  deadline      String
+  type          String
+  label         String
+}

@@ -843,3 +843,29 @@ export async function fetchLeadById({ id }: { id: string | undefined }) {
     throw error;
   }
 }
+
+export async function fetchTodos() {
+  try {
+    const todoes = await db.todo.findMany();
+
+    return todoes;
+  } catch (error) {
+    console.error("Error fetching Todo:", error);
+    throw error;
+  }
+}
+
+export async function fetchTodoById({ id }: { id: string | undefined }) {
+  try {
+    const todo = await db.todo.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    return todo;
+  } catch (error) {
+    console.error("Error fetching Todo:", error);
+    throw error;
+  }
+}
