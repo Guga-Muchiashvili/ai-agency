@@ -46,6 +46,22 @@ const NavBar = () => {
                 {item}
               </li>
             ))}
+            {AdditionalLinks.map((item) => (
+              <li
+                key={item}
+                onClick={() => handleClick(item)}
+                className={`w-full py-2 cursor-pointer ${
+                  currentPath === `/Dashboard` &&
+                  item.toLowerCase() === "dashboard"
+                    ? "bg-slate-100 text-black"
+                    : currentPath === `/Dashboard/${item}`
+                    ? "bg-slate-100 text-black"
+                    : ""
+                } hover:bg-slate-200 hover:text-black duration-700 ease-out rounded-lg px-3 text-xl`}
+              >
+                {item}
+              </li>
+            ))}
           </ul>
         </div>
       )}
