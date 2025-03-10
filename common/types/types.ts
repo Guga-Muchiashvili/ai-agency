@@ -65,3 +65,13 @@ export interface IFormLead {
   seen: boolean;
   description: string;
 }
+
+export interface IFormTodo {
+  title: string;
+  description?: string;
+  workerId: string[];
+  createdAt: string;
+  deadline?: string;
+  type: string;
+  label?: string;
+}

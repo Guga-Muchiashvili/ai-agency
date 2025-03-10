@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import { IFormTodo } from "../types/types";
 
 export const PaymentSchema = () => {
   return yup.object({
@@ -36,4 +37,18 @@ export const LeadSchema = yup.object().shape({
   active: yup.boolean().required("Active status is required"),
   seen: yup.boolean().required("Seen status is required"),
   description: yup.string().required("Description is required"),
+});
+
+export const todoSchema: yup.ObjectSchema<IFormTodo> = yup.object().shape({
+  title: yup.string().required("Title is required"),
+  description: yup.string().optional(),
+  workerId: yup
+    .array()
+    .of(yup.string().required("Worker ID must be a string"))
+    .min(1, "At least one workerId is required")
+    .required(),
+  createdAt: yup.string().required("CreatedAt is required"),
+  deadline: yup.string().optional(),
+  type: yup.string().required("Type is required"),
+  label: yup.string().optional(),
 });

@@ -1,6 +1,6 @@
 import React from "react";
 import { FormProvider, UseFormReturn, FieldValues } from "react-hook-form";
-import { IFormLead } from "../types/types";
+import { IFormLead, IFormTodo } from "../types/types";
 import { FormValues } from "@/components/ModelDashboardComponent/types";
 
 export interface FormComponentProps<T extends FieldValues> {
@@ -9,7 +9,7 @@ export interface FormComponentProps<T extends FieldValues> {
   submit: React.FormEventHandler<HTMLFormElement>;
 }
 
-const FormComponent = <T extends IFormLead | FormValues>({
+const FormComponent = <T extends IFormLead | FormValues | IFormTodo>({
   children,
   methods,
   submit,

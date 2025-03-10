@@ -1,18 +1,27 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import TodoCard from "./elements/TodoCardElement";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import TodoModal from "./elements/ModalElement";
 
 const TodoComponent = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const openModal = (todo: string) => {
     console.log(todo);
   };
 
   return (
     <div className="text-white w-[98vw] xl:w-[80vw] min-h-fit flex flex-col py-4 font-bebas h-full ">
+      {isModalOpen && <TodoModal onClose={() => setIsModalOpen(false)} />}
       <div className="w-full flex justify-between px-8 h-2/3 pb-2">
         <div className=" h-full w-1/4 flex flex-col gap-3">
-          <div className=" text-xl bg-[#DAA421] rounded-xl text-white py-3 text-center">
+          <div className=" text-xl bg-[#DAA421] rounded-xl text-white py-3 text-center flex items-center justify-center relative">
             TODO
+            <BsThreeDotsVertical
+              className="absolute right-3 cursor-pointer"
+              onClick={() => setIsModalOpen(true)}
+            />
           </div>
           <div className="w-full h-full flex flex-col gap-2 overflow-y-auto hide-scrollbar">
             <div
@@ -50,33 +59,6 @@ const TodoComponent = () => {
               onClick={() => console.log("hello")}
               title="Best var"
             />
-            <TodoCard
-              createdAt="25/02/4224"
-              deadline="sadadsadw"
-              description="sadwasd sajhdh lwak hsd;awj hdlkwaj"
-              label="red"
-              members={["hello", "skuchana"]}
-              onClick={() => console.log("hello")}
-              title="Best var"
-            />
-            <TodoCard
-              createdAt="25/02/4224"
-              deadline="sadadsadw"
-              description="sadwasd sajhdh lwak hsd;awj hdlkwaj"
-              label="red"
-              members={["hello", "skuchana"]}
-              onClick={() => console.log("hello")}
-              title="Best var"
-            />
-            <TodoCard
-              createdAt="25/02/4224"
-              deadline="sadadsadw"
-              description="sadwasd sajhdh lwak hsd;awj hdlkwaj"
-              label="red"
-              members={["hello", "skuchana"]}
-              onClick={() => console.log("hello")}
-              title="Best var"
-            />
           </div>
         </div>
         <div className=" h-full w-1/4 flex flex-col gap-3">
@@ -84,15 +66,6 @@ const TodoComponent = () => {
             Progress
           </div>
           <div className="w-full h-full flex flex-col gap-2 overflow-y-auto hide-scrollbar">
-            <TodoCard
-              createdAt="25/02/4224"
-              deadline="sadadsadw"
-              description="sadwasd sajhdh lwak hsd;awj hdlkwaj"
-              label="green"
-              members={["hello", "skuchana"]}
-              onClick={() => console.log("hello")}
-              title="Best var"
-            />
             <TodoCard
               createdAt="25/02/4224"
               deadline="sadadsadw"
@@ -124,33 +97,6 @@ const TodoComponent = () => {
       <div className="w-full h-1/3 p-8 flex flex-col gap-5 border-t-[1px] border-[#DAA421]">
         <h1 className="text-3xl">Reminder</h1>
         <div className="w-full h-full flex gap-4 overflow-x-auto hide-scrollbar">
-          <TodoCard
-            createdAt="25/02/4224"
-            deadline="sadadsadw"
-            description="sadwasd sajhdh lwak hsd;awj hdlkwaj"
-            label="red"
-            members={["hello", "skuchana"]}
-            onClick={() => console.log("hello")}
-            title="Best var"
-          />
-          <TodoCard
-            createdAt="25/02/4224"
-            deadline="sadadsadw"
-            description="sadwasd sajhdh lwak hsd;awj hdlkwaj"
-            label="red"
-            members={["hello", "skuchana"]}
-            onClick={() => console.log("hello")}
-            title="Best var"
-          />
-          <TodoCard
-            createdAt="25/02/4224"
-            deadline="sadadsadw"
-            description="sadwasd sajhdh lwak hsd;awj hdlkwaj"
-            label="red"
-            members={["hello", "skuchana"]}
-            onClick={() => console.log("hello")}
-            title="Best var"
-          />
           <TodoCard
             createdAt="25/02/4224"
             deadline="sadadsadw"
