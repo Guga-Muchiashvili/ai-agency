@@ -1,6 +1,5 @@
-// components/TodoCard.tsx
-
 import React from "react";
+import { FaTrash } from "react-icons/fa";
 
 interface TodoCardProps {
   title: string;
@@ -10,6 +9,7 @@ interface TodoCardProps {
   deadline: string;
   label: string;
   onClick: () => void;
+  onDelete: () => void;
 }
 
 const TodoCard: React.FC<TodoCardProps> = ({
@@ -20,10 +20,11 @@ const TodoCard: React.FC<TodoCardProps> = ({
   deadline,
   label,
   onClick,
+  onDelete,
 }) => {
   return (
     <div
-      className="w-full bg-black border-[1px] border-white rounded-xl flex flex-col gap-3 p-4 cursor-pointer"
+      className="w-full bg-black border-[1px] border-white rounded-xl flex flex-col gap-3 p-4 relative cursor-pointer"
       style={{ borderLeft: `4px solid ${label}` }}
       onClick={onClick}
     >
@@ -35,6 +36,13 @@ const TodoCard: React.FC<TodoCardProps> = ({
         >
           {label}
         </span>
+        <FaTrash
+          className="text-red-500 cursor-pointer absolute bottom-4 right-4"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
+        />
       </div>
       <p className="text-sm text-gray-400">{description}</p>
       <div className="flex justify-between text-sm text-gray-500">

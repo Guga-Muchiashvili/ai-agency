@@ -4,6 +4,7 @@ import DropdownFieldElement from "@/common/elements/dropDownElement/DropDownElem
 import TextFieldElementComponent from "@/common/elements/textInputElement/TextInputElement";
 import { todoSchema } from "@/common/schema";
 import { IFormTodo } from "@/common/types/types";
+import useCreateTodo from "@/mutations/CreateTodoMutation/CreateTodoMutation";
 import { useGetWorkers } from "@/queries/useGetWorkersQuery/useGetWorkersQuert";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
@@ -11,6 +12,7 @@ import { useForm, UseFormReturn } from "react-hook-form";
 
 const TodoModal = ({ onClose }: { onClose: () => void }) => {
   const { data: workers } = useGetWorkers();
+  const { mutate: createTodo } = useCreateTodo();
   const methods: UseFormReturn<IFormTodo> = useForm({
     resolver: yupResolver(todoSchema),
     defaultValues: {
@@ -20,16 +22,26 @@ const TodoModal = ({ onClose }: { onClose: () => void }) => {
       label: "",
       title: "",
       type: "Todo",
-      workerId: [""],
+      workerId: [],
     },
   });
 
   const transferedWorkers = workers?.map((item) => ({
     label: item.name,
-    value: item.id,
+    value: String(item.id),
   }));
   const submit = (data: IFormTodo) => {
-    console.log(data);
+    const updatedData = {
+      ...data,
+      createdAt: new Date().toISOString().split("T")[0],
+      type: "Todo",
+    } as IFormTodo & {
+      deadline: string;
+      description: string;
+      label: string;
+      createdAt: string;
+    };
+    createTodo(updatedData);
     onClose();
   };
 

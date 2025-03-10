@@ -1,6 +1,6 @@
 "use server";
 import { ChangeStatusMutationVariables } from "@/app/Dashboard/Components/PaymentTableElement/types";
-import { Iearning, IFormLead } from "@/common/types/types";
+import { Iearning, IFormLead, IFormTodo } from "@/common/types/types";
 import { db } from "@/common/utils/db";
 import { IdeleteEarningByNamesProps } from "./types";
 
@@ -297,5 +297,84 @@ export const addNoteToLead = async (params: {
     };
   } catch (error) {
     throw new Error(`Error adding note: ${error}`);
+  }
+};
+
+export const createTodo = async ({
+  createdAt,
+  title,
+  type,
+  workerId,
+  deadline,
+  label,
+  description,
+}: IFormTodo & {
+  deadline: string;
+  description: string;
+  label: string;
+  createdAt: string;
+}) => {
+  try {
+    const newTodo = await db.todo.create({
+      data: {
+        createdAt,
+        deadline,
+        description,
+        label,
+        title,
+        type,
+        workerId,
+      },
+    });
+
+    return newTodo;
+  } catch (error) {
+    console.error("Error creating Lead:", error);
+    throw new Error("Failed to create Lead");
+  }
+};
+
+export const deleteTodo = async (id: string) => {
+  try {
+    const todo = await db.todo.findUnique({
+      where: { id },
+    });
+
+    if (!todo) {
+      throw new Error("todo not found");
+    }
+
+    await db.todo.delete({
+      where: { id },
+    });
+
+    return { success: true, message: "Todo deleted successfully" };
+  } catch (error) {
+    console.error("Error deleting Todo:", error);
+    throw new Error("Failed to delete Todo");
+  }
+};
+
+export const updateTodoType = async (id: string, type: string) => {
+  try {
+    const todo = await db.todo.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!todo) {
+      throw new Error("Todo not found");
+    }
+
+    const updatedTodo = await db.todo.update({
+      where: { id },
+      data: { type },
+      select: { id: true, type: true },
+    });
+
+    return updatedTodo;
+  } catch (error) {
+    console.error("Error updating Todo type:", error);
+    throw new Error("Failed to update Todo type");
   }
 };

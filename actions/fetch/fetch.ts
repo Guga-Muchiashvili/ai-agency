@@ -734,11 +734,25 @@ export async function fetchLeadById({ id }: { id: string | undefined }) {
 
 export async function fetchTodos() {
   try {
-    const todoes = await db.todo.findMany();
+    const todos = await db.todo.findMany();
 
-    return todoes;
+    const todosWithWorkerNames = await Promise.all(
+      todos.map(async (todo) => {
+        const workers = await db.worker.findMany({
+          where: { id: { in: todo.workerId } },
+          select: { name: true },
+        });
+
+        return {
+          ...todo,
+          workerNames: workers.map((worker) => worker.name),
+        };
+      })
+    );
+
+    return todosWithWorkerNames;
   } catch (error) {
-    console.error("Error fetching Todo:", error);
+    console.error("Error fetching Todos:", error);
     throw error;
   }
 }

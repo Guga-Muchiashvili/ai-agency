@@ -47,7 +47,7 @@ export const todoSchema: yup.ObjectSchema<IFormTodo> = yup.object().shape({
     .of(yup.string().required("Worker ID must be a string"))
     .min(1, "At least one workerId is required")
     .required(),
-  createdAt: yup.string().required("CreatedAt is required"),
+  createdAt: yup.string(),
   deadline: yup.string().optional(),
   type: yup.string().required("Type is required"),
   label: yup.string().optional(),

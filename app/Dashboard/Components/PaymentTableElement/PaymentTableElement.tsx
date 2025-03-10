@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { FiTrash } from "react-icons/fi";
 import { toast } from "sonner";
-import { useGetWorkerById } from "@/queries/useGetWorkerQuery/useGetWorkerQuery";
+import { useGetWorkerById } from "@/queries/useGetWorkerByIdQuery/useGetWorkerQuery";
 import { useChangeEarningStatusMutation } from "@/mutations/mutations";
 import { deleteEarningByNames } from "@/api/api";
 import { IPaymentTableElementProps } from "./types";
