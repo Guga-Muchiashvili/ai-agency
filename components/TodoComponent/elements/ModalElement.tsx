@@ -55,7 +55,7 @@ const TodoModal = ({ onClose }: { onClose: () => void }) => {
             <DropdownFieldElement
               label="label"
               name="label"
-              options={["Important", "Must do", "GoodToDo"]}
+              options={["Important", "MustDo", "GoodToDo"]}
             />
           </div>
           <TextFieldElementComponent label="description" name="description" />

@@ -760,12 +760,20 @@ export async function fetchTodos() {
 export async function fetchTodoById({ id }: { id: string | undefined }) {
   try {
     const todo = await db.todo.findUnique({
-      where: {
-        id: id,
-      },
+      where: { id },
     });
 
-    return todo;
+    if (!todo) return null;
+
+    const workers = await db.worker.findMany({
+      where: { id: { in: todo.workerId } },
+      select: { name: true },
+    });
+
+    return {
+      ...todo,
+      workerNames: workers.map((worker) => worker.name),
+    };
   } catch (error) {
     console.error("Error fetching Todo:", error);
     throw error;

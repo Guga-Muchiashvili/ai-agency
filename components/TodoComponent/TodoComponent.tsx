@@ -1,10 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TodoCard from "./elements/TodoCardElement";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import TodoModal from "./elements/ModalElement";
+import dayjs from "dayjs";
 import { useGetTodos } from "@/queries/useGetTodosQuery/useGetTodosQuery";
-import { useGetTodoById } from "@/queries/useGetTodoByIdQuery/useGetTodoByIdQuery";
 import TodoDetailsModal from "./elements/TodoDetailModal";
 import useDeleteTodo from "@/mutations/DeleteTodoMutation/DeleteTodoMutation";
 
@@ -14,14 +14,13 @@ const TodoComponent = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [todoIdToDelete, setTodoIdToDelete] = useState<string | null>(null);
+  const deleteModalRef = useRef<HTMLDivElement | null>(null);
 
   const { data: todoData } = useGetTodos();
-  const { data: todoDetails, refetch } = useGetTodoById({ id: selectedTodoId });
   const { mutate: deleteTodo } = useDeleteTodo();
 
   const openTodoDetailsModal = (todoId: string) => {
     setSelectedTodoId(todoId);
-    refetch();
   };
 
   const handleDeleteClick = (todoId: string) => {
@@ -36,28 +35,49 @@ const TodoComponent = () => {
     setIsDeleteModalOpen(false);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        deleteModalRef.current &&
+        !deleteModalRef.current.contains(event.target as Node)
+      ) {
+        setIsDeleteModalOpen(false);
+      }
+    };
+
+    if (isDeleteModalOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDeleteModalOpen]);
+
+  const today = dayjs();
+
+  const reminderTodos = todoData?.filter((todo) => {
+    if (todo.type === "Completed") return false;
+
+    const [day, month, year] = todo.deadline.split("/").map(Number);
+    const deadlineDate = dayjs(new Date(year, month - 1, day));
+
+    return deadlineDate.isAfter(today) && deadlineDate.diff(today, "day") <= 2;
+  });
+
   return (
     <div className="text-white w-[98vw] xl:w-[80vw] min-h-fit flex flex-row py-4 font-bebas h-full md:flex-col">
       {isModalOpen && <TodoModal onClose={() => setIsModalOpen(false)} />}
       {selectedTodoId && (
         <TodoDetailsModal
-          data={{
-            title: todoDetails?.title,
-            description: todoDetails?.description,
-            createdAt: todoDetails?.createdAt,
-            deadline: todoDetails?.deadline,
-            label: todoDetails?.label || "",
-            workerNames: todoDetails?.workerId || [],
-            type: todoDetails?.type || "",
-            id: todoDetails?.id,
-          }}
+          id={selectedTodoId}
           onClose={() => setSelectedTodoId("")}
         />
       )}
 
       {isDeleteModalOpen && (
         <div className="fixed inset-0 flex justify-center items-center text-black bg-black bg-opacity-50 z-10">
-          <div className="bg-white p-6 rounded-xl w-96">
+          <div ref={deleteModalRef} className="bg-white p-6 rounded-xl w-96">
             <h3 className="text-xl mb-4">
               Are you sure you want to delete this todo?
             </h3>
@@ -157,21 +177,19 @@ const TodoComponent = () => {
       <div className="md:w-full hidden sm:flex w-2/5 p-0 h-full md:h-1/3 md:p-8 relative  flex-col gap-5 border-t-[1px] border-[#DAA421]">
         <h1 className="text-3xl">Reminder</h1>
         <div className="w-full h-full flex gap-4 overflow-x-auto hide-scrollbar">
-          {todoData
-            ?.filter((todo) => todo.type === "Reminder")
-            .map((item) => (
-              <TodoCard
-                key={item.id}
-                createdAt={item.createdAt}
-                deadline={item.deadline}
-                description={item.description}
-                label={item.label}
-                members={item.workerNames}
-                onClick={() => openTodoDetailsModal(item.id)}
-                title={item.title}
-                onDelete={() => handleDeleteClick(item.id)}
-              />
-            ))}
+          {reminderTodos?.map((item) => (
+            <TodoCard
+              key={item.id}
+              createdAt={item.createdAt}
+              deadline={item.deadline}
+              description={item.description}
+              label={item.label}
+              members={item.workerNames}
+              onClick={() => openTodoDetailsModal(item.id)}
+              title={item.title}
+              onDelete={() => handleDeleteClick(item.id)}
+            />
+          ))}
         </div>
       </div>
     </div>

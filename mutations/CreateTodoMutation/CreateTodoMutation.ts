@@ -24,6 +24,7 @@ export default function useCreateTodo() {
     mutationFn: createTodo,
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["todos", variables.type] });
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
 
       toast.success("Todo added successfully");
     },
