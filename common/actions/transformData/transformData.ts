@@ -9,7 +9,7 @@ import { StaticImageData } from "next/image";
 import { FormValues } from "@/components/ModelDashboardComponent/types";
 import { Iearning } from "@/common/types/types";
 
-const nameToImageMap: Record<string, StaticImageData> = {
+export const nameToImageMap: Record<string, StaticImageData> = {
   zoro,
   zangologi,
   gega,
