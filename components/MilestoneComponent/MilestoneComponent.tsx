@@ -68,8 +68,6 @@ const MilestoneComponent = () => {
   const [size, setSize] = useState(180);
   const { data } = useGetMilestoneData();
 
-  console.log(data);
-
   useEffect(() => {
     const updateSize = () => {
       setSize(Math.min(window.innerWidth * 0.8, 320));
@@ -125,7 +123,7 @@ const MilestoneComponent = () => {
               key={item.name}
             >
               <div className="flex items-center gap-4">
-                <h1 className="text-4xl">{i}</h1>
+                <h1 className="text-4xl">{i + 1}</h1>
                 <Image
                   src={item.img}
                   alt="pfp"
