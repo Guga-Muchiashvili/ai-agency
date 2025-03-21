@@ -820,9 +820,9 @@ export async function getCurrentMilestoneData() {
 
         return createdAt >= startMilestone && createdAt < endMilestone;
       })
-      .reduce((sum, earning) => sum + earning.amount, 0);
+      .reduce((sum, earning) => sum + Number(earning.total), 0);
 
-    moneyIn += modelEarnings;
+    moneyIn = Number((Number(moneyIn) + Number(modelEarnings)).toFixed(2));
 
     const milestoneTarget = parseFloat(model.milestone || "0");
     const percentage = milestoneTarget
@@ -859,8 +859,9 @@ export async function getCurrentMilestoneData() {
         workerEarningsMap[earning.workerId] = 0;
       }
 
-      workerEarningsMap[earning.workerId] +=
-        (earning.amount * percentage) / 100;
+      workerEarningsMap[earning.workerId] += Number(
+        ((Number(earning.total) * percentage) / 100).toFixed(1)
+      );
     }
   });
 
