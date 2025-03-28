@@ -110,7 +110,7 @@ const MilestoneComponent = () => {
             text={item.modelName}
             color="white"
             bgColor="#555"
-            goal={`${item.earnings}$/${item.milestoneTarget}$`}
+            goal={`${item.earnings.toFixed(1)}$/${item.milestoneTarget}$`}
           />
         ))}
       </div>
