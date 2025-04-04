@@ -92,7 +92,7 @@ const MilestoneComponent = () => {
           key={2}
           index={1}
           title={`Money In`}
-          price={(data?.moneyIn as string) || "0"}
+          price={(data?.moneyIn as string) + "$" || "0"}
         />
         <OutputBoxElement
           key={3}
