@@ -853,7 +853,9 @@ export async function getCurrentMilestoneData() {
     const createdAt = new Date(createdAtDate);
 
     if (createdAt >= startMilestone && createdAt < endMilestone) {
-      const percentage = parseFloat(earning.percentage || "0");
+      const percentage = parseFloat(
+        String(Number(earning.percentage) - 3.5) || "0"
+      );
 
       if (!workerEarningsMap[earning.workerId]) {
         workerEarningsMap[earning.workerId] = 0;
@@ -868,6 +870,9 @@ export async function getCurrentMilestoneData() {
   const leaderboard = Object.entries(workerEarningsMap)
     .map(([workerId, totalEarnings]) => {
       const worker = workers.find((w) => w.id === workerId);
+
+      if (worker?.name === "Admin") return null;
+
       const workerModel = models.find((model) => model.id === worker?.modelId);
 
       const workerImage =
@@ -876,11 +881,12 @@ export async function getCurrentMilestoneData() {
 
       return {
         name: worker?.name || "Unknown",
-        totalEarnings,
+        totalEarnings: Number(totalEarnings.toFixed(1)),
         img: workerImage,
         modelName: workerModel?.name || "Unknown Model",
       };
     })
+    .filter((entry) => entry !== null)
     .sort((a, b) => b.totalEarnings - a.totalEarnings)
     .slice(0, 10);
 
