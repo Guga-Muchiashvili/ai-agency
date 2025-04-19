@@ -804,14 +804,23 @@ export async function getCurrentMilestoneData() {
 
   const milestonePeriod = formatMilestonePeriod(startMilestone, endMilestone);
 
-  const earnings = await db.earning.findMany();
-  const models = await db.model.findMany();
-  const workers = await db.worker.findMany();
+  const [earnings, models, workers] = await Promise.all([
+    db.earning.findMany(),
+    db.model.findMany(),
+    db.worker.findMany(),
+  ]);
+
+  const nonAdminWorkerIds = workers
+    .filter((w) => w.name !== "Admin")
+    .map((w) => w.id);
+  const filteredEarnings = earnings.filter((e) =>
+    nonAdminWorkerIds.includes(e.workerId)
+  );
 
   let moneyIn = 0;
 
   const modelData = models.map((model) => {
-    const modelEarnings = earnings
+    const modelEarnings = filteredEarnings
       .filter((earning) => {
         if (earning.modelId !== model.id) return false;
 
@@ -848,7 +857,7 @@ export async function getCurrentMilestoneData() {
 
   const workerEarningsMap: Record<string, number> = {};
 
-  earnings.forEach((earning) => {
+  filteredEarnings.forEach((earning) => {
     const createdAtDate = earning.createdAt.split("/").reverse().join("-");
     const createdAt = new Date(createdAtDate);
 
@@ -870,9 +879,6 @@ export async function getCurrentMilestoneData() {
   const leaderboard = Object.entries(workerEarningsMap)
     .map(([workerId, totalEarnings]) => {
       const worker = workers.find((w) => w.id === workerId);
-
-      if (worker?.name === "Admin") return null;
-
       const workerModel = models.find((model) => model.id === worker?.modelId);
 
       const workerImage =
@@ -886,7 +892,7 @@ export async function getCurrentMilestoneData() {
         modelName: workerModel?.name || "Unknown Model",
       };
     })
-    .filter((entry) => entry !== null)
+    .filter((entry) => entry.name !== "Admin")
     .sort((a, b) => b.totalEarnings - a.totalEarnings)
     .slice(0, 10);
 
