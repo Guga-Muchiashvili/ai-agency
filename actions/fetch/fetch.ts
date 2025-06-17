@@ -590,7 +590,7 @@ export const getWorkersByModel = async (modelId: string | undefined) => {
         });
 
         const totalProfit = earnings.reduce((acc, earning) => {
-          const percentage = Number(earning.percentage) - 3.5;
+          const percentage = Number(earning.percentage) - 4.5;
           const profit =
             (parseFloat(earning.total.toString()) * percentage) / 100;
           return acc + profit;
@@ -634,7 +634,7 @@ export const getAllModelsWithWorkers = async () => {
           );
 
           const totalProfit = workerEarnings.reduce((acc, earning) => {
-            const percentage = Number(earning.percentage) - 3.5;
+            const percentage = Number(earning.percentage) - 4.5;
             const profit =
               (parseFloat(earning.total.toString()) * percentage) / 100;
             return acc + profit;
@@ -863,7 +863,7 @@ export async function getCurrentMilestoneData() {
 
     if (createdAt >= startMilestone && createdAt < endMilestone) {
       const percentage = parseFloat(
-        String(Number(earning.percentage) - 3.5) || "0"
+        String(Number(earning.percentage) - 4.5) || "0"
       );
 
       if (!workerEarningsMap[earning.workerId]) {
